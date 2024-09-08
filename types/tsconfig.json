@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "typeRoots": ["../node_modules/@types", "./"],  // Adjusted path to look outside `types` for node_modules
-    "strict": true  // Optional, if you want stricter type checks
+    "typeRoots": [
+      "../node_modules/@types", // Path to node_modules/@types from `types` directory
+      "./"                       // Include types in the current directory (e.g., `types` directory)
+    ],
+    "strict": true              // Optional, for stricter type checks
   },
   "include": [
-    "../src/**/*",        // Adjusted to look for files in `src` folder relative to `types` directory
-    "../src/**/*.ts", 
-    "../src/**/*.tsx", 
-    "./**/*.d.ts"         // Looks for .d.ts files in the `types` folder where this `tsconfig.json` is located
+    "../src/**/*",            // Correct path to `src` directory from `types` directory
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "./**/*.d.ts"             // Include declaration files in the `types` directory
   ]
 }
 
