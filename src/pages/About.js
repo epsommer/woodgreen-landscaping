@@ -1,4 +1,4 @@
-// File: About.js
+// File: 'woodgreen-landscaping/src/pages/About.js'
 import '../styles/About.css';
 
 const About = () => {

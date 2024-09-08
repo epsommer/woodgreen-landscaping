@@ -1,3 +1,4 @@
+// File: woodgreen-landscaping/src/App.js
 import { defineFlatConfig } from 'eslint-define-config';
 import babelParser from '@babel/eslint-parser';
 import react from 'eslint-plugin-react';
