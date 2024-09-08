@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["../node_modules/@types", "./"],  // Adjusted path to look outside `types` for node_modules
+    "strict": true  // Optional, if you want stricter type checks
+  },
+  "include": [
+    "../src/**/*",        // Adjusted to look for files in `src` folder relative to `types` directory
+    "../src/**/*.ts", 
+    "../src/**/*.tsx", 
+    "./**/*.d.ts"         // Looks for .d.ts files in the `types` folder where this `tsconfig.json` is located
+  ]
+}
+

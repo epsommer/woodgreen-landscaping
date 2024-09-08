@@ -1,0 +1,13 @@
+{
+  "presets": [
+    "react-app", // For Create React App
+    "@babel/preset-env", // To enable modern JavaScript features
+    "@babel/preset-react" // To enable JSX and React-specific syntax
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-private-methods", 
+    "@babel/plugin-proposal-class-properties", 
+    "@babel/plugin-transform-private-property-in-object"
+  ]
+}
+
