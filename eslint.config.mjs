@@ -1,3 +1,4 @@
+// File: 'eslint.config.mjs'
 import { defineFlatConfig } from 'eslint-define-config';
 import babelParser from '@babel/eslint-parser';
 import react from 'eslint-plugin-react';
@@ -25,11 +26,14 @@ export default defineFlatConfig([
     },
     rules: {
       'react/react-in-jsx-scope': 'off',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': ['warn', { varsIgnorePattern: '^_' }], // Ignore variables starting with _
       'react/prop-types': 'off',
       'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/explicit-module-boundary-types': 'off',
     },
   },

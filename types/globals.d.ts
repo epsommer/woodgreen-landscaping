@@ -1,17 +1,24 @@
-// types/@babel__eslint-parser.d.ts
-declare module '@babel/eslint-parser' {
-  const parser: any;
-  export default parser;
+// globals.d.ts
+declare module 'eslint-define-config' {
+  export function defineFlatConfig(config: any): any; // Adjust `any` type to the specific types if available
 }
 
-// types/eslint-plugin-react.d.ts
+declare module '@babel/eslint-parser' {
+  const babelParser: any;
+  export default babelParser;
+}
+
 declare module 'eslint-plugin-react' {
   const react: any;
   export default react;
 }
 
-// types/eslint-plugin-react-hooks.d.ts
 declare module 'eslint-plugin-react-hooks' {
   const reactHooks: any;
   export default reactHooks;
+}
+
+declare module '@typescript-eslint/eslint-plugin' {
+  const typescript: any;
+  export default typescript;
 }

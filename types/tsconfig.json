@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
     "typeRoots": [
-      "node_modules/@types",
-      "types"  // Make sure TypeScript includes the types directory
+      "../node_modules/@types", // Path to node_modules/@types from the `types` directory
+      "./"                       // Include types in the `types` directory
     ],
     "strict": true
   },
   "include": [
-    "src/**/*",
-    "types/**/*.d.ts" // Ensure TypeScript includes the declaration files
+    "../src/**/*",            // Correct path to `src` directory from the `types` directory
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "./*.d.ts"             // Include declaration files in the `types` directory
   ]
 }

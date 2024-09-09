@@ -9,9 +9,10 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
-    "node-polyfill-webpack-plugin": "^4.0.0",
+    "assert": "^2.1.0",
+    "browserify-fs": "^1.0.0",
+    "buffer": "^6.0.3",
     "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
@@ -26,7 +27,7 @@
     "build": "NODE_ENV=production BABEL_ENV=production react-scripts build",
     "test": "NODE_ENV=test react-scripts test",
     "eject": "NODE_ENV=development react-scripts eject",
-    "lint": "NODE_ENV=development BABEL_ENV=development eslint 'src/**/*.{js,jsx}' --fix"
+    "lint": "eslint 'src/**/*.{js,jsx}' --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -69,10 +70,13 @@
     "eslint-plugin-react": "^7.35.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "glob": "^11.0.0",
-    "nth-check": "^2.0.1",
-    "postcss": "^8.4.31",
+    "node-polyfill-webpack-plugin": "^4.0.0",
+    "nth-check": "^2.1.1",
+    "path-browserify": "^1.0.1",
+    "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "react-scripts": "^5.0.1",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "webpack": "^5.94.0"
   }
 }
