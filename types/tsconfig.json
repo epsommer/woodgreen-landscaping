@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
     "typeRoots": [
-      "../node_modules/@types", // Path to node_modules/@types from the `types` directory
-      "./"                       // Include types in the `types` directory
+      "./node_modules/@types/",
+      "./types"
     ],
-    "strict": true
+    "allowJs": true,
+    "jsx": "preserve",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "target": "ES2021",
+    "skipLibCheck": true
   },
   "include": [
-    "../src/**/*",            // Correct path to `src` directory from the `types` directory
-    "../src/**/*.ts",
-    "../src/**/*.tsx",
-    "./*.d.ts"             // Include declaration files in the `types` directory
+    "../src/**/*",
+    "./declarations.d.ts",
+    "./index.d.ts",
+    "./eslint-plugin-react.d.ts",
+    "./eslint-plugin-react-hooks.d.ts"
   ]
 }

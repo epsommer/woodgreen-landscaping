@@ -1,7 +1,7 @@
-// File: 'src/pages/Services.js'
+// src/pages/Services.js
 import React from 'react';
 import ServiceCard from '../elements/ServiceCard.js';
-import '../styles/Services.css';
+import '../styles/Services.module.css';
 
 const services = [
   {

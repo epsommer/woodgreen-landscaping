@@ -1,5 +1,6 @@
-// File: 'woodgreen-landscaping/src/pages/About.js'
-import '../styles/About.css';
+// src/pages/About.js
+import React from 'react';
+import '../styles/About.module.css';
 
 const About = () => {
   return <div>About Page</div>;

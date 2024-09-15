@@ -1,3 +1,4 @@
+// File: 'woodgreen-landscaping/src/elements/Footer.js'
 import React from 'react';
 
 const Footer = () => {

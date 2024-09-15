@@ -1,7 +1,7 @@
-// File: 'src/pages/Home.js'
+// src/pages/Home.js``
 import React from 'react';
 import Header from '../elements/Header.js';
-import '../styles/Home.css';
+import '../styles/Home.module.css';
 
 const Home = () => {
   return (
