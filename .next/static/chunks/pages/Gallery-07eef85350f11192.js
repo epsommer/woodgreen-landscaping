@@ -1,1 +1,0 @@
-(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[398],{3049:function(n,u,e){(window.__NEXT_P=window.__NEXT_P||[]).push(["/Gallery",function(){return e(8202)}])},8202:function(n,u,e){"use strict";e.r(u);var _=e(5893);e(7294),e(3143),u.default=()=>(0,_.jsx)("div",{children:"Gallery Page"})}},function(n){n.O(0,[888,774,179],function(){return n(n.s=3049)}),_N_E=n.O()}]);
