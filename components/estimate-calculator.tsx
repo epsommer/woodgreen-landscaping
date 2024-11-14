@@ -22,6 +22,10 @@ interface Service {
   rate: number;
 }
 
+interface EstimateCalculatorProps {
+  onClose: () => void;
+}
+
 const serviceOptions = [
   { name: "Basic Maintenance", rate: 2, unit: "sq ft" },
   { name: "Premium Care", rate: 3, unit: "sq ft" },
@@ -31,10 +35,10 @@ const serviceOptions = [
   { name: "Flower Planting", rate: 2.5, unit: "sq ft" },
 ];
 
-export function EstimateCalculator() {
+export function EstimateCalculator({ onClose }: EstimateCalculatorProps) {
   const [services, setServices] = useState<Service[]>([]);
-  const [currentService, setCurrentService] = useState("");
-  const [currentQuantity, setCurrentQuantity] = useState("");
+  const [currentService, setCurrentService] = useState<string>("");
+  const [currentQuantity, setCurrentQuantity] = useState<string>("");
   const [showScheduler, setShowScheduler] = useState(false);
 
   const selectedService = serviceOptions.find((s) => s.name === currentService);
@@ -65,11 +69,17 @@ export function EstimateCalculator() {
   };
 
   const closeModal = () => {
-    setShowScheduler(false);
+    onClose();
   };
 
   if (showScheduler) {
-    return <Scheduler onClose={closeModal} initialService={currentService} />;
+    return (
+      <Scheduler
+        onClose={closeModal}
+        initialService={currentService}
+        selectedService={currentService}
+      />
+    );
   }
 
   return (

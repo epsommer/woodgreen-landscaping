@@ -24,11 +24,11 @@ export function About() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/woodgreen-landscaping-icon.svg" // Path to your custom logo
-              alt="Woodgreen Landscaping Logo" // Alternative text
-              width={32} // Specify the width
-              height={32} // Specify the height
-              className="text-green-600" // Apply any necessary styles
+              src="/woodgreen-landscaping-icon.svg"
+              alt="Woodgreen Landscaping Logo"
+              width={32}
+              height={32}
+              className="text-green-600"
             />
             <span className="text-xl font-bold">Woodgreen Landscaping</span>
           </Link>
@@ -78,23 +78,19 @@ export function About() {
                 <p className="mb-4">
                   Founded in 1995, Woodgreen Landscaping has been dedicated to
                   creating beautiful, sustainable outdoor spaces for our
-                  clients. Our journey began with a passion for nature and a
-                  desire to bring the beauty of well-designed landscapes to
-                  homes and businesses across the region.
+                  clients.
                 </p>
                 <p>
                   Over the years, we&apos;ve grown from a small team of
-                  enthusiasts to a full-service landscaping company, always
-                  maintaining our commitment to quality, creativity, and
-                  customer satisfaction.
+                  enthusiasts to a full-service landscaping company.
                 </p>
               </div>
               <div>
                 <Image
-                  src="/placeholder.svg?height=400&width=600&text=Our+Team"
+                  src="/placeholder.svg?text=Our+Team" // Keep the 'text' query parameter
                   alt="Woodgreen Landscaping Team"
-                  width={600}
-                  height={400}
+                  width={600} // Correct width passed as a prop
+                  height={400} // Correct height passed as a prop
                   className="rounded-lg shadow-md"
                 />
               </div>
@@ -135,12 +131,13 @@ export function About() {
                 <Card key={index} className="text-center">
                   <CardContent className="pt-6">
                     <Image
-                      src={`/placeholder.svg?height=150&width=150&text=${member.name}`}
+                      src={`/placeholder.svg?text=${member.name}`} // Keep only the 'text' query parameter
                       alt={member.name}
                       width={150}
                       height={150}
                       className="rounded-full mx-auto mb-4"
                     />
+
                     <h3 className="font-bold mb-1">{member.name}</h3>
                     <p className="text-gray-600">{member.role}</p>
                   </CardContent>

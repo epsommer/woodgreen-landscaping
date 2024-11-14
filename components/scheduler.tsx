@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,8 @@ import { Calendar } from "@/components/ui/calendar";
 
 interface SchedulerProps {
   onClose: () => void;
-  initialService: string;
+  initialService?: string;
+  selectedService?: string;
 }
 
 const timeSlots = [
@@ -32,7 +33,11 @@ const timeSlots = [
   "04:00 PM",
 ];
 
-export function Scheduler({ onClose }: SchedulerProps) {
+export function Scheduler({
+  onClose,
+  initialService,
+  selectedService,
+}: SchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
@@ -41,11 +46,24 @@ export function Scheduler({ onClose }: SchedulerProps) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
+  const [service, setService] = useState<string | undefined>(selectedService);
+
+  useEffect(() => {
+    if (!service && initialService) {
+      setService(initialService);
+    }
+  }, [initialService, service]);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send this data to your backend
     console.log({
+      service,
       date: selectedDate,
       time: selectedTime,
       name,
@@ -53,9 +71,10 @@ export function Scheduler({ onClose }: SchedulerProps) {
       phone,
       message,
     });
-    // For now, we'll just close the scheduler
-    onClose();
+    handleClose();
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -63,11 +82,24 @@ export function Scheduler({ onClose }: SchedulerProps) {
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Schedule a Consultation</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="service">Select Service</Label>
+              <Select value={service} onValueChange={setService}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select service" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="landscaping">Landscaping</SelectItem>
+                  <SelectItem value="consultation">Consultation</SelectItem>
+                  <SelectItem value="maintenance">Maintenance</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="date">Select Date</Label>
@@ -85,7 +117,7 @@ export function Scheduler({ onClose }: SchedulerProps) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="time">Select Time</Label>
-                <Select onValueChange={setSelectedTime} value={selectedTime}>
+                <Select value={selectedTime} onValueChange={setSelectedTime}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select time" />
                   </SelectTrigger>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +10,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Leaf, Shovel, TreePine, Wind, Snowflake, Star } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import EstimateCalculator from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
-import {
-  SunIcon,
-  ArrowRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@radix-ui/react-icons";
+import { Carousel } from "@/components/carousel";
+import { SunIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 
 const carouselImages = [
   {
@@ -36,18 +31,10 @@ const carouselImages = [
   },
 ];
 
-export function HomePage() {
+export function Home() {
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedService, setSelectedService] = useState("");
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   const featuredServices = [
     {
@@ -66,9 +53,9 @@ export function HomePage() {
       description: "Expert tree care and management.",
     },
     {
-      icon: <Shovel className="h-8 w-8 mb-2" />, // Add the Shovel icon here
-      title: "Digging Services",
-      description: "Efficient and precise excavation for your projects.",
+      icon: <Shovel className="h-8 w-8 mb-2" />,
+      title: "Garden Tools Rental",
+      description: "Rent quality tools for your gardening needs.",
     },
   ];
 
@@ -113,17 +100,6 @@ export function HomePage() {
     setShowScheduler(true);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselImages.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide(
-      (prevSlide) =>
-        (prevSlide - 1 + carouselImages.length) % carouselImages.length,
-    );
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-white shadow-sm">
@@ -149,65 +125,15 @@ export function HomePage() {
               Contact
             </Link>
           </nav>
-          <Button
-            onClick={() => setShowEstimateCalculator(true)}
-            aria-label="Get Estimate"
-          >
+          <Button onClick={() => setShowEstimateCalculator(true)}>
             Get Estimate
           </Button>
         </div>
       </header>
 
       <main className="flex-grow">
-        <section className="relative h-[600px]">
-          {carouselImages.map((image, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                objectFit="cover"
-                priority={index === 0}
-              />
-            </div>
-          ))}
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Transform Your Outdoor Space
-              </h1>
-              <p className="text-xl mb-8">
-                Professional landscaping services to create the garden of your
-                dreams.
-              </p>
-              <Button
-                size="lg"
-                onClick={() => setShowEstimateCalculator(true)}
-                className="bg-green-600 hover:bg-green-700 text-white"
-              >
-                Get a Free Estimate
-              </Button>
-            </div>
-          </div>
-          <button
-            onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
-            aria-label="Previous slide"
-          >
-            <ChevronLeftIcon className="h-6 w-6" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
-            aria-label="Next slide"
-          >
-            <ChevronRightIcon className="h-6 w-6" />
-          </button>
+        <section className="h-[600px]">
+          <Carousel images={carouselImages} />
         </section>
 
         <section className="py-20 bg-white">
@@ -290,7 +216,7 @@ export function HomePage() {
                       ))}
                     </div>
                     <p className="text-center mb-4">
-                      &ldquo;{testimonial.text}&ldquo;
+                      &ldquo;{testimonial.text}&rdquo;
                     </p>
                     <p className="text-center font-semibold">
                       {testimonial.name}
@@ -353,4 +279,3 @@ export function HomePage() {
     </div>
   );
 }
-
