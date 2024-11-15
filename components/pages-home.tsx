@@ -122,7 +122,7 @@ export function Home() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/placeholder.svg?height=40&width=40&text=Logo"
+              src="/woodgreen-landscaping-icon.svg"
               alt="Woodgreen Landscaping Logo"
               width={40}
               height={40}
@@ -403,4 +403,3 @@ export function Home() {
     </div>
   );
 }
-
