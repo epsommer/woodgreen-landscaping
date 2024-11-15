@@ -9,12 +9,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Leaf, Shovel, TreePine, Wind, Snowflake, Star } from "lucide-react";
+import {
+  Shovel,
+  Sun,
+  TreePine,
+  Wind,
+  Snowflake,
+  ArrowRight,
+  Star,
+  Menu,
+  X,
+  Phone,
+  Mail,
+  MapPin,
+  Facebook,
+  Twitter,
+  Instagram,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import EstimateCalculator from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
 import { Carousel } from "@/components/carousel";
-import { SunIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 
 const carouselImages = [
   {
@@ -35,27 +51,23 @@ export function Home() {
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedService, setSelectedService] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const featuredServices = [
     {
-      icon: <Leaf className="h-8 w-8 mb-2" />,
+      icon: <TreePine className="h-8 w-8 mb-2" />,
       title: "Landscape Design",
       description: "Custom designs tailored to your space.",
     },
     {
-      icon: <SunIcon className="h-8 w-8 mb-2" />,
+      icon: <Sun className="h-8 w-8 mb-2" />,
       title: "Lawn Care",
       description: "Comprehensive lawn maintenance services.",
     },
     {
-      icon: <TreePine className="h-8 w-8 mb-2" />,
-      title: "Tree Services",
-      description: "Expert tree care and management.",
-    },
-    {
       icon: <Shovel className="h-8 w-8 mb-2" />,
-      title: "Garden Tools Rental",
-      description: "Rent quality tools for your gardening needs.",
+      title: "Garden Maintenance",
+      description: "Expert care for your garden and plants.",
     },
   ];
 
@@ -87,7 +99,7 @@ export function Home() {
     },
     {
       name: "Sarah M.",
-      text: "Professional, punctual, and perfect results. Couldn't be happier with their service.",
+      text: "Professional, punctual, and perfect results. Couldn&apos;t be happier with their service.",
     },
     {
       name: "Mike R.",
@@ -100,12 +112,22 @@ export function Home() {
     setShowScheduler(true);
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm relative z-20">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2">
-            <Leaf className="h-8 w-8 text-green-600" />
+            <Image
+              src="/placeholder.svg?height=40&width=40&text=Logo"
+              alt="Woodgreen Landscaping Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
             <span className="text-xl font-bold">Woodgreen Landscaping</span>
           </Link>
           <nav className="hidden md:flex space-x-4">
@@ -125,15 +147,57 @@ export function Home() {
               Contact
             </Link>
           </nav>
-          <Button onClick={() => setShowEstimateCalculator(true)}>
-            Get Estimate
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => setShowEstimateCalculator(true)}
+              className="hidden md:inline-flex"
+            >
+              Get Estimate
+            </Button>
+            <button className="md:hidden" onClick={toggleMobileMenu}>
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white py-4 px-4 absolute top-full left-0 right-0 shadow-md">
+            <nav className="flex flex-col space-y-4">
+              <Link
+                href="/services"
+                className="text-gray-600 hover:text-green-600"
+              >
+                Services
+              </Link>
+              <Link
+                href="/about"
+                className="text-gray-600 hover:text-green-600"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-gray-600 hover:text-green-600"
+              >
+                Contact
+              </Link>
+              <Button onClick={() => setShowEstimateCalculator(true)}>
+                Get Estimate
+              </Button>
+            </nav>
+          </div>
+        )}
       </header>
 
       <main className="flex-grow">
         <section className="h-[600px]">
-          <Carousel images={carouselImages} />
+          <Carousel
+            images={carouselImages}
+            onCtaClick={() => setShowEstimateCalculator(true)}
+          />
         </section>
 
         <section className="py-20 bg-white">
@@ -160,7 +224,7 @@ export function Home() {
               <Link href="/services">
                 <Button variant="outline">
                   View All Services
-                  <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
@@ -248,20 +312,80 @@ export function Home() {
         </section>
       </main>
 
-      <footer className="bg-gray-800 text-white py-8">
+      <footer className="bg-gray-800 text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <p>&copy; 2024 Woodgreen Landscaping. All rights reserved.</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">About Us</h3>
+              <p className="text-sm">
+                Woodgreen Landscaping has been providing top-quality landscaping
+                services since 1995. We&apos;re committed to creating beautiful,
+                sustainable outdoor spaces for our clients.
+              </p>
             </div>
-            <nav className="flex space-x-4">
-              <Link href="/privacy" className="hover:text-green-400">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="hover:text-green-400">
-                Terms of Service
-              </Link>
-            </nav>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link href="/services" className="hover:text-green-400">
+                    Services
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="hover:text-green-400">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-green-400">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-green-400">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-green-400">
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+              <ul className="space-y-2">
+                <li className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2" /> (123) 456-7890
+                </li>
+                <li className="flex items-center">
+                  <Mail className="h-4 w-4 mr-2" />{" "}
+                  info@woodgreenlandscaping.com
+                </li>
+                <li className="flex items-center">
+                  <MapPin className="h-4 w-4 mr-2" /> 123 Green Street,
+                  Woodville, WV 12345
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
+              <div className="flex space-x-4">
+                <a href="#" className="hover:text-green-400">
+                  <Facebook className="h-6 w-6" />
+                </a>
+                <a href="#" className="hover:text-green-400">
+                  <Twitter className="h-6 w-6" />
+                </a>
+                <a href="#" className="hover:text-green-400">
+                  <Instagram className="h-6 w-6" />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
+            <p>&copy; 2024 Woodgreen Landscaping. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -279,3 +403,4 @@ export function Home() {
     </div>
   );
 }
+

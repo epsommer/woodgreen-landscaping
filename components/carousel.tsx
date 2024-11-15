@@ -14,6 +14,7 @@ interface CarouselProps {
   images: CarouselImage[];
   interval?: number;
   showControls?: boolean;
+  onCtaClick?: () => void;
 }
 
 export function Carousel({
@@ -96,4 +97,3 @@ export function Carousel({
     </div>
   );
 }
-
