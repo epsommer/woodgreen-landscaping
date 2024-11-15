@@ -357,15 +357,15 @@ export function Home() {
               <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
               <ul className="space-y-2">
                 <li className="flex items-center">
-                  <Phone className="h-4 w-4 mr-2" /> (123) 456-7890
+                  <Phone className="h-4 w-4 mr-2" /> (647) 327-8401
                 </li>
                 <li className="flex items-center">
                   <Mail className="h-4 w-4 mr-2" />{" "}
                   info@woodgreenlandscaping.com
                 </li>
                 <li className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" /> 123 Green Street,
-                  Woodville, WV 12345
+                  <MapPin className="h-4 w-4 mr-2" /> Newton Drive, Toronto, ON
+                  M2M 2M9
                 </li>
               </ul>
             </div>
