@@ -1,6 +1,6 @@
 // page.tsx
-import { Home } from "@/components/pages-home";
+import { UnderMaintenance } from "@/components/under-maintenance";
 
 export default function HomePageWrapper() {
-  return <Home />;
+  return <UnderMaintenance />;
 }

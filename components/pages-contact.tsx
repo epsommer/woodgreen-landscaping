@@ -128,7 +128,7 @@ export function Contact() {
                     </div>
                     <div className="flex items-center">
                       <MapPin className="h-5 w-5 text-green-600 mr-2" />
-                      <span>123 Green Street, Toronto, ON M2M 2M9</span>
+                      <span>Newton Drive, Toronto, ON M2M 2M9</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -164,4 +164,3 @@ export function Contact() {
     </div>
   );
 }
-
