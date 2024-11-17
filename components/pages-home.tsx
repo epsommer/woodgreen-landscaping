@@ -17,20 +17,14 @@ import {
   Snowflake,
   ArrowRight,
   Star,
-  Menu,
-  X,
-  Phone,
-  Mail,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
 } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image"
 import Link from "next/link";
 import EstimateCalculator from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
 import { Carousel } from "@/components/carousel";
+import { MainNav } from "@/components/main-nav";
+import { Footer } from "@/components/footer";
 
 const carouselImages = [
   {
@@ -51,7 +45,6 @@ export function Home() {
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedService, setSelectedService] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const featuredServices = [
     {
@@ -73,7 +66,7 @@ export function Home() {
 
   const seasonalPromotions = [
     {
-      icon: <Wind className="h-12 w-12 mb-4 text-orange-500" />,
+      icon: <Wind className="h-12 w-12 mb-4 text-[#CEFF65]" />,
       title: "Fall Cleanup Special",
       description:
         "Prepare your yard for winter with our comprehensive fall cleanup service.",
@@ -82,7 +75,7 @@ export function Home() {
       service: "Fall Cleanup",
     },
     {
-      icon: <Snowflake className="h-12 w-12 mb-4 text-blue-500" />,
+      icon: <Snowflake className="h-12 w-12 mb-4 text-[#CEFF65]" />,
       title: "Winter Snow Removal",
       description:
         "Stay safe this winter with our reliable snow removal service.",
@@ -112,85 +105,9 @@ export function Home() {
     setShowScheduler(true);
   };
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="bg-white shadow-sm relative z-20">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/woodgreen-landscaping-icon.svg"
-              alt="Woodgreen Landscaping Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <span className="text-xl font-bold">Woodgreen Landscaping</span>
-          </Link>
-          <nav className="hidden md:flex space-x-4">
-            <Link
-              href="/services"
-              className="text-gray-600 hover:text-green-600"
-            >
-              Services
-            </Link>
-            <Link href="/about" className="text-gray-600 hover:text-green-600">
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="text-gray-600 hover:text-green-600"
-            >
-              Contact
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={() => setShowEstimateCalculator(true)}
-              className="hidden md:inline-flex"
-            >
-              Get Estimate
-            </Button>
-            <button className="md:hidden" onClick={toggleMobileMenu}>
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white py-4 px-4 absolute top-full left-0 right-0 shadow-md">
-            <nav className="flex flex-col space-y-4">
-              <Link
-                href="/services"
-                className="text-gray-600 hover:text-green-600"
-              >
-                Services
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-600 hover:text-green-600"
-              >
-                About
-              </Link>
-              <Link
-                href="/contact"
-                className="text-gray-600 hover:text-green-600"
-              >
-                Contact
-              </Link>
-              <Button onClick={() => setShowEstimateCalculator(true)}>
-                Get Estimate
-              </Button>
-            </nav>
-          </div>
-        )}
-      </header>
+    <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
+      <MainNav />
 
       <main className="flex-grow">
         <section className="h-[600px]">
@@ -200,14 +117,17 @@ export function Home() {
           />
         </section>
 
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Featured Services
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredServices.map((service, index) => (
-                <Card key={index} className="text-center">
+                <Card
+                  key={index}
+                  className="text-center bg-[#F0F4F0] dark:bg-[#4A5D4C] border-0"
+                >
                   <CardHeader>
                     <CardTitle className="flex flex-col items-center">
                       {service.icon}
@@ -215,14 +135,19 @@ export function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription>{service.description}</CardDescription>
+                    <CardDescription className="text-[#4A5D4C] dark:text-gray-300">
+                      {service.description}
+                    </CardDescription>
                   </CardContent>
                 </Card>
               ))}
             </div>
             <div className="text-center mt-12">
               <Link href="/services">
-                <Button variant="outline">
+                <Button
+                  variant="outline"
+                  className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                >
                   View All Services
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -231,14 +156,17 @@ export function Home() {
           </div>
         </section>
 
-        <section className="py-20 bg-gray-100">
+        <section className="py-20 bg-[#F0F4F0] dark:bg-[#1C1C1C]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Seasonal Promotions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {seasonalPromotions.map((promo, index) => (
-                <Card key={index} className="bg-white">
+                <Card
+                  key={index}
+                  className="bg-white dark:bg-[#2F3B30] border-0"
+                >
                   <CardHeader>
                     <CardTitle className="flex flex-col items-center">
                       {promo.icon}
@@ -246,13 +174,16 @@ export function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <CardDescription className="mb-4">
+                    <CardDescription className="mb-4 text-[#4A5D4C] dark:text-gray-300">
                       {promo.description}
                     </CardDescription>
-                    <p className="text-2xl font-bold text-green-600 mb-4">
+                    <p className="text-2xl font-bold text-[#2F3B30] dark:text-[#CEFF65] mb-4">
                       {promo.price}
                     </p>
-                    <Button onClick={() => handleSchedule(promo.service)}>
+                    <Button
+                      onClick={() => handleSchedule(promo.service)}
+                      className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                    >
                       {promo.cta}
                     </Button>
                   </CardContent>
@@ -262,24 +193,27 @@ export function Home() {
           </div>
         </section>
 
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               What Our Clients Say
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="bg-white">
+                <Card
+                  key={index}
+                  className="bg-[#F0F4F0] dark:bg-[#4A5D4C] border-0"
+                >
                   <CardContent className="pt-6">
                     <div className="flex justify-center mb-4">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className="h-5 w-5 text-yellow-400 fill-current"
+                          className="h-5 w-5 text-[#CEFF65] fill-current"
                         />
                       ))}
                     </div>
-                    <p className="text-center mb-4">
+                    <p className="text-center mb-4 text-[#4A5D4C] dark:text-gray-300">
                       &ldquo;{testimonial.text}&rdquo;
                     </p>
                     <p className="text-center font-semibold">
@@ -292,7 +226,7 @@ export function Home() {
           </div>
         </section>
 
-        <section className="py-20 bg-green-600 text-white">
+        <section className="py-20 bg-[#2F3B30] text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-6">
               Ready to Transform Your Outdoor Space?
@@ -303,7 +237,7 @@ export function Home() {
             <Button
               size="lg"
               variant="outline"
-              className="text-green-600 bg-white border-white hover:bg-green-600 hover:text-white"
+              className="bg-[#CEFF65] hover:bg-[#CEFF65]/90 text-[#2F3B30] border-0 dark:bg-[#4A5D4C] dark:text-white dark:hover:bg-[#3A4A3A]"
               onClick={() => setShowEstimateCalculator(true)}
             >
               Get Started
@@ -312,83 +246,7 @@ export function Home() {
         </section>
       </main>
 
-      <footer className="bg-gray-800 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">About Us</h3>
-              <p className="text-sm">
-                Woodgreen Landscaping has been providing top-quality landscaping
-                services since 1995. We&apos;re committed to creating beautiful,
-                sustainable outdoor spaces for our clients.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/services" className="hover:text-green-400">
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-green-400">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-green-400">
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-green-400">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-green-400">
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-              <ul className="space-y-2">
-                <li className="flex items-center">
-                  <Phone className="h-4 w-4 mr-2" /> (647) 327-8401
-                </li>
-                <li className="flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />{" "}
-                  info@woodgreenlandscaping.com
-                </li>
-                <li className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" /> Newton Drive, Toronto, ON
-                  M2M 2M9
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-green-400">
-                  <Facebook className="h-6 w-6" />
-                </a>
-                <a href="#" className="hover:text-green-400">
-                  <Twitter className="h-6 w-6" />
-                </a>
-                <a href="#" className="hover:text-green-400">
-                  <Instagram className="h-6 w-6" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-            <p>&copy; 2024 Woodgreen Landscaping. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {showEstimateCalculator && (
         <EstimateCalculator onClose={() => setShowEstimateCalculator(false)} />
@@ -403,3 +261,4 @@ export function Home() {
     </div>
   );
 }
+
