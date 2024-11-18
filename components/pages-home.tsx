@@ -92,7 +92,7 @@ export function Home() {
     },
     {
       name: "Sarah M.",
-      text: "Professional, punctual, and perfect results. Couldn&apos;t be happier with their service.",
+      text: "Professional, punctual, and perfect results. Couldn't be happier with their service.",
     },
     {
       name: "Mike R.",
@@ -261,4 +261,3 @@ export function Home() {
     </div>
   );
 }
-
