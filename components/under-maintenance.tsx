@@ -1,10 +1,16 @@
-'use client'
+"use client";
 
-import { AlertTriangle } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MaintenanceNav } from "@/components/maintenance-nav"
-import { MaintenanceFooter } from "@/components/maintenance-footer"
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { MaintenanceNav } from "@/components/maintenance-nav";
+import { MaintenanceFooter } from "@/components/maintenance-footer";
 
 export function UnderMaintenance() {
   return (
@@ -20,15 +26,19 @@ export function UnderMaintenance() {
           </CardHeader>
           <CardContent>
             <p className="text-center text-[#4A5D4C] dark:text-gray-300 mb-4">
-              We&apos;re currently performing some necessary maintenance on our website. We apologize for any inconvenience this may cause.
+              We&apos;re currently performing some necessary maintenance on our
+              website. We apologize for any inconvenience this may cause.
             </p>
             <p className="text-center text-[#4A5D4C] dark:text-gray-300 font-semibold">
-              Expected completion: <time dateTime="2024-11-15T20:00:00Z">November 15, 2024 at 8:00 PM UTC</time>
+              Expected completion:{" "}
+              <time dateTime="2024-11-15T20:00:00Z">
+                November 21st, 2024 at 8:00 PM UTC
+              </time>
             </p>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => window.location.reload()}
               className="bg-[#CEFF65] hover:bg-[#CEFF65]/90 text-[#2F3B30] border-0 dark:border-[#4A5D4C] dark:bg-[#4A5D4C] dark:text-white dark:hover:bg-[#4A5D4C]/90"
             >
@@ -39,5 +49,6 @@ export function UnderMaintenance() {
       </main>
       <MaintenanceFooter />
     </div>
-  )
+  );
 }
+
