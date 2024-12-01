@@ -19,17 +19,25 @@ const geistMono = localFont({
 
 export default function UnderMaintenanceLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/zdt4eix.css" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>Under Maintenance - Woodgreen Landscaping</title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="flex justify-center items-center min-h-screen">
-            {children}
+          <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+            {/* Remove navigation and footer; only display centered maintenance content */}
+            <main className="flex-grow flex items-center justify-center px-4">
+              {children}
+            </main>
           </div>
         </ThemeProvider>
       </body>

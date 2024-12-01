@@ -1,13 +1,20 @@
 // app/page.tsx
-import { UnderMaintenance } from "@/components/under-maintenance"; // Your maintenance component
-import { Home } from "@/components/pages-home";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function HomePageWrapper() {
-  const isMaintenanceMode = true;
+  const isMaintenanceMode = false;
+  const router = useRouter();
 
   if (isMaintenanceMode) {
-    return <UnderMaintenance />;
-  } else {
-    return <Home />;
+    router.replace("/under-maintenance");
+    return null;
   }
+
+  return (
+    <div>
+      <h1>Welcome to the Home Page!</h1>
+    </div>
+  );
 }
