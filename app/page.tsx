@@ -1,6 +1,13 @@
 // app/page.tsx
-import { UnderMaintenance } from "@/components/under-maintenance";
+import { UnderMaintenance } from "@/components/under-maintenance"; // Your maintenance component
+import { Home } from "@/components/pages-home";
 
 export default function HomePageWrapper() {
-  return <UnderMaintenance />;
+  const isMaintenanceMode = true;
+
+  if (isMaintenanceMode) {
+    return <UnderMaintenance />;
+  } else {
+    return <Home />;
+  }
 }

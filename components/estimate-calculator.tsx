@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,188 +18,210 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { X, Plus, Minus, Calendar } from "lucide-react";
-import Scheduler from "./scheduler";
+import { Printer, Download, Calendar, X, Trash2 } from "lucide-react";
+import { jsPDF } from "jspdf";
 
-interface Service {
-  id: string;
-  name: string;
+type ServiceType =
+  | "Grass Cutting"
+  | "Tree Trimming"
+  | "Snow Removal"
+  | "Leaf Removal"
+  | "Gutter Cleaning";
+
+type Service = {
+  name: ServiceType;
   quantity: number;
-  rate: number;
-}
+  unit: string;
+};
 
-interface EstimateCalculatorProps {
+const serviceDetails: Record<ServiceType, { price: number; unit: string }> = {
+  "Grass Cutting": { price: 0.1, unit: "sq ft" },
+  "Tree Trimming": { price: 50, unit: "per tree" },
+  "Snow Removal": { price: 100, unit: "per residence" },
+  "Leaf Removal": { price: 75, unit: "per hour" },
+  "Gutter Cleaning": { price: 2, unit: "per linear foot" },
+};
+
+export function EstimateCalculator({
+  onClose,
+  onScheduleConsultation,
+}: {
   onClose: () => void;
-}
-
-const serviceOptions = [
-  { name: "Basic Maintenance", rate: 2, unit: "sq ft" },
-  { name: "Premium Care", rate: 3, unit: "sq ft" },
-  { name: "Deluxe Package", rate: 4, unit: "sq ft" },
-  { name: "Lawn Mowing", rate: 1.5, unit: "sq ft" },
-  { name: "Tree Trimming", rate: 50, unit: "tree" },
-  { name: "Flower Planting", rate: 2.5, unit: "sq ft" },
-];
-
-export function EstimateCalculator({ onClose }: EstimateCalculatorProps) {
-  const [services, setServices] = useState<Service[]>([]);
-  const [currentService, setCurrentService] = useState<string>("");
-  const [currentQuantity, setCurrentQuantity] = useState<string>("");
-  const [showScheduler, setShowScheduler] = useState(false);
-
-  const selectedService = serviceOptions.find((s) => s.name === currentService);
+  onScheduleConsultation: () => void;
+}) {
+  const [services, setServices] = useState<Service[]>([
+    { name: "Grass Cutting", quantity: 1000, unit: "sq ft" },
+  ]);
 
   const addService = () => {
-    if (currentService && currentQuantity && selectedService) {
-      const newService: Service = {
-        id: Date.now().toString(),
-        name: currentService,
-        quantity: parseFloat(currentQuantity),
-        rate: selectedService.rate,
-      };
-      setServices([...services, newService]);
-      setCurrentService("");
-      setCurrentQuantity("");
-    }
+    setServices([
+      ...services,
+      { name: "Grass Cutting", quantity: 1, unit: "sq ft" },
+    ]);
   };
 
-  const removeService = (id: string) => {
-    setServices(services.filter((service) => service.id !== id));
+  const updateService = (
+    index: number,
+    field: keyof Service,
+    value: string | number,
+  ) => {
+    const updatedServices = [...services];
+    if (field === "name") {
+      const newName = value as ServiceType;
+      updatedServices[index] = {
+        ...updatedServices[index],
+        [field]: newName,
+        unit: serviceDetails[newName].unit,
+      };
+    } else {
+      updatedServices[index] = { ...updatedServices[index], [field]: value };
+    }
+    setServices(updatedServices);
+  };
+
+  const removeService = (index: number) => {
+    setServices(services.filter((_, i) => i !== index));
+  };
+
+  const calculateServicePrice = (service: Service) => {
+    const { price } = serviceDetails[service.name];
+    return price * service.quantity;
   };
 
   const calculateTotal = () => {
     return services.reduce(
-      (sum, service) => sum + service.quantity * service.rate,
+      (total, service) => total + calculateServicePrice(service),
       0,
     );
   };
 
-  const closeModal = () => {
-    onClose();
+  const handlePrint = () => {
+    window.print();
   };
 
-  if (showScheduler) {
-    return (
-      <Scheduler
-        onClose={closeModal}
-        initialService={currentService}
-        selectedService={currentService}
-      />
-    );
-  }
+  const handleDownload = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(20);
+    doc.text("Estimate", 105, 15, { align: "center" });
+
+    doc.setFontSize(12);
+    let yPos = 30;
+    services.forEach((service) => {
+      const price = calculateServicePrice(service);
+      doc.text(
+        `${service.name}: $${price.toFixed(2)} (${service.quantity} ${
+          service.unit
+        })`,
+        20,
+        yPos,
+      );
+      yPos += 10;
+    });
+
+    doc.setFontSize(16);
+    doc.text(`Total: $${calculateTotal().toFixed(2)}`, 20, yPos + 10);
+
+    doc.save("estimate.pdf");
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Estimate Calculator</h2>
-            <Button variant="ghost" size="icon" onClick={closeModal}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="col-span-2">
-                <Label htmlFor="service">Service Type</Label>
+    <Card className="w-full max-w-2xl mx-auto relative">
+      <Button
+        onClick={onClose}
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        aria-label="Close"
+      >
+        <X className="h-4 w-4" />
+      </Button>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">
+          Estimate Calculator
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {services.map((service, index) => (
+          <div key={index} className="mb-6 p-4 border rounded">
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label htmlFor={`service-${index}`}>Service</Label>
                 <Select
-                  value={currentService}
-                  onValueChange={setCurrentService}
+                  value={service.name}
+                  onValueChange={(value) => updateService(index, "name", value)}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select service" />
+                  <SelectTrigger id={`service-${index}`}>
+                    <SelectValue placeholder="Select a service" />
                   </SelectTrigger>
                   <SelectContent>
-                    {serviceOptions.map((option) => (
-                      <SelectItem key={option.name} value={option.name}>
-                        {option.name} (${option.rate}/{option.unit})
+                    {Object.keys(serviceDetails).map((serviceName) => (
+                      <SelectItem key={serviceName} value={serviceName}>
+                        {serviceName}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="quantity">
-                  {selectedService?.name === "Tree Trimming" ? "Trees" : "Area"}
-                </Label>
+                <Label
+                  htmlFor={`quantity-${index}`}
+                >{`Quantity (${service.unit})`}</Label>
                 <Input
-                  id="quantity"
+                  id={`quantity-${index}`}
                   type="number"
-                  placeholder={
-                    selectedService?.name === "Tree Trimming"
-                      ? "Trees"
-                      : "sq ft"
+                  value={service.quantity}
+                  onChange={(e) =>
+                    updateService(index, "quantity", parseInt(e.target.value))
                   }
-                  value={currentQuantity}
-                  onChange={(e) => setCurrentQuantity(e.target.value)}
                 />
               </div>
             </div>
-            <Button
-              onClick={addService}
-              className="w-full"
-              disabled={!currentService || !currentQuantity}
-              size="sm"
-            >
-              <Plus className="h-3 w-3 mr-2" />
-              Add Service
-            </Button>
-            {services.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <h3 className="font-semibold">Selected Services:</h3>
-                {services.map((service) => (
-                  <div
-                    key={service.id}
-                    className="flex justify-between items-center bg-gray-100 p-2 rounded text-sm"
-                  >
-                    <span>
-                      {service.name} - {service.quantity}{" "}
-                      {
-                        serviceOptions.find((s) => s.name === service.name)
-                          ?.unit
-                      }
-                    </span>
-                    <div className="flex items-center">
-                      <span className="mr-2">
-                        ${(service.quantity * service.rate).toFixed(2)}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeService(service.id)}
-                      >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+            <div className="flex justify-between items-center">
+              <div className="text-lg font-semibold">
+                Price: ${calculateServicePrice(service).toFixed(2)}
               </div>
-            )}
-            {services.length > 0 && (
-              <div className="mt-4 p-4 bg-green-100 rounded-lg">
-                <p className="text-lg font-semibold">
-                  Total Estimate: ${calculateTotal().toFixed(2)}
-                </p>
-                <p className="text-sm text-gray-600">
-                  This is a rough estimate. Schedule a consultation for a
-                  detailed quote.
-                </p>
-              </div>
-            )}
-            <Button
-              onClick={() => setShowScheduler(true)}
-              className="w-full"
-              variant="outline"
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Consultation
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => removeService(index)}
+                className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                aria-label={`Remove ${service.name}`}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Remove
+              </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        ))}
+        <Button onClick={addService} size="sm" className="mt-4">
+          + Add Service
+        </Button>
+      </CardContent>
+      <CardFooter className="flex flex-col items-stretch">
+        <div className="text-xl font-bold mb-4">
+          Total Estimate: ${calculateTotal().toFixed(2)}
+        </div>
+        <div className="flex flex-wrap justify-end w-full gap-2">
+          <Button onClick={handlePrint} variant="outline">
+            <Printer className="w-4 h-4 mr-2" />
+            Print
+          </Button>
+          <Button onClick={handleDownload} variant="outline">
+            <Download className="w-4 h-4 mr-2" />
+            Download PDF
+          </Button>
+          <Button
+            onClick={onScheduleConsultation}
+            variant="default"
+            className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            Schedule Consultation
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 
-export default EstimateCalculator;

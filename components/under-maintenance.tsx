@@ -32,7 +32,7 @@ export function UnderMaintenance() {
             <p className="text-center text-[#4A5D4C] dark:text-gray-300 font-semibold">
               Expected completion:{" "}
               <time dateTime="2024-11-15T20:00:00Z">
-                November 30th, 2024 at 8:00 PM UTC
+                December 1st, 2024 at 8:00 PM EST
               </time>
             </p>
           </CardContent>

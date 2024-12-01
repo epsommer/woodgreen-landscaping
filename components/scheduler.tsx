@@ -21,6 +21,7 @@ interface SchedulerProps {
   onClose: () => void;
   initialService?: string;
   selectedService?: string;
+  onScheduleConsultation?: () => void;
 }
 
 const timeSlots = [
@@ -37,6 +38,7 @@ export function Scheduler({
   onClose,
   initialService,
   selectedService,
+  onScheduleConsultation,
 }: SchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
@@ -71,6 +73,11 @@ export function Scheduler({
       phone,
       message,
     });
+    if (onScheduleConsultation) {
+      onScheduleConsultation();
+    } else {
+      console.log("Default action");
+    }
     handleClose();
   };
 

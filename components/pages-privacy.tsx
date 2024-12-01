@@ -1,13 +1,8 @@
 'use client'
 
-import { MainNav } from "@/components/main-nav"
-import { Footer } from "@/components/footer"
-
 export function Privacy() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
-      <MainNav />
-
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-center">Privacy Policy</h1>
         <div className="max-w-3xl mx-auto space-y-6">
@@ -35,8 +30,6 @@ export function Privacy() {
           </p>
         </div>
       </main>
-
-      <Footer />
     </div>
   )
 }
