@@ -1,20 +1,14 @@
-// app/page.tsx
 "use client";
-
 import { useRouter } from "next/navigation";
+import { Home } from "@/components/pages-home";
 
-export default function HomePageWrapper() {
-  const isMaintenanceMode = false;
+export default function HomePage() {
   const router = useRouter();
 
-  if (isMaintenanceMode) {
-    router.replace("/under-maintenance");
+  if (process.env.MAINTENANCE_MODE === "true") {
+    router.push("/maintenance");
     return null;
   }
 
-  return (
-    <div>
-      <h1>Welcome to the Home Page!</h1>
-    </div>
-  );
+  return <Home />;
 }
