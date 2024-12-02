@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    dangerouslyAllowSVG: true,
+    dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       {
@@ -12,6 +12,9 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  env: {
+    MAINTENANCE_MODE: process.env.MAINTENANCE_MODE || "true",
   },
 };
 

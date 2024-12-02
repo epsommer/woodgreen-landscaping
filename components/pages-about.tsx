@@ -11,21 +11,25 @@ export function About() {
       name: "John Doe",
       role: "Founder & Lead Designer",
       image: "/placeholder.svg?height=200&width=200",
+      width: 200, // Added width property
     },
     {
       name: "Jane Smith",
       role: "Head of Horticulture",
       image: "/placeholder.svg?height=200&width=200",
+      width: 200, // Added width property
     },
     {
       name: "Mike Johnson",
       role: "Irrigation Specialist",
       image: "/placeholder.svg?height=200&width=200",
+      width: 200, // Added width property
     },
     {
       name: "Emily Brown",
       role: "Customer Relations Manager",
       image: "/placeholder.svg?height=200&width=200",
+      width: 200, // Added width property
     },
   ];
 
@@ -189,4 +193,3 @@ export function About() {
     </div>
   );
 }
-

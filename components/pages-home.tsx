@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,16 +26,19 @@ import { Carousel } from "@/components/carousel";
 
 const carouselImages = [
   {
-    src: "/placeholder.svg?height=600&width=1920&text=Beautiful+Landscape+1",
+    src: "/placeholder.svg",
     alt: "Beautiful landscape 1",
+    width: 1920,
   },
   {
-    src: "/placeholder.svg?height=600&width=1920&text=Beautiful+Landscape+2",
+    src: "/placeholder.svg",
     alt: "Beautiful landscape 2",
+    width: 1920,
   },
   {
-    src: "/placeholder.svg?height=600&width=1920&text=Beautiful+Landscape+3",
+    src: "/placeholder.svg",
     alt: "Beautiful landscape 3",
+    width: 1920,
   },
 ];
 
@@ -260,4 +264,3 @@ export function Home() {
     </div>
   );
 }
-
