@@ -1,13 +1,12 @@
-// @/components/pages-maintenance.tsx
 "use client";
 
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export function Maintenance() {
+export function PagesMaintenance() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground px-4">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] bg-background text-foreground px-4">
       <AlertTriangle className="w-16 h-16 text-yellow-500 mb-6" />
       <h1 className="text-4xl font-bold mb-4 text-center">Under Maintenance</h1>
       <p className="text-xl text-center max-w-md mb-8">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
@@ -15,7 +15,7 @@ export function MainNav() {
   };
 
   return (
-    <header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
+    (<header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
       <div className="container mx-auto px-4 py-6 flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-2">
           <Image
@@ -24,7 +24,10 @@ export function MainNav() {
             width={40}
             height={40}
             className="rounded-full bg-white"
-          />
+            style={{
+              maxWidth: "100%",
+              height: "auto"
+            }} />
           <span className="text-xl font-bold text-[#2F3B30] dark:text-white">
             Woodgreen Landscaping
           </span>
@@ -96,7 +99,7 @@ export function MainNav() {
           </nav>
         </div>
       )}
-    </header>
+    </header>)
   );
 }
 

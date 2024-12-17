@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Award, Users, Leaf } from "lucide-react";
@@ -57,7 +57,7 @@ export function About() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
+    (<div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
       <main className="flex-grow">
         <section className="bg-[#2F3B30] text-white py-20">
           <div className="container mx-auto px-4">
@@ -104,7 +104,10 @@ export function About() {
                   width={600}
                   height={400}
                   className="rounded-lg shadow-lg"
-                />
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }} />
               </div>
             </div>
           </div>
@@ -126,7 +129,10 @@ export function About() {
                       width={200}
                       height={200}
                       className="rounded-full mx-auto"
-                    />
+                      style={{
+                        maxWidth: "100%",
+                        height: "auto"
+                      }} />
                   </CardHeader>
                   <CardContent className="text-center">
                     <h3 className="text-xl font-semibold mb-2">
@@ -190,6 +196,6 @@ export function About() {
           </div>
         </section>
       </main>
-    </div>
+    </div>)
   );
 }

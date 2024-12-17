@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -42,7 +42,7 @@ export function Carousel({
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    (<div className="relative h-full w-full overflow-hidden">
       {images.map((image, index) => (
         <div
           key={index}
@@ -53,11 +53,11 @@ export function Carousel({
           <Image
             src={image.src}
             alt={image.alt}
-            layout="fill"
             // style={{ width: "100%", height: "100%", objectFit: "cover" }}
             // Using style object for layout and objectFit
             priority={index === 0}
-          />
+            fill
+            sizes="100vw" />
         </div>
       ))}
       <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -95,6 +95,6 @@ export function Carousel({
           </button>
         </>
       )}
-    </div>
+    </div>)
   );
 }
