@@ -1,7 +1,7 @@
 import { MaintenanceNav } from "@/components/maintenance-nav";
 import { MaintenanceFooter } from "@/components/maintenance-footer";
 
-export default function MaintenanceLayout({
+export default function MaintenanceTemplate({
   children,
 }: {
   children: React.ReactNode;
@@ -14,4 +14,3 @@ export default function MaintenanceLayout({
     </div>
   );
 }
-
