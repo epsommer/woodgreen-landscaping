@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
+  // Check for the environment variable or a custom header
+  const isMaintenanceMode =
+    process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true" ||
+    request.headers.get("X-Maintenance-Mode") === "true";
 
   if (
     isMaintenanceMode &&
