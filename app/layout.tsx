@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { headers } from "next/headers";
+import { MainNav } from "@/components/main-nav"; // Add this import
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,10 +21,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
+  const headersList = headers();
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  // Only enable maintenance mode in production or if forced in development
   const isMaintenanceMode =
-    process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true" ||
-    headersList.get("X-Maintenance-Mode") === "true";
+    !isDevelopment &&
+    (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true" ||
+      headersList.get("X-Maintenance-Mode") === "true");
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -39,7 +44,10 @@ export default async function RootLayout({
           {isMaintenanceMode ? (
             children
           ) : (
-            <div className="flex flex-col min-h-screen">{children}</div>
+            <div className="flex flex-col min-h-screen">
+              <MainNav /> {/* Add the navigation component here */}
+              {children}
+            </div>
           )}
         </Providers>
       </body>
