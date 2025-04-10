@@ -1,36 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { useTheme } from "next-themes";
 
 export function MainNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  // Determine which logo to use based on theme
+  const logoSrc =
+    mounted && resolvedTheme === "dark"
+      ? "/woodgreen-landscaping-logo-inverse.png"
+      : "/woodgreen-landscaping-logo.png";
+
   return (
-    (<header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
+    <header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
       <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center space-x-2">
-          <Image
-            src="/woodgreen-landscaping-icon.svg"
-            alt="Woodgreen Landscaping Logo"
-            width={40}
-            height={40}
-            className="rounded-full bg-white"
-            style={{
-              maxWidth: "100%",
-              height: "auto"
-            }} />
-          <span className="text-xl font-bold text-[#2F3B30] dark:text-white">
-            Woodgreen Landscaping
-          </span>
+        <Link href="/" className="flex items-center">
+          {mounted ? (
+            <Image
+              src={logoSrc}
+              alt="Woodgreen Landscaping Logo"
+              width={180}
+              height={40}
+              className="h-auto"
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+              }}
+            />
+          ) : (
+            // Placeholder with same dimensions while loading to prevent layout shift
+            <div className="w-[180px] h-[40px]"></div>
+          )}
         </Link>
         <nav className="hidden md:flex space-x-4">
           <Link
@@ -99,7 +114,6 @@ export function MainNav() {
           </nav>
         </div>
       )}
-    </header>)
+    </header>
   );
 }
-

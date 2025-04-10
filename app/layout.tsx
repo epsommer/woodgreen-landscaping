@@ -2,7 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { headers } from "next/headers";
-import { MainNav } from "@/components/main-nav"; // Add this import
+import { MainNav } from "@/components/main-nav";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,7 +21,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = headers();
+  // Add the await keyword here
+  const headersList = await headers();
   const isDevelopment = process.env.NODE_ENV === "development";
 
   // Only enable maintenance mode in production or if forced in development
@@ -45,7 +46,7 @@ export default async function RootLayout({
             children
           ) : (
             <div className="flex flex-col min-h-screen">
-              <MainNav /> {/* Add the navigation component here */}
+              <MainNav />
               {children}
             </div>
           )}

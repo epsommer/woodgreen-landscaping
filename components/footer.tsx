@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  Phone,
-  Mail,
-  MapPin,
-} from "lucide-react";
+import { FaFacebook, FaXTwitter, FaInstagram } from "react-icons/fa6";
+import { Phone, Mail, MapPin } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -74,13 +68,13 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-[#CEFF65]">
-                <Facebook className="h-6 w-6" />
+                <FaFacebook className="h-6 w-6" />
               </a>
               <a href="#" className="hover:text-[#CEFF65]">
-                <Twitter className="h-6 w-6" />
+                <FaXTwitter className="h-6 w-6" />
               </a>
               <a href="#" className="hover:text-[#CEFF65]">
-                <Instagram className="h-6 w-6" />
+                <FaInstagram className="h-6 w-6" />
               </a>
             </div>
           </div>
