@@ -3,6 +3,10 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { headers } from "next/headers";
 import { MainNav } from "@/components/main-nav";
+import {
+  isInMaintenanceMode,
+  shouldShowMaintenanceForHeaders,
+} from "@/lib/maintenance";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,15 +25,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Add the await keyword here
   const headersList = await headers();
-  const isDevelopment = process.env.NODE_ENV === "development";
 
-  // Only enable maintenance mode in production or if forced in development
-  const isMaintenanceMode =
-    !isDevelopment &&
-    (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true" ||
-      headersList.get("X-Maintenance-Mode") === "true");
+  // Use centralized maintenance detection - this guarantees consistency
+  const isMaintenanceActive =
+    isInMaintenanceMode() || shouldShowMaintenanceForHeaders(headersList);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -42,7 +42,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {isMaintenanceMode ? (
+          {isMaintenanceActive ? (
             children
           ) : (
             <div className="flex flex-col min-h-screen">

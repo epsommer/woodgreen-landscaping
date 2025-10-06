@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { subscribeToEvent, EVENTS } from "@/lib/events";
 import {
   Card,
   CardContent,
@@ -21,30 +22,20 @@ import {
 import Link from "next/link";
 import { EstimateCalculator } from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
-import { Carousel } from "@/components/carousel";
-
-const carouselImages = [
-  {
-    src: "/placeholder.svg",
-    alt: "Beautiful landscape 1",
-    width: 1920,
-  },
-  {
-    src: "/placeholder.svg",
-    alt: "Beautiful landscape 2",
-    width: 1920,
-  },
-  {
-    src: "/placeholder.svg",
-    alt: "Beautiful landscape 3",
-    width: 1920,
-  },
-];
+import { HeroSection } from "@/components/HeroSection";
 
 export function Home() {
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [selectedService, setSelectedService] = useState("");
+
+  // Listen for estimate modal open event from navigation
+  useEffect(() => {
+    const unsubscribe = subscribeToEvent(EVENTS.OPEN_ESTIMATE_MODAL, () => {
+      setShowEstimateCalculator(true);
+    });
+    return unsubscribe;
+  }, []);
 
   const featuredServices = [
     {
@@ -108,14 +99,10 @@ export function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
       <main className="flex-grow">
-        <section className="h-[600px]">
-          <Carousel
-            images={carouselImages}
-            onCtaClick={() => setShowEstimateCalculator(true)}
-          />
-        </section>
+        {/* Hero Section with 3D Scene */}
+        <HeroSection onGetStarted={() => setShowEstimateCalculator(true)} />
 
-        <section className="py-20 bg-white dark:bg-[#2F3B30]">
+        <section id="services" className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Featured Services

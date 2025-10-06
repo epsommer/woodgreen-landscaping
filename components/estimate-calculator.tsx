@@ -126,20 +126,36 @@ export function EstimateCalculator({
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto relative">
-      <Button
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div
+        className="absolute inset-0"
         onClick={onClose}
-        variant="ghost"
-        size="icon"
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        aria-label="Close"
-      >
-        <X className="h-4 w-4" />
-      </Button>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">
-          Estimate Calculator
-        </CardTitle>
+        aria-label="Close modal"
+      />
+      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto">
+      <CardHeader className="relative">
+        <div className="flex items-center justify-between gap-4">
+          <CardTitle className="text-2xl font-bold">
+            Estimate Calculator
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Button onClick={handlePrint} variant="ghost" size="sm">
+              <Printer className="w-4 h-4" />
+            </Button>
+            <Button onClick={handleDownload} variant="ghost" size="sm">
+              <Download className="w-4 h-4" />
+            </Button>
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              size="icon"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         {services.map((service, index) => (
@@ -202,19 +218,21 @@ export function EstimateCalculator({
         <div className="text-xl font-bold mb-4">
           Total Estimate: ${calculateTotal().toFixed(2)}
         </div>
-        <div className="flex flex-wrap justify-end w-full gap-2">
-          <Button onClick={handlePrint} variant="outline">
-            <Printer className="w-4 h-4 mr-2" />
-            Print
-          </Button>
-          <Button onClick={handleDownload} variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Download PDF
-          </Button>
+
+        {/* Primary Actions */}
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             onClick={onScheduleConsultation}
             variant="default"
-            className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
+            className="flex-1 bg-nature-500 hover:bg-nature-600 text-white"
+          >
+            <Calendar className="w-4 h-4 mr-2" />
+            Book Service Now
+          </Button>
+          <Button
+            onClick={onScheduleConsultation}
+            variant="outline"
+            className="flex-1"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Schedule Consultation
@@ -222,6 +240,7 @@ export function EstimateCalculator({
         </div>
       </CardFooter>
     </Card>
+    </div>
   );
 }
 

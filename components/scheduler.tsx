@@ -84,8 +84,13 @@ export function Scheduler({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div
+        className="absolute inset-0"
+        onClick={handleClose}
+        aria-label="Close modal"
+      />
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10">
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Schedule a Consultation</h2>

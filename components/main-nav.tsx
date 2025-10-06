@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { useTheme } from "next-themes";
+import { emitEvent, EVENTS } from "@/lib/events";
 
 export function MainNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,6 +56,12 @@ export function MainNav() {
             Services
           </Link>
           <Link
+            href="/design"
+            className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+          >
+            Design Your Garden
+          </Link>
+          <Link
             href="/about"
             className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
           >
@@ -70,7 +77,7 @@ export function MainNav() {
         <div className="flex items-center space-x-4">
           <ThemeToggle />
           <Button
-            onClick={() => {}}
+            onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
             className="hidden md:inline-flex bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
           >
             Get Estimate
@@ -94,6 +101,12 @@ export function MainNav() {
               Services
             </Link>
             <Link
+              href="/design"
+              className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+            >
+              Design Your Garden
+            </Link>
+            <Link
               href="/about"
               className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
             >
@@ -106,7 +119,10 @@ export function MainNav() {
               Contact
             </Link>
             <Button
-              onClick={() => {}}
+              onClick={() => {
+                emitEvent(EVENTS.OPEN_ESTIMATE_MODAL);
+                setMobileMenuOpen(false);
+              }}
               className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
             >
               Get Estimate
