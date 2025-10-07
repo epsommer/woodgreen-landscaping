@@ -8,10 +8,10 @@ export function MaintenanceNav() {
     <header className="bg-[#2F3B30] text-white py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Image
-          src="/woodgreen-landscaping-logo-inverse.png"
+          src="/woodgreen-landscaping-palmette-v05.png"
           alt="Woodgreen Landscaping Logo"
-          width={200}
-          height={40}
+          width={120}
+          height={120}
           style={{
             maxWidth: "100%",
             height: "auto",
