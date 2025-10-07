@@ -21,74 +21,101 @@ export function MainNav() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  // Determine which logo to use based on theme
-  const logoSrc =
-    mounted && resolvedTheme === "dark"
-      ? "/woodgreen-landscaping-logo-inverse.png"
-      : "/woodgreen-landscaping-logo.png";
+  const logoSrc = "/woodgreen-landscaping-palmette-v05.png";
 
   return (
     <header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
-      <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center">
-          {mounted ? (
-            <Image
-              src={logoSrc}
-              alt="Woodgreen Landscaping Logo"
-              width={180}
-              height={40}
-              className="h-auto"
-              style={{
-                maxWidth: "100%",
-                height: "auto",
-              }}
-            />
-          ) : (
-            // Placeholder with same dimensions while loading to prevent layout shift
-            <div className="w-[180px] h-[40px]"></div>
-          )}
-        </Link>
-        <nav className="hidden md:flex space-x-4">
-          <Link
-            href="/services"
-            className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
-          >
-            Services
-          </Link>
-          <Link
-            href="/design"
-            className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
-          >
-            Design Your Garden
-          </Link>
-          <Link
-            href="/about"
-            className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
-          >
-            About
-          </Link>
-          <Link
-            href="/contact"
-            className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
-          >
-            Contact
-          </Link>
-        </nav>
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <Button
-            onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
-            className="hidden md:inline-flex bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
-          >
-            Get Estimate
-          </Button>
-          <button className="md:hidden" onClick={toggleMobileMenu}>
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6 text-[#2F3B30] dark:text-white" />
+      <div className="container mx-auto px-4 py-4">
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center justify-between relative">
+          <nav className="flex space-x-4">
+            <Link
+              href="/services"
+              className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+            >
+              Services
+            </Link>
+            <Link
+              href="/design"
+              className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white flex items-center gap-1"
+            >
+              Design Your Garden
+              <span className="text-xs bg-[#4A5D4C] dark:bg-gray-600 text-white px-1.5 py-0.5 rounded">BETA</span>
+            </Link>
+          </nav>
+
+          <Link href="/" className="flex items-center">
+            {mounted ? (
+              <Image
+                src={logoSrc}
+                alt="Woodgreen Landscaping Logo"
+                width={120}
+                height={120}
+                className="h-auto"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
+              />
             ) : (
-              <Menu className="h-6 w-6 text-[#2F3B30] dark:text-white" />
+              <div className="w-[120px] h-[120px]"></div>
             )}
-          </button>
+          </Link>
+
+          <div className="flex items-center space-x-4">
+            <nav className="flex space-x-4">
+              <Link
+                href="/about"
+                className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+              >
+                Contact
+              </Link>
+            </nav>
+            <ThemeToggle />
+            <Button
+              onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
+              className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white"
+            >
+              Get Estimate
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="md:hidden flex justify-between items-center">
+          <Link href="/" className="flex items-center">
+            {mounted ? (
+              <Image
+                src={logoSrc}
+                alt="Woodgreen Landscaping Logo"
+                width={80}
+                height={80}
+                className="h-auto"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                }}
+              />
+            ) : (
+              <div className="w-[80px] h-[80px]"></div>
+            )}
+          </Link>
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            <button onClick={toggleMobileMenu}>
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6 text-[#2F3B30] dark:text-white" />
+              ) : (
+                <Menu className="h-6 w-6 text-[#2F3B30] dark:text-white" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
       {mobileMenuOpen && (
@@ -102,9 +129,10 @@ export function MainNav() {
             </Link>
             <Link
               href="/design"
-              className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white"
+              className="text-[#4A5D4C] dark:text-gray-300 hover:text-[#2F3B30] dark:hover:text-white flex items-center gap-1"
             >
               Design Your Garden
+              <span className="text-xs bg-[#4A5D4C] dark:bg-gray-600 text-white px-1.5 py-0.5 rounded">BETA</span>
             </Link>
             <Link
               href="/about"
