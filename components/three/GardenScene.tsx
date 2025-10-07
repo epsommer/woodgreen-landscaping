@@ -18,7 +18,6 @@ interface GardenSceneProps {
 export function GardenScene({
   season,
   timeOfDay,
-  onPlantClick,
 }: GardenSceneProps) {
   const sunRef = useRef<DirectionalLight>(null);
   const moonRef = useRef<PointLight>(null);
