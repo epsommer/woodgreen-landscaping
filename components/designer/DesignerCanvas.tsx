@@ -12,7 +12,8 @@ interface DesignerCanvasProps {
   placedElements: PlacedElement[];
   selectedElementId?: string | null;
   selectedElementType?: ElementType | null;
-  cameraControlsRef?: React.MutableRefObject<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cameraControlsRef?: React.MutableRefObject<any>;
   onElementClick?: (id: string) => void;
   onGroundClick?: (position: [number, number, number]) => void;
   onElementUpdate?: (id: string, position: [number, number, number]) => void;
@@ -72,8 +73,10 @@ function DesignerScene({
   onElementUpdate,
 }: DesignerCanvasProps) {
   const [ghostPosition, setGhostPosition] = useState<[number, number, number] | null>(null);
-  const orbitControlsRef = useRef<unknown>(null);
-  const transformControlsRef = useRef<unknown>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orbitControlsRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transformControlsRef = useRef<any>(null);
 
   // Sync the cameraControlsRef with orbitControlsRef
   useEffect(() => {
@@ -248,10 +251,12 @@ function PlacedElementMesh({
   isSelected?: boolean;
   onClick: () => void;
   onElementUpdate?: (id: string, position: [number, number, number]) => void;
-  transformControlsRef?: React.MutableRefObject<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transformControlsRef?: React.MutableRefObject<any>;
 }) {
   const [hovered, setHovered] = useState(false);
-  const groupRef = useRef<unknown>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const groupRef = useRef<any>(null);
 
   return (
     <>

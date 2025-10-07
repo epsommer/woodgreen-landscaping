@@ -38,7 +38,8 @@ export function GardenDesigner() {
   );
   const [history, setHistory] = useState<PlacedElement[][]>([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const cameraControlsRef = useRef<unknown>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cameraControlsRef = useRef<any>(null);
 
   const selectedElement =
     placedElements.find((el) => el.id === selectedElementId) || null;
