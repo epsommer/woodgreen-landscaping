@@ -124,9 +124,9 @@ export function GardenScene({
       />
 
       {/* Scene elements */}
-      <Terrain season={season} grassColor={seasonColors[season].grass} />
-      <Trees season={season} windTime={windTime.current} />
-      <Plants season={season} windTime={windTime.current} />
+      <Terrain grassColor={seasonColors[season].grass} />
+      <Trees season={season} />
+      <Plants season={season} />
 
       {/* Particles */}
       <ParticleSystem season={season} timeOfDay={timeOfDay} />
