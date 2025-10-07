@@ -54,9 +54,9 @@
       }
 
       .cls-3 {
-        font-family: QuincyCF-Black, 'Quincy CF';
+        font-family: 'quincy-cf', 'Quincy CF', serif;
         font-size: 101.89px;
-        font-weight: 800;
+        font-weight: 700;
       }
 
       .cls-14 {
