@@ -116,6 +116,7 @@ export function ParticleSystem({ season, timeOfDay }: ParticleSystemProps) {
           count={PARTICLE_COUNT}
           array={particlePositions.positions}
           itemSize={3}
+          args={[particlePositions.positions, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
