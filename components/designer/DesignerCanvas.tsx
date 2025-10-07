@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, TransformControls } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect } from "react";
 import { Season, TimeOfDay } from "../three/Scene";
@@ -12,6 +12,7 @@ interface DesignerCanvasProps {
   placedElements: PlacedElement[];
   selectedElementId?: string | null;
   selectedElementType?: ElementType | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cameraControlsRef?: React.MutableRefObject<any>;
   onElementClick?: (id: string) => void;
   onGroundClick?: (position: [number, number, number]) => void;
@@ -72,7 +73,9 @@ function DesignerScene({
   onElementUpdate,
 }: DesignerCanvasProps) {
   const [ghostPosition, setGhostPosition] = useState<[number, number, number] | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const orbitControlsRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transformControlsRef = useRef<any>(null);
 
   // Sync the cameraControlsRef with orbitControlsRef
@@ -94,20 +97,10 @@ function DesignerScene({
       const controls = transformControlsRef.current;
       const orbit = orbitControlsRef.current;
 
-      const onDragStart = () => {
-        orbit.enabled = false;
-      };
-      const onDragEnd = () => {
-        orbit.enabled = true;
-      };
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       controls.addEventListener("dragging-changed", (event: any) => {
         orbit.enabled = !event.value;
       });
-
-      return () => {
-        controls.removeEventListener("dragging-changed", onDragStart);
-      };
     }
   }, [selectedElementId]);
 
@@ -156,6 +149,7 @@ function DesignerScene({
             onGroundClick?.([snappedX, 0, snappedZ]);
           } else {
             // Otherwise, deselect any selected element
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onElementClick?.(null as any);
           }
         }}
@@ -251,9 +245,11 @@ function PlacedElementMesh({
   isSelected?: boolean;
   onClick: () => void;
   onElementUpdate?: (id: string, position: [number, number, number]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transformControlsRef?: React.MutableRefObject<any>;
 }) {
   const [hovered, setHovered] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupRef = useRef<any>(null);
 
   return (

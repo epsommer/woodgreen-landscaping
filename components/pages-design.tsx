@@ -8,7 +8,6 @@ import {
   Save,
   Undo,
   Redo,
-  Trash2,
   Calendar,
   Calculator,
   ZoomIn,
@@ -39,6 +38,7 @@ export function GardenDesigner() {
   );
   const [history, setHistory] = useState<PlacedElement[][]>([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cameraControlsRef = useRef<any>(null);
 
   const selectedElement =

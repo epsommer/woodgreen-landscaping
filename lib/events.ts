@@ -5,6 +5,7 @@ export const EVENTS = {
   SCROLL_TO_SERVICES: "scrollToServices",
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const emitEvent = (eventName: string, detail?: any) => {
   if (typeof window !== "undefined") {
     const event = new CustomEvent(eventName, { detail });

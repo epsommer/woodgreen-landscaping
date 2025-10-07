@@ -5,11 +5,10 @@ import { Mesh, Color, PlaneGeometry } from "three";
 import { useFrame } from "@react-three/fiber";
 
 interface TerrainProps {
-  season: string;
   grassColor: Color;
 }
 
-export function Terrain({ season, grassColor }: TerrainProps) {
+export function Terrain({ grassColor }: TerrainProps) {
   const meshRef = useRef<Mesh>(null);
 
   // Create a wavy terrain using vertex displacement
