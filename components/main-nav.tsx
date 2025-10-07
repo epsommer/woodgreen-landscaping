@@ -6,10 +6,12 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { useTheme } from "next-themes";
 import { emitEvent, EVENTS } from "@/lib/events";
 
 export function MainNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -19,7 +21,9 @@ export function MainNav() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const logoSrc = "/woodgreen-landscaping-palmette-v05.png";
+  const logoSrc = resolvedTheme === "dark"
+    ? "/woodgreen-landscaping-logo-palmette-inverse.svg"
+    : "/woodgreen-landscaping-logo-palmette.svg";
 
   return (
     <header className="bg-white dark:bg-[#2F3B30] shadow-sm relative z-20 transition-colors duration-300">
