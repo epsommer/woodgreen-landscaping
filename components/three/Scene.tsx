@@ -11,10 +11,9 @@ export type TimeOfDay = "day" | "night";
 interface SceneProps {
   season: Season;
   timeOfDay: TimeOfDay;
-  onPlantClick?: (position: [number, number, number]) => void;
 }
 
-export function Scene({ season, timeOfDay, onPlantClick }: SceneProps) {
+export function Scene({ season, timeOfDay }: SceneProps) {
   return (
     <Canvas
       camera={{ position: [0, 5, 15], fov: 60 }}
@@ -25,7 +24,6 @@ export function Scene({ season, timeOfDay, onPlantClick }: SceneProps) {
         <GardenScene
           season={season}
           timeOfDay={timeOfDay}
-          onPlantClick={onPlantClick}
         />
       </Suspense>
     </Canvas>
