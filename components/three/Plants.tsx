@@ -6,12 +6,11 @@ import { useFrame } from "@react-three/fiber";
 
 interface PlantsProps {
   season: string;
-  windTime: number;
 }
 
 const PLANT_COUNT = 50;
 
-export function Plants({ season, windTime }: PlantsProps) {
+export function Plants({ season }: PlantsProps) {
   const plantInstanceRef = useRef<InstancedMesh>(null);
   const dummy = useMemo(() => new Object3D(), []);
 

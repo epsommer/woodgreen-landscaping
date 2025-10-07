@@ -8,7 +8,6 @@ import {
   Save,
   Undo,
   Redo,
-  Trash2,
   Calendar,
   Calculator,
   ZoomIn,
@@ -39,7 +38,7 @@ export function GardenDesigner() {
   );
   const [history, setHistory] = useState<PlacedElement[][]>([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
-  const cameraControlsRef = useRef<any>(null);
+  const cameraControlsRef = useRef<unknown>(null);
 
   const selectedElement =
     placedElements.find((el) => el.id === selectedElementId) || null;

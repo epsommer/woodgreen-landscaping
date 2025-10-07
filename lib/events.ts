@@ -5,7 +5,7 @@ export const EVENTS = {
   SCROLL_TO_SERVICES: "scrollToServices",
 } as const;
 
-export const emitEvent = (eventName: string, detail?: any) => {
+export const emitEvent = (eventName: string, detail?: unknown) => {
   if (typeof window !== "undefined") {
     const event = new CustomEvent(eventName, { detail });
     window.dispatchEvent(event);

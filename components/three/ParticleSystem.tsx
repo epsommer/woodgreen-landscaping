@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { Points, BufferGeometry, PointsMaterial, BufferAttribute } from "three";
+import { Points } from "three";
 import { useFrame } from "@react-three/fiber";
 import { Season, TimeOfDay } from "./Scene";
 

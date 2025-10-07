@@ -1,17 +1,16 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { Mesh, InstancedMesh, Object3D, Color } from "three";
+import { InstancedMesh, Object3D, Color } from "three";
 import { useFrame } from "@react-three/fiber";
 
 interface TreesProps {
   season: string;
-  windTime: number;
 }
 
 const TREE_COUNT = 15;
 
-export function Trees({ season, windTime }: TreesProps) {
+export function Trees({ season }: TreesProps) {
   const trunkInstanceRef = useRef<InstancedMesh>(null);
   const foliageInstanceRef = useRef<InstancedMesh>(null);
   const dummy = useMemo(() => new Object3D(), []);

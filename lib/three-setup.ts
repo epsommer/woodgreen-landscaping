@@ -3,7 +3,7 @@ import * as THREE from "three";
 
 // Make Three available globally for easier access
 if (typeof window !== "undefined") {
-  (window as any).THREE = THREE;
+  (window as Window & { THREE?: typeof THREE }).THREE = THREE;
 }
 
 export { THREE };

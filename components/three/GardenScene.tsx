@@ -3,7 +3,7 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Mesh, Color, DirectionalLight, PointLight } from "three";
+import { Color, DirectionalLight, PointLight } from "three";
 import { Season, TimeOfDay } from "./Scene";
 import { Terrain } from "./Terrain";
 import { Trees } from "./Trees";
@@ -13,7 +13,6 @@ import { Plants } from "./Plants";
 interface GardenSceneProps {
   season: Season;
   timeOfDay: TimeOfDay;
-  onPlantClick?: (position: [number, number, number]) => void;
 }
 
 export function GardenScene({

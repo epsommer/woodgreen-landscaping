@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, TransformControls } from "@react-three/drei";
 import { Suspense, useState, useRef, useEffect } from "react";
 import { Season, TimeOfDay } from "../three/Scene";
@@ -12,7 +12,7 @@ interface DesignerCanvasProps {
   placedElements: PlacedElement[];
   selectedElementId?: string | null;
   selectedElementType?: ElementType | null;
-  cameraControlsRef?: React.MutableRefObject<any>;
+  cameraControlsRef?: React.MutableRefObject<unknown>;
   onElementClick?: (id: string) => void;
   onGroundClick?: (position: [number, number, number]) => void;
   onElementUpdate?: (id: string, position: [number, number, number]) => void;
@@ -72,8 +72,8 @@ function DesignerScene({
   onElementUpdate,
 }: DesignerCanvasProps) {
   const [ghostPosition, setGhostPosition] = useState<[number, number, number] | null>(null);
-  const orbitControlsRef = useRef<any>(null);
-  const transformControlsRef = useRef<any>(null);
+  const orbitControlsRef = useRef<unknown>(null);
+  const transformControlsRef = useRef<unknown>(null);
 
   // Sync the cameraControlsRef with orbitControlsRef
   useEffect(() => {
@@ -97,11 +97,8 @@ function DesignerScene({
       const onDragStart = () => {
         orbit.enabled = false;
       };
-      const onDragEnd = () => {
-        orbit.enabled = true;
-      };
 
-      controls.addEventListener("dragging-changed", (event: any) => {
+      controls.addEventListener("dragging-changed", (event: { value: boolean }) => {
         orbit.enabled = !event.value;
       });
 
@@ -156,7 +153,7 @@ function DesignerScene({
             onGroundClick?.([snappedX, 0, snappedZ]);
           } else {
             // Otherwise, deselect any selected element
-            onElementClick?.(null as any);
+            onElementClick?.("");
           }
         }}
         onPointerMove={(e) => {
@@ -251,10 +248,10 @@ function PlacedElementMesh({
   isSelected?: boolean;
   onClick: () => void;
   onElementUpdate?: (id: string, position: [number, number, number]) => void;
-  transformControlsRef?: React.MutableRefObject<any>;
+  transformControlsRef?: React.MutableRefObject<unknown>;
 }) {
   const [hovered, setHovered] = useState(false);
-  const groupRef = useRef<any>(null);
+  const groupRef = useRef<unknown>(null);
 
   return (
     <>
