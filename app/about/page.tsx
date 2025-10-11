@@ -1,14 +1,14 @@
 // app/about/page.tsx
-import { About } from "@/components/pages-about";
+import { AboutNew } from "@/components/pages-about-new";
 
 export const metadata = {
-  title: "About",
+  title: "About - Where Design Meets the Earth",
   description:
-    "Learn more about Woodgreen Landscaping and our commitment to excellence.",
+    "From London to Toronto, discover the story behind Woodgreen Landscaping. One designer, 20+ years of legacy training, 100% battery-powered equipment, and a passion for eco-conscious landscape artistry.",
 };
 
 const AboutPageWrapper = () => {
-  return <About />;
+  return <AboutNew />;
 };
 
 export default AboutPageWrapper;

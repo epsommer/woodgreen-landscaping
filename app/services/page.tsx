@@ -1,14 +1,14 @@
 // app/services/page.tsx
-import { Services } from "@/components/pages-services";
+import { ServicesNew } from "@/components/pages-services-new";
 
 export const metadata = {
-  title: "Services",
+  title: "Services - Zero-Emission Landscaping",
   description:
-    "Explore the wide range of professional landscaping services we offer.",
+    "Professional landscaping services with 100% battery-powered equipment. Eco-conscious lawn care, custom garden design, tree services, and water-smart irrigation. Design meets sustainability.",
 };
 
 const ServicesPageWrapper = () => {
-  return <Services />;
+  return <ServicesNew />;
 };
 
 export default ServicesPageWrapper;
