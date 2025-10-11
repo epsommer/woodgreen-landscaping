@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -17,6 +17,46 @@ interface ServiceStationsSceneProps {
   isMobile?: boolean;
   isDark?: boolean;
 }
+
+// Service data with descriptions for info cards
+export interface ServiceInfo {
+  type: ServiceType;
+  name: string;
+  title: string;
+  description: string;
+  color: string;
+}
+
+export const servicesData: ServiceInfo[] = [
+  {
+    type: "lawn",
+    name: "Lawn Care",
+    title: "Zero-Emission Maintenance",
+    description: "Professional DeWalt 60V battery equipment - Gallery-worthy results, neighbor-friendly operation",
+    color: "#22c55e",
+  },
+  {
+    type: "garden",
+    name: "Garden Design",
+    title: "Custom Plantings",
+    description: "Artistic garden design bringing color and life to your landscape with expert planting",
+    color: "#ff69b4",
+  },
+  {
+    type: "tree",
+    name: "Tree Services",
+    title: "Health & Maintenance",
+    description: "Professional tree care, pruning, and health assessment to keep your trees thriving",
+    color: "#ea580c",
+  },
+  {
+    type: "irrigation",
+    name: "Irrigation",
+    title: "Water-Smart Systems",
+    description: "Efficient irrigation design and maintenance for optimal water use and plant health",
+    color: "#4ade80",
+  },
+];
 
 // Station camera positions
 const stationCameraPositions: Record<ServiceType, { position: THREE.Vector3; target: THREE.Vector3 }> = {
@@ -45,6 +85,10 @@ export function ServiceStationsScene({ activeStation, isMobile = false, isDark =
   const targetPosition = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
   const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+
+  // Hover and select states for interactive cards
+  const [hoveredStation, setHoveredStation] = useState<ServiceType | null>(null);
+  const [selectedStation, setSelectedStation] = useState<ServiceType | null>(null);
 
   // Ground color based on theme
   const groundColor = isDark ? "#0f1810" : "#d4e8d4";
@@ -114,11 +158,43 @@ export function ServiceStationsScene({ activeStation, isMobile = false, isDark =
         <meshStandardMaterial color={groundColor} />
       </mesh>
 
-      {/* Service stations */}
-      <LawnCareStation active={activeStation === "lawn"} isMobile={isMobile} />
-      <GardenStation active={activeStation === "garden"} isMobile={isMobile} />
-      <TreeStation active={activeStation === "tree"} isMobile={isMobile} />
-      <IrrigationStation active={activeStation === "irrigation"} isMobile={isMobile} />
+      {/* Service stations with interactive cards */}
+      <LawnCareStation
+        active={activeStation === "lawn"}
+        isMobile={isMobile}
+        isHovered={hoveredStation === "lawn"}
+        isSelected={selectedStation === "lawn"}
+        onHover={(hovering) => setHoveredStation(hovering ? "lawn" : null)}
+        onClick={() => setSelectedStation(selectedStation === "lawn" ? null : "lawn")}
+        serviceInfo={servicesData[0]}
+      />
+      <GardenStation
+        active={activeStation === "garden"}
+        isMobile={isMobile}
+        isHovered={hoveredStation === "garden"}
+        isSelected={selectedStation === "garden"}
+        onHover={(hovering) => setHoveredStation(hovering ? "garden" : null)}
+        onClick={() => setSelectedStation(selectedStation === "garden" ? null : "garden")}
+        serviceInfo={servicesData[1]}
+      />
+      <TreeStation
+        active={activeStation === "tree"}
+        isMobile={isMobile}
+        isHovered={hoveredStation === "tree"}
+        isSelected={selectedStation === "tree"}
+        onHover={(hovering) => setHoveredStation(hovering ? "tree" : null)}
+        onClick={() => setSelectedStation(selectedStation === "tree" ? null : "tree")}
+        serviceInfo={servicesData[2]}
+      />
+      <IrrigationStation
+        active={activeStation === "irrigation"}
+        isMobile={isMobile}
+        isHovered={hoveredStation === "irrigation"}
+        isSelected={selectedStation === "irrigation"}
+        onHover={(hovering) => setHoveredStation(hovering ? "irrigation" : null)}
+        onClick={() => setSelectedStation(selectedStation === "irrigation" ? null : "irrigation")}
+        serviceInfo={servicesData[3]}
+      />
 
       {/* Station labels (floating text) */}
       <StationLabel position={[-10, 5, -10]} text="LAWN CARE" active={activeStation === "lawn"} />

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { headers } from "next/headers";
 import { MainNav } from "@/components/main-nav";
+import { Footer } from "@/components/footer";
 import {
   isInMaintenanceMode,
   shouldShowMaintenanceForHeaders,
@@ -61,6 +62,7 @@ export default async function RootLayout({
             <div className="flex flex-col min-h-screen">
               <MainNav />
               {children}
+              <Footer />
             </div>
           )}
         </Providers>

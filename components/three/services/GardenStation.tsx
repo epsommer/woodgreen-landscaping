@@ -3,17 +3,47 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { Text } from "@react-three/drei";
+import { ServiceInfo } from "./ServiceStationsScene";
 
 interface GardenStationProps {
   active?: boolean;
   isMobile?: boolean;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onHover?: (hovering: boolean) => void;
+  onClick?: () => void;
+  serviceInfo?: ServiceInfo;
 }
 
-export function GardenStation({ active = false, isMobile = false }: GardenStationProps) {
+export function GardenStation({
+  active = false,
+  isMobile = false,
+  isHovered = false,
+  isSelected = false,
+  onHover,
+  onClick,
+  serviceInfo,
+}: GardenStationProps) {
   const flowersRef = useRef<THREE.Group>(null);
   const petalParticlesRef = useRef<THREE.Points>(null);
   const bloomProgress = useRef<number[]>([]);
   const colorCycleTime = useRef(0);
+  const pointerDownPos = useRef({ x: 0, y: 0 });
+
+  const handlePointerDown = (e: any) => {
+    pointerDownPos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleClick = (e: any) => {
+    const dx = e.clientX - pointerDownPos.current.x;
+    const dy = e.clientY - pointerDownPos.current.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 5 && onClick) {
+      onClick();
+    }
+  };
 
   const flowerPositions = useMemo(() => {
     const positions: Array<{ pos: THREE.Vector3; type: 'rose' | 'hydrangea' | 'tulip' }> = [];
@@ -180,6 +210,26 @@ export function GardenStation({ active = false, isMobile = false }: GardenStatio
 
   return (
     <group position={[10, 0, -10]}>
+      {/* Invisible larger hitbox for reliable hover detection */}
+      <mesh
+        position={[0, 2, 0]}
+        onPointerEnter={(e) => {
+          if (onHover) onHover(true);
+          e.stopPropagation();
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerLeave={(e) => {
+          if (onHover) onHover(false);
+          e.stopPropagation();
+          document.body.style.cursor = 'auto';
+        }}
+        onPointerDown={handlePointerDown}
+        onClick={handleClick}
+      >
+        <cylinderGeometry args={[5, 5, 4, 16]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
+
       {/* Ground with garden beds */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[15, 15]} />
@@ -213,6 +263,139 @@ export function GardenStation({ active = false, isMobile = false }: GardenStatio
       <points ref={petalParticlesRef} geometry={petalGeometry}>
         <pointsMaterial size={0.1} vertexColors transparent opacity={0.7} />
       </points>
+
+      {/* Info Cards - conditionally rendered */}
+      {serviceInfo && (isHovered || isSelected) && (
+        <group position={[0, 5, 0]}>
+          {/* Upper card background plane - double sided */}
+          <mesh position={[0, 0, 0]}>
+            <planeGeometry args={[2.8, 0.6]} />
+            <meshBasicMaterial
+              color="#000000"
+              transparent
+              opacity={0.85}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+
+          {/* Front side text - upper card */}
+          <group position={[0, 0.1, 0.01]}>
+            <Text
+              fontSize={0.18}
+              color={serviceInfo.color}
+              anchorY="bottom"
+              fontWeight="bold"
+            >
+              {serviceInfo.name}
+            </Text>
+            <Text
+              fontSize={0.12}
+              color="white"
+              position={[0, -0.25, 0]}
+              anchorY="top"
+            >
+              {serviceInfo.title}
+            </Text>
+          </group>
+
+          {/* Back side text - upper card (flipped 180°) */}
+          <group position={[0, 0.1, -0.01]} rotation={[0, Math.PI, 0]}>
+            <Text
+              fontSize={0.18}
+              color={serviceInfo.color}
+              anchorY="bottom"
+              fontWeight="bold"
+            >
+              {serviceInfo.name}
+            </Text>
+            <Text
+              fontSize={0.12}
+              color="white"
+              position={[0, -0.25, 0]}
+              anchorY="top"
+            >
+              {serviceInfo.title}
+            </Text>
+          </group>
+
+          {/* Lower description cube card - only when selected */}
+          {isSelected && (
+            <group position={[0, -0.8, 0]}>
+              {/* Front face of thin card */}
+              <mesh position={[0, 0, 0.04]}>
+                <planeGeometry args={[3.0, 1.0]} />
+                <meshBasicMaterial
+                  color="#1a1a1a"
+                  transparent
+                  opacity={0.9}
+                  side={THREE.FrontSide}
+                />
+              </mesh>
+
+              {/* Back face of thin card (rotated to face backward) */}
+              <mesh position={[0, 0, -0.04]} rotation={[0, Math.PI, 0]}>
+                <planeGeometry args={[3.0, 1.0]} />
+                <meshBasicMaterial
+                  color="#1a1a1a"
+                  transparent
+                  opacity={0.9}
+                  side={THREE.FrontSide}
+                />
+              </mesh>
+
+              {/* Top edge */}
+              <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[3.0, 0.08]} />
+                <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
+              </mesh>
+
+              {/* Bottom edge */}
+              <mesh position={[0, -0.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[3.0, 0.08]} />
+                <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
+              </mesh>
+
+              {/* Left edge */}
+              <mesh position={[-1.5, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+                <planeGeometry args={[0.08, 1.0]} />
+                <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
+              </mesh>
+
+              {/* Right edge */}
+              <mesh position={[1.5, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+                <planeGeometry args={[0.08, 1.0]} />
+                <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
+              </mesh>
+
+              {/* Front side description text */}
+              <group position={[0, 0, 0.041]}>
+                <Text
+                  fontSize={0.11}
+                  color="white"
+                  anchorY="middle"
+                  maxWidth={2.7}
+                  textAlign="center"
+                >
+                  {serviceInfo.description}
+                </Text>
+              </group>
+
+              {/* Back side description text (flipped 180°) */}
+              <group position={[0, 0, -0.041]} rotation={[0, Math.PI, 0]}>
+                <Text
+                  fontSize={0.11}
+                  color="white"
+                  anchorY="middle"
+                  maxWidth={2.7}
+                  textAlign="center"
+                >
+                  {serviceInfo.description}
+                </Text>
+              </group>
+            </group>
+          )}
+        </group>
+      )}
     </group>
   );
 }

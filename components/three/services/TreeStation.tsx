@@ -3,10 +3,17 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { Text } from "@react-three/drei";
+import { ServiceInfo } from "./ServiceStationsScene";
 
 interface TreeStationProps {
   active?: boolean;
   isMobile?: boolean;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onHover?: (hovering: boolean) => void;
+  onClick?: () => void;
+  serviceInfo?: ServiceInfo;
 }
 
 export function TreeStation({ active = false, isMobile = false }: TreeStationProps) {

@@ -47,6 +47,11 @@ export function Footer() {
                   Terms of Service
                 </Link>
               </li>
+              <li>
+                <Link href="/sitemap" className="hover:text-[#CEFF65]">
+                  Sitemap
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
