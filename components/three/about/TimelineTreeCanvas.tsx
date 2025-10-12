@@ -67,7 +67,11 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
   return (
     <div ref={containerRef} className={className}>
-      <Canvas\n\n\n        shadows\n        dpr={[1, 2]}\n        className="w-full h-full"\n        gl={{ antialias: true, alpha: true }}\n
+      <Canvas
+        shadows
+        dpr={[1, 2]}
+        className="w-full h-full"
+        gl={{ antialias: true, alpha: true }}
       >
         <color attach="background" args={[backgroundColor]} />
 
