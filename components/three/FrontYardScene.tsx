@@ -14,7 +14,6 @@ interface FrontYardSceneProps {
 }
 
 export function FrontYardScene({
-  season,
   timeOfDay,
   seasonProgress = 1,
 }: FrontYardSceneProps) {
@@ -57,7 +56,7 @@ export function FrontYardScene({
         house: new Color("#FFFFFF"),
       },
     }),
-    []
+    [],
   );
 
   // Interpolate colors based on continuous season progress
@@ -102,8 +101,8 @@ export function FrontYardScene({
   const grassPositions = useMemo(() => {
     const positions = [];
     for (let i = 0; i < 500; i++) {
-      let x = (Math.random() - 0.5) * 30;
-      let z = (Math.random() - 0.5) * 20;
+      const x = (Math.random() - 0.5) * 30;
+      const z = (Math.random() - 0.5) * 20;
 
       // Avoid front walkway (x: -1 to 1, z: -4 to 4)
       const onWalkway = Math.abs(x) < 1 && z > -4 && z < 4;
@@ -209,7 +208,11 @@ export function FrontYardScene({
       />
 
       {/* Ground/Lawn */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.1, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[40, 30]} />
         <meshStandardMaterial color={currentColors.grass} />
       </mesh>
@@ -291,13 +294,21 @@ export function FrontYardScene({
       </mesh>
 
       {/* Driveway - aligned with garage door, flush with sidewalk */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[8, 0, -0.25]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[8, 0, -0.25]}
+        receiveShadow
+      >
         <planeGeometry args={[4, 9.5]} />
         <meshStandardMaterial color="#696969" />
       </mesh>
 
       {/* Sidewalk - connecting walkway to driveway, extended */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[6, 0.01, 4]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[6, 0.01, 4]}
+        receiveShadow
+      >
         <planeGeometry args={[14, 1.5]} />
         <meshStandardMaterial color="#A9A9A9" />
       </mesh>

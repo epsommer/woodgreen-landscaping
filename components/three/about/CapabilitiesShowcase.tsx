@@ -90,11 +90,11 @@ function CapabilityIsland({
   // Lower card: slide up on select (positioned to touch upper card with bottom at ~0.6)
   const lowerCardTargetY = isSelected ? 1.1 : -0.5;
 
-  const handlePointerDown = (e: any) => {
+  const handlePointerDown = (e: React.PointerEvent) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.PointerEvent) => {
     // Only trigger click if pointer hasn't moved much (not a drag)
     const dx = e.clientX - pointerDownPos.current.x;
     const dy = e.clientY - pointerDownPos.current.y;
@@ -531,11 +531,7 @@ function CapabilityIsland({
             {/* Use a single box geometry for proper 3D card */}
             <mesh>
               <boxGeometry args={[3.0, 1.0, 0.08]} />
-              <meshBasicMaterial
-                color="#1a1a1a"
-                transparent
-                opacity={0.9}
-              />
+              <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
             </mesh>
 
             {/* Front side description text */}
@@ -597,13 +593,17 @@ function ParticleWaves() {
       const time = state.clock.elapsedTime;
 
       // Gentle wave motion
-      const waveY = Math.sin(time * particle.speed + particle.offset) * particle.amplitude;
-      const waveX = Math.cos(time * particle.speed * 0.5 + particle.offset) * particle.amplitude * 0.5;
+      const waveY =
+        Math.sin(time * particle.speed + particle.offset) * particle.amplitude;
+      const waveX =
+        Math.cos(time * particle.speed * 0.5 + particle.offset) *
+        particle.amplitude *
+        0.5;
 
       child.position.set(
         particle.baseX + waveX,
         particle.baseY + waveY,
-        particle.baseZ
+        particle.baseZ,
       );
     });
   });

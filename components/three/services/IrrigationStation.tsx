@@ -96,7 +96,7 @@ export function IrrigationStation({
     geom.setAttribute("lifetime", new THREE.BufferAttribute(lifetimes, 1));
 
     return geom;
-  }, [sprinklerPositions]);
+  }, [sprinklerPositions, particleCount]);
 
   // Coverage zones (circles showing spray range)
   const coverageZones = useMemo(() => {
@@ -115,7 +115,7 @@ export function IrrigationStation({
       zones.push(mesh);
     });
     return zones;
-  }, [sprinklerPositions, particleCount]);
+  }, [sprinklerPositions]);
 
   useFrame((state, delta) => {
     if (!active) return;

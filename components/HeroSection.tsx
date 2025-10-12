@@ -2,16 +2,24 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import dynamic from "next/dynamic";
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Leaf, Snowflake, Flower2, TreePine, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Leaf,
+  Snowflake,
+  Flower2,
+  TreePine,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import { Season, TimeOfDay } from "./three/Scene";
 
 // Dynamically import the 3D Scene to avoid SSR issues
-const Scene = dynamic(
-  () => import("./three/Scene").then((mod) => mod.Scene),
-  { ssr: false }
-);
+const Scene = dynamic(() => import("./three/Scene").then((mod) => mod.Scene), {
+  ssr: false,
+});
 
 interface HeroSectionProps {
   onGetStarted?: () => void;
@@ -56,10 +64,10 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
       const targetPx = minPos + (seasonProgress / 3) * travelRange;
       const finalAnimateTarget = (targetPx / containerHeight) * 100;
       console.log("🎯 AFTER DRAG END - ANIMATION TARGET:", {
-        "Progress": seasonProgress.toFixed(3),
+        Progress: seasonProgress.toFixed(3),
         "Animate To %": finalAnimateTarget.toFixed(2),
         "Animate To px": targetPx.toFixed(2),
-        "Season": season,
+        Season: season,
         "Should Be At": seasonProgress === 3 ? "164px (89.13%)" : "varies",
       });
     }
@@ -72,11 +80,17 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
       : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700";
 
   return (
-    <section className={`relative h-screen w-full overflow-hidden transition-colors duration-1000 ${backgroundGradient}`}>
+    <section
+      className={`relative h-screen w-full overflow-hidden transition-colors duration-1000 ${backgroundGradient}`}
+    >
       {/* 3D Scene Background */}
       <div className="absolute inset-0 z-hero-scene">
         <Suspense fallback={<div className="w-full h-full bg-slate-900" />}>
-          <Scene season={season} timeOfDay={timeOfDay} seasonProgress={seasonProgress} />
+          <Scene
+            season={season}
+            timeOfDay={timeOfDay}
+            seasonProgress={seasonProgress}
+          />
         </Suspense>
       </div>
 
@@ -101,20 +115,30 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               </p>
               <div className="flex gap-3 items-center">
                 {/* Slider track - left side */}
-                <div ref={sliderContainerRef} className="relative flex-shrink-0" style={{ width: '20px', height: '184px' }}>
+                <div
+                  ref={sliderContainerRef}
+                  className="relative flex-shrink-0"
+                  style={{ width: "20px", height: "184px" }}
+                >
                   {/* Background track */}
                   <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
 
                   {/* Active segment indicator - shows current season position */}
                   <motion.div
                     className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
-                    animate={!isDragging ? {
-                      top: `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`  // Aligned with buttons, 75% max for segment
-                    } : undefined}
+                    animate={
+                      !isDragging
+                        ? {
+                            top: `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`, // Aligned with buttons, 75% max for segment
+                          }
+                        : undefined
+                    }
                     transition={{ type: "spring", stiffness: 400, damping: 35 }}
                     style={{
                       height: "25%",
-                      top: isDragging ? `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%` : undefined
+                      top: isDragging
+                        ? `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`
+                        : undefined,
                     }}
                   />
 
@@ -131,36 +155,42 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                     dragElastic={0}
                     dragMomentum={false}
                     whileDrag={{ scale: 1.2 }}
-                    onDragStart={(event, info) => {
+                    onDragStart={() => {
                       console.log("=== DRAG START ===");
                       setIsDragging(true);
                     }}
-                    onDrag={(event, info) => {
-                      const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                    onDrag={(_, info) => {
                       const minPos = 20; // 20px - aligns with first button center
                       const maxPos = 164; // 164px - aligns with last button center
                       const travelRange = maxPos - minPos; // 144px
 
                       // Get the current Y position (info.point.y is global, we need offset from drag start)
                       // info.offset gives us the drag delta from the starting position
-                      const currentY = 20 + (seasonProgress / 3) * 144 + info.offset.y;
-                      const clampedY = Math.max(minPos, Math.min(maxPos, currentY));
+                      const currentY =
+                        20 + (seasonProgress / 3) * 144 + info.offset.y;
+                      const clampedY = Math.max(
+                        minPos,
+                        Math.min(maxPos, currentY),
+                      );
 
                       // Calculate progress (0-3) from centered position
                       const progress = ((clampedY - minPos) / travelRange) * 3;
 
                       // Calculate where it will animate to after release
-                      const targetPx = minPos + (Math.round(progress) / 3) * travelRange;
+                      const targetPx =
+                        minPos + (Math.round(progress) / 3) * travelRange;
 
                       // Debug logging
                       console.log("Drag Info:", {
-                        "Starting Y": (20 + (seasonProgress / 3) * 144).toFixed(2),
+                        "Starting Y": (20 + (seasonProgress / 3) * 144).toFixed(
+                          2,
+                        ),
                         "Offset Y": info.offset.y.toFixed(2),
                         "Current Y": currentY.toFixed(2),
                         "Clamped Y": clampedY.toFixed(2),
                         "Min/Max": `${minPos}px - ${maxPos}px`,
                         "Travel Range": travelRange,
-                        "Progress": progress.toFixed(3),
+                        Progress: progress.toFixed(3),
                         "Will Snap To": `${targetPx.toFixed(2)}px`,
                         "Season Index": Math.round(progress),
                       });
@@ -182,11 +212,16 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                       // Don't update discrete season during drag to prevent remounting
                       // Season will be updated in onDragEnd
                     }}
-                    onDragEnd={(event, info) => {
+                    onDragEnd={() => {
                       console.log("=== DRAG END ===");
 
                       // Snap to nearest season (integer value)
-                      const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                      const seasons: Season[] = [
+                        "spring",
+                        "summer",
+                        "fall",
+                        "winter",
+                      ];
                       const index = Math.round(seasonProgress);
 
                       console.log("Snapping from", seasonProgress, "to", index);
@@ -221,7 +256,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                       >
                         {seasonIcons[s]}
                       </motion.button>
-                    )
+                    ),
                   )}
                 </div>
               </div>
@@ -333,7 +368,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           </motion.div>
         </button>
       </motion.div>
-
     </section>
   );
 }
