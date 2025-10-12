@@ -56,10 +56,10 @@ export function AboutNew() {
 
         {/* Hero text overlay */}
         <div className="absolute top-0 left-0 right-0 pt-32 pb-20 text-center z-20 pointer-events-none">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-[#2F3B30] dark:text-white">
+          <h1 className="text-4xl md:text-7xl font-bold mb-4 text-[#2F3B30] dark:text-white">
             Where Design Meets the Earth... Gently
           </h1>
-          <p className="text-xl md:text-2xl text-[#4A5D4C] dark:text-gray-300 max-w-3xl mx-auto px-4">
+          <p className="text-lg md:text-2xl text-[#4A5D4C] dark:text-gray-300 max-w-3xl mx-auto px-4">
             One Designer. One Vision. Zero Emissions.
           </p>
         </div>
@@ -77,7 +77,7 @@ export function AboutNew() {
       <section id="story" className="py-20 bg-white dark:bg-[#2F3B30]">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center text-[#2F3B30] dark:text-white">
+            <h2 className="text-3xl md:text-5xl font-bold mb-8 text-center text-[#2F3B30] dark:text-white">
               My Story
             </h2>
 
@@ -124,7 +124,7 @@ export function AboutNew() {
             </div>
 
             {/* Animated Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-16">
               {stats.map((stat, index) => (
                 <Card
                   key={index}
@@ -149,10 +149,10 @@ export function AboutNew() {
       {/* Capabilities Section: 3D Islands */}
       <section className="py-20 bg-[#F0F4F0] dark:bg-[#1C1C1C]">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
             What I Bring to Your Project
           </h2>
-          <p className="text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
             From design to installation, I handle every aspect with artistic precision and personal care
           </p>
 
@@ -166,14 +166,14 @@ export function AboutNew() {
       {/* Why Work With Me */}
       <section className="py-20 bg-white dark:bg-[#2F3B30]">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
             Why Work With Me
           </h2>
-          <p className="text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
             The advantages of boutique, personalized landscaping service
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
             {values.map((value, index) => (
               <Card
                 key={index}
@@ -200,10 +200,10 @@ export function AboutNew() {
       {/* Service Area: 3D Globe */}
       <section className="py-20 bg-[#F0F4F0] dark:bg-[#1C1C1C]">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center text-[#2F3B30] dark:text-white">
             Where I Serve
           </h2>
-          <p className="text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-[#4A5D4C] dark:text-gray-400 text-center mb-12 max-w-2xl mx-auto">
             Serving the Greater Toronto Area with zero-emission, design-focused landscaping
             <br />
             <span className="text-nature-600 dark:text-nature-400 text-base">Boutique service. Sustainable impact. One project at a time.</span>

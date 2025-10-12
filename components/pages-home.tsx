@@ -47,7 +47,8 @@ export function Home() {
       title: "Fall Cleanup Special",
       description:
         "Prepare your yard for winter with our comprehensive fall cleanup service.",
-      price: "Starting at $39",
+      price: "Starting at $49",
+      oldPrice: "$79",
       cta: "Book Now",
       service: "Fall Cleanup",
     },
@@ -56,7 +57,8 @@ export function Home() {
       title: "Winter Snow Removal",
       description:
         "Stay safe this winter with our reliable snow removal service.",
-      price: "Starting at $299",
+      price: "Starting at $399",
+      oldPrice: "$899",
       cta: "Book Now",
       service: "Snow Removal",
     },
@@ -89,14 +91,14 @@ export function Home() {
 
         <section id="services" className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Featured Services
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredServices.map((service, index) => (
                 <Card
                   key={index}
-                  className="text-center bg-[#F0F4F0] dark:bg-[#4A5D4C] border-0"
+                  className="text-center bg-[#F0F4F0] dark:bg-[#4A5D4C] border-0 transition-transform hover:scale-105"
                 >
                   <CardHeader>
                     <CardTitle className="flex flex-col items-center">
@@ -128,10 +130,10 @@ export function Home() {
 
         <section className="py-20 bg-[#F0F4F0] dark:bg-[#1C1C1C]">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Seasonal Promotions
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {seasonalPromotions.map((promo, index) => (
                 <Card
                   key={index}
@@ -147,9 +149,16 @@ export function Home() {
                     <CardDescription className="mb-4 text-[#4A5D4C] dark:text-gray-300">
                       {promo.description}
                     </CardDescription>
-                    <p className="text-2xl font-bold text-[#2F3B30] dark:text-[#CEFF65] mb-4">
-                      {promo.price}
-                    </p>
+                    <div className="flex items-baseline justify-center gap-2 mb-4">
+                      <p className="text-2xl font-bold text-[#2F3B30] dark:text-[#CEFF65]">
+                        {promo.price}
+                      </p>
+                      {promo.oldPrice && (
+                        <p className="text-lg line-through text-gray-500 dark:text-gray-400">
+                          {promo.oldPrice}
+                        </p>
+                      )}
+                    </div>
                     <Button
                       onClick={() => handleSchedule(promo.service)}
                       className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
@@ -165,10 +174,10 @@ export function Home() {
 
         <section className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               What Our Clients Say
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
                 <Card
                   key={index}
@@ -198,10 +207,10 @@ export function Home() {
 
         <section className="py-20 bg-[#2F3B30] text-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Ready to Transform Your Outdoor Space?
             </h2>
-            <p className="text-xl mb-8">
+            <p className="text-lg md:text-xl mb-8">
               Contact us today for a free consultation and estimate.
             </p>
             <Button
