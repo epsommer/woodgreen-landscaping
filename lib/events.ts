@@ -2,6 +2,7 @@
 
 export const EVENTS = {
   OPEN_ESTIMATE_MODAL: "openEstimateModal",
+  OPEN_SCHEDULER_MODAL: "openSchedulerModal",
   SCROLL_TO_SERVICES: "scrollToServices",
 } as const;
 
@@ -14,7 +15,7 @@ export const emitEvent = (eventName: string, detail?: unknown) => {
 
 export const subscribeToEvent = (
   eventName: string,
-  handler: (event: CustomEvent) => void
+  handler: (event: CustomEvent) => void,
 ) => {
   if (typeof window !== "undefined") {
     window.addEventListener(eventName, handler as EventListener);

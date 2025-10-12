@@ -27,6 +27,17 @@ export interface ServiceInfo {
   color: string;
 }
 
+// Shared props for all station components
+export interface StationComponentProps {
+  active?: boolean;
+  isMobile?: boolean;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onHover?: (hovering: boolean) => void;
+  onClick?: () => void;
+  serviceInfo?: ServiceInfo;
+}
+
 export const servicesData: ServiceInfo[] = [
   {
     type: "lawn",

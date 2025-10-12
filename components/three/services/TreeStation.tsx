@@ -1,20 +1,11 @@
 "use client";
 
-import { useRef, useMemo } from "react";
-import { useFrame, ThreeEvent } from "@react-three/fiber";
+import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { ServiceInfo } from "./ServiceStationsScene";
+import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
-
-interface TreeStationProps {
-  active?: boolean;
-  isMobile?: boolean;
-  isHovered?: boolean;
-  isSelected?: boolean;
-  onHover?: (hovering: boolean) => void;
-  onClick?: (event: ThreeEvent<MouseEvent>) => void;
-  serviceInfo?: ServiceInfo;
-}
+import { useStationInteraction } from "./useStationInteraction";
 
 export function TreeStation({
   active = false,
@@ -24,7 +15,7 @@ export function TreeStation({
   onHover,
   onClick,
   serviceInfo,
-}: TreeStationProps) {
+}: StationComponentProps) {
   const treeRef = useRef<THREE.Group>(null);
   const leavesRef = useRef<THREE.InstancedMesh>(null);
   const fallingLeavesRef = useRef<THREE.Points>(null);
@@ -33,6 +24,8 @@ export function TreeStation({
   const treeAge = useRef(0.5); // 0 = sapling, 1 = mature
   const health = useRef(0.7); // 0 = sick, 1 = healthy
   const season = useRef(0); // 0-3 for spring/summer/fall/winter
+
+  const interactionHandlers = useStationInteraction({ onHover, onClick });
 
   // Create leaves as instanced mesh
   const leafCount = isMobile ? 150 : 400;
@@ -189,20 +182,7 @@ export function TreeStation({
   return (
     <group position={[-10, 0, 10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
-      <mesh
-        position={[0, 4, 0]}
-        onPointerEnter={(e) => {
-          if (onHover) onHover(true);
-          e.stopPropagation();
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerLeave={(e) => {
-          if (onHover) onHover(false);
-          e.stopPropagation();
-          document.body.style.cursor = "auto";
-        }}
-        onClick={onClick}
-      >
+      <mesh position={[0, 4, 0]} {...interactionHandlers}>
         <cylinderGeometry args={[4, 4, 8, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>

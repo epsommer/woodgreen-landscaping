@@ -3,18 +3,9 @@
 import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
-import { ServiceInfo } from "./ServiceStationsScene";
+import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
-
-interface GardenStationProps {
-  active?: boolean;
-  isMobile?: boolean;
-  isHovered?: boolean;
-  isSelected?: boolean;
-  onHover?: (hovering: boolean) => void;
-  onClick?: () => void;
-  serviceInfo?: ServiceInfo;
-}
+import { useStationInteraction } from "./useStationInteraction";
 
 export function GardenStation({
   active = false,
@@ -24,26 +15,13 @@ export function GardenStation({
   onHover,
   onClick,
   serviceInfo,
-}: GardenStationProps) {
+}: StationComponentProps) {
   const flowersRef = useRef<THREE.Group>(null);
   const petalParticlesRef = useRef<THREE.Points>(null);
   const bloomProgress = useRef<number[]>([]);
   const colorCycleTime = useRef(0);
-  const pointerDownPos = useRef({ x: 0, y: 0 });
 
-  const handlePointerDown = (e: ThreeEvent<ReactPointerEvent>) => {
-    pointerDownPos.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleClick = (e: ThreeEvent<ReactPointerEvent>) => {
-    const dx = e.clientX - pointerDownPos.current.x;
-    const dy = e.clientY - pointerDownPos.current.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < 5 && onClick) {
-      onClick();
-    }
-  };
+  const interactionHandlers = useStationInteraction({ onHover, onClick });
 
   const flowerPositions = useMemo(() => {
     const positions: Array<{
@@ -228,21 +206,7 @@ export function GardenStation({
   return (
     <group position={[10, 0, -10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
-      <mesh
-        position={[0, 2, 0]}
-        onPointerEnter={(e) => {
-          if (onHover) onHover(true);
-          e.stopPropagation();
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerLeave={(e) => {
-          if (onHover) onHover(false);
-          e.stopPropagation();
-          document.body.style.cursor = "auto";
-        }}
-        onPointerDown={handlePointerDown}
-        onClick={handleClick}
-      >
+      <mesh position={[0, 2, 0]} {...interactionHandlers}>
         <cylinderGeometry args={[5, 5, 4, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>

@@ -1,20 +1,11 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { ServiceInfo } from "./ServiceStationsScene";
+import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
-
-interface LawnCareStationProps {
-  active?: boolean;
-  isMobile?: boolean;
-  isHovered?: boolean;
-  isSelected?: boolean;
-  onHover?: (hovering: boolean) => void;
-  onClick?: () => void;
-  serviceInfo?: ServiceInfo;
-}
+import { useStationInteraction } from "./useStationInteraction";
 
 export function LawnCareStation({
   active = false,
@@ -24,32 +15,18 @@ export function LawnCareStation({
   onHover,
   onClick,
   serviceInfo,
-}: LawnCareStationProps) {
+}: StationComponentProps) {
   const grassRef = useRef<THREE.InstancedMesh>(null);
   const mowerRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<THREE.Points>(null);
   const groundRef = useRef<THREE.Mesh>(null);
-  const pointerDownPos = useRef({ x: 0, y: 0 });
 
   const healthyState = useRef(0); // 0 = unhealthy, 1 = healthy
   const mowerProgress = useRef(0);
   const windTime = useRef(0);
   const cutGrass = useRef<Set<number>>(new Set()); // Track which grass blades are cut
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    pointerDownPos.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleClick = (e: React.PointerEvent) => {
-    // Only trigger click if pointer hasn't moved much (not a drag)
-    const dx = e.clientX - pointerDownPos.current.x;
-    const dy = e.clientY - pointerDownPos.current.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < 5 && onClick) {
-      onClick();
-    }
-  };
+  const interactionHandlers = useStationInteraction({ onHover, onClick });
 
   // Create instanced grass blades
   const grassCount = isMobile ? 300 : 800;
@@ -257,21 +234,7 @@ export function LawnCareStation({
   return (
     <group position={[-10, 0, -10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
-      <mesh
-        position={[0, 2, 0]}
-        onPointerEnter={(e) => {
-          if (onHover) onHover(true);
-          e.stopPropagation();
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerLeave={(e) => {
-          if (onHover) onHover(false);
-          e.stopPropagation();
-          document.body.style.cursor = "auto";
-        }}
-        onPointerDown={handlePointerDown}
-        onClick={handleClick}
-      >
+      <mesh position={[0, 2, 0]} {...interactionHandlers}>
         <cylinderGeometry args={[5, 5, 4, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>

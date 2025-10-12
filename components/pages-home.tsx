@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { subscribeToEvent, EVENTS } from "@/lib/events";
+import { emitEvent, EVENTS } from "@/lib/events";
 import {
   Card,
   CardContent,
@@ -20,22 +20,9 @@ import {
   Star,
 } from "lucide-react";
 import Link from "next/link";
-import { EstimateCalculator } from "@/components/estimate-calculator";
-import Scheduler from "@/components/scheduler";
 import { HeroSection } from "@/components/HeroSection";
 
 export function Home() {
-  const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
-  const [showScheduler, setShowScheduler] = useState(false);
-  const [selectedService, setSelectedService] = useState("");
-
-  // Listen for estimate modal open event from navigation
-  useEffect(() => {
-    const unsubscribe = subscribeToEvent(EVENTS.OPEN_ESTIMATE_MODAL, () => {
-      setShowEstimateCalculator(true);
-    });
-    return unsubscribe;
-  }, []);
 
   const featuredServices = [
     {
@@ -92,15 +79,14 @@ export function Home() {
   ];
 
   const handleSchedule = (service: string) => {
-    setSelectedService(service);
-    setShowScheduler(true);
+    emitEvent(EVENTS.OPEN_SCHEDULER_MODAL, { service });
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300">
       <main className="flex-grow">
         {/* Hero Section with 3D Scene */}
-        <HeroSection onGetStarted={() => setShowEstimateCalculator(true)} />
+        <HeroSection onGetStarted={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)} />
 
         <section id="services" className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
@@ -223,30 +209,13 @@ export function Home() {
               size="lg"
               variant="outline"
               className="bg-[#CEFF65] hover:bg-[#CEFF65]/90 text-[#2F3B30] border-0 dark:bg-[#4A5D4C] dark:text-white dark:hover:bg-[#3A4A3A]"
-              onClick={() => setShowEstimateCalculator(true)}
+              onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
             >
               Get Started
             </Button>
           </div>
         </section>
       </main>
-
-      {showEstimateCalculator && (
-        <EstimateCalculator
-          onClose={() => setShowEstimateCalculator(false)}
-          onScheduleConsultation={() => {
-            setShowEstimateCalculator(false);
-            setShowScheduler(true);
-          }}
-        />
-      )}
-
-      {showScheduler && (
-        <Scheduler
-          onClose={() => setShowScheduler(false)}
-          initialService={selectedService}
-        />
-      )}
     </div>
   );
 }
