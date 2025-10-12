@@ -1,10 +1,8 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
-
-import { ServiceInfo } from "./ServiceStationsScene";
 
 interface TreeStationProps {
   active?: boolean;
@@ -12,13 +10,14 @@ interface TreeStationProps {
   isHovered?: boolean;
   isSelected?: boolean;
   onHover?: (hovering: boolean) => void;
-  onClick?: () => void;
-  serviceInfo?: ServiceInfo;
+  onClick?: (event: ThreeEvent<MouseEvent>) => void;
 }
 
 export function TreeStation({
   active = false,
   isMobile = false,
+  onHover,
+  onClick,
 }: TreeStationProps) {
   const treeRef = useRef<THREE.Group>(null);
   const leavesRef = useRef<THREE.InstancedMesh>(null);
@@ -183,6 +182,24 @@ export function TreeStation({
 
   return (
     <group position={[-10, 0, 10]}>
+      {/* Invisible larger hitbox for reliable hover detection */}
+      <mesh
+        position={[0, 4, 0]}
+        onPointerEnter={(e) => {
+          if (onHover) onHover(true);
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerLeave={(e) => {
+          if (onHover) onHover(false);
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+        onClick={onClick}
+      >
+        <cylinderGeometry args={[4, 4, 8, 16]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
       {/* Ground */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}

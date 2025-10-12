@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
@@ -31,11 +31,11 @@ export function GardenStation({
   const colorCycleTime = useRef(0);
   const pointerDownPos = useRef({ x: 0, y: 0 });
 
-  const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
+  const handlePointerDown = (e: ThreeEvent<ReactPointerEvent>) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleClick = (e: ThreeEvent<PointerEvent>) => {
+  const handleClick = (e: ThreeEvent<ReactPointerEvent>) => {
     const dx = e.clientX - pointerDownPos.current.x;
     const dy = e.clientY - pointerDownPos.current.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
