@@ -131,19 +131,20 @@ function CapabilityIsland({
         (targetOpacity - upperCardOpacity.current) * delta * 8;
 
       // Update opacity on all children (meshes and text)
-      upperCardRef.current.traverse((child: any) => {
+      upperCardRef.current.traverse((child) => {
         // Handle mesh materials
         if (child instanceof THREE.Mesh && child.material) {
-          const material = child.material as THREE.Material & {
+          const material = child.material as THREE.MeshBasicMaterial & {
             opacity?: number;
+            fillOpacity?: number;
           };
           if (material.opacity !== undefined) {
             material.opacity = upperCardOpacity.current * 0.85;
           }
-        }
-        // Handle Text components (drei Text has fillOpacity)
-        if (child.fillOpacity !== undefined) {
-          child.fillOpacity = upperCardOpacity.current;
+          // Handle Text components (drei Text has fillOpacity on its material)
+          if (material.fillOpacity !== undefined) {
+            material.fillOpacity = upperCardOpacity.current;
+          }
         }
       });
     }

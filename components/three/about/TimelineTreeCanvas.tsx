@@ -60,7 +60,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
     useEffect(() => {
       camera.position.z = zoom;
-    }, [camera, zoom]);
+    }, [camera]);
 
     return null;
   }
