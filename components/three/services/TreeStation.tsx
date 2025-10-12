@@ -3,7 +3,6 @@
 import { useRef, useMemo } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
-import { Text } from "@react-three/drei";
 import { ServiceInfo } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
 
