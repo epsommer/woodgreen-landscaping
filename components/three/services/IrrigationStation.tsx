@@ -9,7 +9,10 @@ interface IrrigationStationProps {
   isMobile?: boolean;
 }
 
-export function IrrigationStation({ active = false, isMobile = false }: IrrigationStationProps) {
+export function IrrigationStation({
+  active = false,
+  isMobile = false,
+}: IrrigationStationProps) {
   const sprinklersRef = useRef<THREE.Group>(null);
   const waterParticlesRef = useRef<THREE.Points>(null);
   const groundRef = useRef<THREE.Mesh>(null);
@@ -21,11 +24,13 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
   const waterTime = useRef(0);
 
   // Ripple animation data
-  const rippleData = useRef<Array<{
-    position: THREE.Vector3;
-    lifetime: number;
-    maxLifetime: number;
-  }>>([]);
+  const rippleData = useRef<
+    Array<{
+      position: THREE.Vector3;
+      lifetime: number;
+      maxLifetime: number;
+    }>
+  >([]);
 
   // Initialize ripples
   if (rippleData.current.length === 0) {
@@ -34,7 +39,7 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
         position: new THREE.Vector3(
           (Math.random() - 0.5) * 8,
           0,
-          (Math.random() - 0.5) * 8
+          (Math.random() - 0.5) * 8,
         ),
         lifetime: Math.random() * 2,
         maxLifetime: 1.5 + Math.random() * 0.5,
@@ -43,12 +48,15 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
   }
 
   // Sprinkler positions
-  const sprinklerPositions = useMemo(() => [
-    new THREE.Vector3(-3, 0.2, -3),
-    new THREE.Vector3(3, 0.2, -3),
-    new THREE.Vector3(-3, 0.2, 3),
-    new THREE.Vector3(3, 0.2, 3),
-  ], []);
+  const sprinklerPositions = useMemo(
+    () => [
+      new THREE.Vector3(-3, 0.2, -3),
+      new THREE.Vector3(3, 0.2, -3),
+      new THREE.Vector3(-3, 0.2, 3),
+      new THREE.Vector3(3, 0.2, 3),
+    ],
+    [],
+  );
 
   // Water particles
   const particleCount = isMobile ? 150 : 400;
@@ -79,10 +87,13 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
       lifetimes[i] = Math.random() * 2;
     }
 
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-    geom.setAttribute('sprinklerId', new THREE.BufferAttribute(sprinklerIds, 1));
-    geom.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("velocity", new THREE.BufferAttribute(velocities, 3));
+    geom.setAttribute(
+      "sprinklerId",
+      new THREE.BufferAttribute(sprinklerIds, 1),
+    );
+    geom.setAttribute("lifetime", new THREE.BufferAttribute(lifetimes, 1));
 
     return geom;
   }, [sprinklerPositions]);
@@ -104,7 +115,7 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
       zones.push(mesh);
     });
     return zones;
-  }, [sprinklerPositions]);
+  }, [sprinklerPositions, particleCount]);
 
   useFrame((state, delta) => {
     if (!active) return;
@@ -122,16 +133,22 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
     if (groundRef.current) {
       const dryColor = new THREE.Color(0x78350f); // Dry brown
       const wetColor = new THREE.Color(0x166534); // Moist dark green
-      const currentColor = dryColor.clone().lerp(wetColor, moistureLevel.current);
+      const currentColor = dryColor
+        .clone()
+        .lerp(wetColor, moistureLevel.current);
 
-      (groundRef.current.material as THREE.MeshStandardMaterial).color.copy(currentColor);
+      (groundRef.current.material as THREE.MeshStandardMaterial).color.copy(
+        currentColor,
+      );
     }
 
     // Animate water particles
     if (waterParticlesRef.current && sprinklersActive.current) {
       const positions = waterGeometry.attributes.position.array as Float32Array;
-      const velocities = waterGeometry.attributes.velocity.array as Float32Array;
-      const sprinklerIds = waterGeometry.attributes.sprinklerId.array as Float32Array;
+      const velocities = waterGeometry.attributes.velocity
+        .array as Float32Array;
+      const sprinklerIds = waterGeometry.attributes.sprinklerId
+        .array as Float32Array;
       const lifetimes = waterGeometry.attributes.lifetime.array as Float32Array;
 
       for (let i = 0; i < particleCount; i++) {
@@ -190,7 +207,8 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
     // Pulse coverage zones
     coverageZones.forEach((zone, i) => {
       const pulse = Math.sin(waterTime.current * 2 + i * 0.5) * 0.1 + 0.2;
-      (zone.material as THREE.MeshBasicMaterial).opacity = sprinklersActive.current ? pulse : 0.05;
+      (zone.material as THREE.MeshBasicMaterial).opacity =
+        sprinklersActive.current ? pulse : 0.05;
     });
 
     // Animate pipes visibility
@@ -213,7 +231,7 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
           ripple.position.set(
             (Math.random() - 0.5) * 8,
             0,
-            (Math.random() - 0.5) * 8
+            (Math.random() - 0.5) * 8,
           );
           ripple.lifetime = 0;
           ripple.maxLifetime = 1.5 + Math.random() * 0.5;

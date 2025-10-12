@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
 import { ServiceInfo } from "./ServiceStationsScene";
@@ -31,11 +31,11 @@ export function GardenStation({
   const colorCycleTime = useRef(0);
   const pointerDownPos = useRef({ x: 0, y: 0 });
 
-  const handlePointerDown = (e: any) => {
+  const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: ThreeEvent<PointerEvent>) => {
     const dx = e.clientX - pointerDownPos.current.x;
     const dy = e.clientY - pointerDownPos.current.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -46,7 +46,10 @@ export function GardenStation({
   };
 
   const flowerPositions = useMemo(() => {
-    const positions: Array<{ pos: THREE.Vector3; type: 'rose' | 'hydrangea' | 'tulip' }> = [];
+    const positions: Array<{
+      pos: THREE.Vector3;
+      type: "rose" | "hydrangea" | "tulip";
+    }> = [];
 
     // Create flower beds in a pattern
     for (let i = 0; i < 30; i++) {
@@ -55,7 +58,11 @@ export function GardenStation({
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
 
-      const types: ('rose' | 'hydrangea' | 'tulip')[] = ['rose', 'hydrangea', 'tulip'];
+      const types: ("rose" | "hydrangea" | "tulip")[] = [
+        "rose",
+        "hydrangea",
+        "tulip",
+      ];
       const type = types[Math.floor(Math.random() * types.length)];
 
       positions.push({
@@ -70,15 +77,19 @@ export function GardenStation({
   }, []);
 
   // Seasonal color palettes
-  const colorPalettes = useMemo(() => ({
-    spring: [0xffc0cb, 0xffb6c1, 0xfff0f5], // Pinks and whites
-    summer: [0xff69b4, 0xff1493, 0xffb6c1], // Hot pinks
-    fall: [0xffa500, 0xff8c00, 0xffd700], // Oranges and yellows
-    winter: [0xffffff, 0xf0f8ff, 0xe6e6fa], // Whites and pale blues
-  }), []);
+  const colorPalettes = useMemo(
+    () => ({
+      spring: [0xffc0cb, 0xffb6c1, 0xfff0f5], // Pinks and whites
+      summer: [0xff69b4, 0xff1493, 0xffb6c1], // Hot pinks
+      fall: [0xffa500, 0xff8c00, 0xffd700], // Oranges and yellows
+      winter: [0xffffff, 0xf0f8ff, 0xe6e6fa], // Whites and pale blues
+    }),
+    [],
+  );
 
-  const currentPalette = useRef('spring');
-  const paletteColors = colorPalettes[currentPalette.current as keyof typeof colorPalettes];
+  const currentPalette = useRef("spring");
+  const paletteColors =
+    colorPalettes[currentPalette.current as keyof typeof colorPalettes];
 
   // Petal particles
   const particleCount = isMobile ? 20 : 50;
@@ -103,12 +114,12 @@ export function GardenStation({
       velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.2;
     }
 
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geom.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geom.setAttribute("velocity", new THREE.BufferAttribute(velocities, 3));
 
     return geom;
-  }, [paletteColors]);
+  }, [paletteColors, particleCount]);
 
   useFrame((state, delta) => {
     if (!active) return;
@@ -125,7 +136,8 @@ export function GardenStation({
     // Animate petal particles
     if (petalParticlesRef.current) {
       const positions = petalGeometry.attributes.position.array as Float32Array;
-      const velocities = petalGeometry.attributes.velocity.array as Float32Array;
+      const velocities = petalGeometry.attributes.velocity
+        .array as Float32Array;
 
       for (let i = 0; i < particleCount; i++) {
         positions[i * 3] += velocities[i * 3] * delta;
@@ -144,13 +156,18 @@ export function GardenStation({
     }
   });
 
-  const renderFlower = (type: 'rose' | 'hydrangea' | 'tulip', position: THREE.Vector3, index: number) => {
+  const renderFlower = (
+    type: "rose" | "hydrangea" | "tulip",
+    position: THREE.Vector3,
+    index: number,
+  ) => {
     const scale = bloomProgress.current[index] || 0.5;
-    const colorIndex = Math.floor(colorCycleTime.current + index) % paletteColors.length;
+    const colorIndex =
+      Math.floor(colorCycleTime.current + index) % paletteColors.length;
     const color = paletteColors[colorIndex];
 
     switch (type) {
-      case 'rose':
+      case "rose":
         return (
           <group key={index} position={position.toArray()} scale={scale}>
             {/* Stem */}
@@ -166,7 +183,7 @@ export function GardenStation({
           </group>
         );
 
-      case 'hydrangea':
+      case "hydrangea":
         return (
           <group key={index} position={position.toArray()} scale={scale}>
             {/* Stem */}
@@ -190,7 +207,7 @@ export function GardenStation({
           </group>
         );
 
-      case 'tulip':
+      case "tulip":
         return (
           <group key={index} position={position.toArray()} scale={scale}>
             {/* Stem */}
@@ -216,12 +233,12 @@ export function GardenStation({
         onPointerEnter={(e) => {
           if (onHover) onHover(true);
           e.stopPropagation();
-          document.body.style.cursor = 'pointer';
+          document.body.style.cursor = "pointer";
         }}
         onPointerLeave={(e) => {
           if (onHover) onHover(false);
           e.stopPropagation();
-          document.body.style.cursor = 'auto';
+          document.body.style.cursor = "auto";
         }}
         onPointerDown={handlePointerDown}
         onClick={handleClick}
@@ -231,7 +248,11 @@ export function GardenStation({
       </mesh>
 
       {/* Ground with garden beds */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.01, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[15, 15]} />
         <meshStandardMaterial color="#8b6f47" /> {/* Lighter mulch color */}
       </mesh>
@@ -256,7 +277,9 @@ export function GardenStation({
 
       {/* Flowers */}
       <group ref={flowersRef}>
-        {flowerPositions.map((flower, i) => renderFlower(flower.type, flower.pos, i))}
+        {flowerPositions.map((flower, i) =>
+          renderFlower(flower.type, flower.pos, i),
+        )}
       </group>
 
       {/* Petal particles */}

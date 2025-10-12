@@ -3,7 +3,7 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { Text } from "@react-three/drei";
+
 import { ServiceInfo } from "./ServiceStationsScene";
 
 interface TreeStationProps {
@@ -53,7 +53,7 @@ export function TreeStation({
     }
 
     return positions;
-  }, []);
+  }, [leafCount]);
 
   // Falling leaves particles
   const fallingLeafCount = isMobile ? 25 : 60;
@@ -80,7 +80,7 @@ export function TreeStation({
     geom.setAttribute("rotation", new THREE.BufferAttribute(rotations, 1));
 
     return geom;
-  }, []);
+  }, [fallingLeafCount]);
 
   // Seasonal colors
   const getSeasonalColor = (seasonIndex: number, healthValue: number) => {

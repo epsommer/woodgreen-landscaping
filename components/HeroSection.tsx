@@ -50,14 +50,17 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   // Log animation state after drag ends
   useEffect(() => {
     if (!isDragging && debugInfo.progress > 0) {
-      const finalAnimateTarget = 5 + (seasonProgress / 3) * 90;
-      const finalAnimatePx = (finalAnimateTarget / 100) * 160;
+      const containerHeight = 184;
+      const minPos = 20; // buttonHalf
+      const travelRange = 144;
+      const targetPx = minPos + (seasonProgress / 3) * travelRange;
+      const finalAnimateTarget = (targetPx / containerHeight) * 100;
       console.log("🎯 AFTER DRAG END - ANIMATION TARGET:", {
         "Progress": seasonProgress.toFixed(3),
         "Animate To %": finalAnimateTarget.toFixed(2),
-        "Animate To px": finalAnimatePx.toFixed(2),
+        "Animate To px": targetPx.toFixed(2),
         "Season": season,
-        "Should Be At": seasonProgress === 3 ? "152px (95%)" : "varies",
+        "Should Be At": seasonProgress === 3 ? "164px (89.13%)" : "varies",
       });
     }
   }, [isDragging, seasonProgress, season, debugInfo.progress]);
@@ -87,7 +90,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
         <div className="flex items-center">
           {/* Controls Panel */}
           <div
-            className={`backdrop-blur-md bg-white/10 border border-white/20 rounded-r-2xl p-4 transition-all duration-300 ${
+            className={`backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4 transition-all duration-300 ${
               controlsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
@@ -98,7 +101,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               </p>
               <div className="flex gap-3 items-center">
                 {/* Slider track - left side */}
-                <div ref={sliderContainerRef} className="relative flex-shrink-0" style={{ width: '20px', height: '160px' }}>
+                <div ref={sliderContainerRef} className="relative flex-shrink-0" style={{ width: '20px', height: '184px' }}>
                   {/* Background track */}
                   <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
 
@@ -106,90 +109,93 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                   <motion.div
                     className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
                     animate={!isDragging ? {
-                      top: `${(seasonProgress / 3) * 75}%`  // 0-75% (leaving 25% for segment height)
+                      top: `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`  // Aligned with buttons, 75% max for segment
                     } : undefined}
                     transition={{ type: "spring", stiffness: 400, damping: 35 }}
                     style={{
                       height: "25%",
-                      top: isDragging ? `${(seasonProgress / 3) * 75}%` : undefined
+                      top: isDragging ? `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%` : undefined
                     }}
                   />
 
                   {/* Draggable thumb circle */}
                   <motion.div
-                    key={`thumb-${season}-${!isDragging}`} // Force reset when season changes via buttons
-                    className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
-                    initial={{
-                      top: `${5 + (seasonProgress / 3) * 90}%`
+                    key={`thumb-${season}`} // Force reset when season changes via buttons
+                    className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
+                    style={{
+                      top: 0,
+                      y: 20 + (seasonProgress / 3) * 144, // Position in pixels from container top
                     }}
                     drag="y"
-                    _dragX={0}
-                    dragConstraints={sliderContainerRef}
+                    dragConstraints={{ top: 20, bottom: 164 }} // Pixel constraints
                     dragElastic={0}
                     dragMomentum={false}
                     whileDrag={{ scale: 1.2 }}
-                    onDragStart={() => {
+                    onDragStart={(event, info) => {
                       console.log("=== DRAG START ===");
                       setIsDragging(true);
                     }}
-                    onDrag={(_, info) => {
+                    onDrag={(event, info) => {
                       const seasons: Season[] = ["spring", "summer", "fall", "winter"];
-                      const thumbHeight = 16;
-                      const containerHeight = 160;
-                      const thumbHalf = thumbHeight / 2; // 8px
-                      const minPos = thumbHalf; // 8px - keeps thumb centered at top
-                      const maxPos = containerHeight - thumbHalf; // 152px - keeps thumb centered at bottom
+                      const minPos = 20; // 20px - aligns with first button center
+                      const maxPos = 164; // 164px - aligns with last button center
                       const travelRange = maxPos - minPos; // 144px
 
-                      // Get container bounds
-                      const containerEl = info.point.y - info.offset.y;
-                      const relativeY = info.point.y - containerEl;
-                      // Clamp to valid range (8-152) - center of thumb
-                      const clampedY = Math.max(minPos, Math.min(maxPos, relativeY));
+                      // Get the current Y position (info.point.y is global, we need offset from drag start)
+                      // info.offset gives us the drag delta from the starting position
+                      const currentY = 20 + (seasonProgress / 3) * 144 + info.offset.y;
+                      const clampedY = Math.max(minPos, Math.min(maxPos, currentY));
 
                       // Calculate progress (0-3) from centered position
                       const progress = ((clampedY - minPos) / travelRange) * 3;
-                      const thumbTop = ((clampedY - minPos) / travelRange) * 100;
 
                       // Calculate where it will animate to after release
-                      const animateTargetPercent = 5 + (progress / 3) * 90;
-                      const animateTargetPx = (animateTargetPercent / 100) * containerHeight;
+                      const targetPx = minPos + (Math.round(progress) / 3) * travelRange;
 
                       // Debug logging
                       console.log("Drag Info:", {
-                        "Mouse Y": info.point.y.toFixed(2),
+                        "Starting Y": (20 + (seasonProgress / 3) * 144).toFixed(2),
                         "Offset Y": info.offset.y.toFixed(2),
-                        "Container Y": containerEl.toFixed(2),
-                        "Relative Y": relativeY.toFixed(2),
-                        "Clamped Y (centered)": clampedY.toFixed(2),
+                        "Current Y": currentY.toFixed(2),
+                        "Clamped Y": clampedY.toFixed(2),
                         "Min/Max": `${minPos}px - ${maxPos}px`,
                         "Travel Range": travelRange,
                         "Progress": progress.toFixed(3),
-                        "Thumb Top %": thumbTop.toFixed(2),
-                        "Will Animate To": `${animateTargetPercent.toFixed(2)}% (${animateTargetPx.toFixed(2)}px)`,
+                        "Will Snap To": `${targetPx.toFixed(2)}px`,
                         "Season Index": Math.round(progress),
                       });
 
                       setDebugInfo({
-                        containerY: containerEl,
-                        relativeY: relativeY,
+                        containerY: 0,
+                        relativeY: currentY,
                         clampedY: clampedY,
                         progress: progress,
-                        thumbTop: thumbTop,
+                        thumbTop: ((clampedY - minPos) / travelRange) * 100,
                         mouseY: info.point.y,
-                        animateTargetPercent: animateTargetPercent,
-                        animateTargetPx: animateTargetPx,
+                        animateTargetPercent: (targetPx / 184) * 100,
+                        animateTargetPx: targetPx,
                         currentVisualTop: clampedY,
                       });
 
                       setSeasonProgress(progress);
 
-                      // Update discrete season
-                      const index = Math.round(progress);
-                      setSeason(seasons[index]);
+                      // Don't update discrete season during drag to prevent remounting
+                      // Season will be updated in onDragEnd
                     }}
-                    onDragEnd={() => {
+                    onDragEnd={(event, info) => {
                       console.log("=== DRAG END ===");
+
+                      // Snap to nearest season (integer value)
+                      const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                      const index = Math.round(seasonProgress);
+
+                      console.log("Snapping from", seasonProgress, "to", index);
+
+                      // Update both season and snap progress to exact integer
+                      // The style y value will automatically update to the new position
+                      setSeason(seasons[index]);
+                      setSeasonProgress(index);
+
                       setIsDragging(false);
                     }}
                   />
@@ -258,7 +264,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           {/* Toggle Button */}
           <button
             onClick={() => setControlsOpen(!controlsOpen)}
-            className="backdrop-blur-md bg-white/10 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-white/20 transition-colors"
+            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
             aria-label={controlsOpen ? "Close controls" : "Open controls"}
           >
             {controlsOpen ? (
@@ -328,69 +334,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
         </button>
       </motion.div>
 
-      {/* Debug Panel */}
-      <div className="fixed top-4 right-4 z-[200] bg-black/80 backdrop-blur-md text-white p-4 rounded-lg font-mono text-xs max-w-xs">
-        <h3 className="font-bold mb-2 text-sm text-nature-400">Slider Debug Panel</h3>
-        <div className="space-y-1">
-          <div className="flex justify-between">
-            <span className="text-gray-400">Season:</span>
-            <span className="text-nature-400 font-semibold">{season}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Progress:</span>
-            <span>{seasonProgress.toFixed(3)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Dragging:</span>
-            <span className={isDragging ? "text-green-400" : "text-red-400"}>
-              {isDragging ? "YES" : "NO"}
-            </span>
-          </div>
-          <hr className="border-gray-600 my-2" />
-          <div className="flex justify-between">
-            <span className="text-gray-400">Mouse Y:</span>
-            <span>{debugInfo.mouseY.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Container Y:</span>
-            <span>{debugInfo.containerY.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Relative Y:</span>
-            <span>{debugInfo.relativeY.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Clamped Y:</span>
-            <span className="text-yellow-400">{debugInfo.clampedY.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Range:</span>
-            <span className="text-blue-400">8px - 152px</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Thumb Top %:</span>
-            <span className="text-purple-400">{debugInfo.thumbTop.toFixed(2)}%</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Expected Top:</span>
-            <span className="text-green-400">{(5 + (debugInfo.progress / 3) * 90).toFixed(2)}%</span>
-          </div>
-          <hr className="border-gray-600 my-2" />
-          <div className="text-xs font-bold text-orange-400 mb-1">After Release:</div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Animate To %:</span>
-            <span className="text-orange-400">{debugInfo.animateTargetPercent.toFixed(2)}%</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Animate To px:</span>
-            <span className="text-orange-400">{debugInfo.animateTargetPx.toFixed(2)}px</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Current Top px:</span>
-            <span className="text-cyan-400">{debugInfo.currentVisualTop.toFixed(2)}px</span>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

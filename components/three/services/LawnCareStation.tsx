@@ -36,11 +36,11 @@ export function LawnCareStation({
   const windTime = useRef(0);
   const cutGrass = useRef<Set<number>>(new Set()); // Track which grass blades are cut
 
-  const handlePointerDown = (e: any) => {
+  const handlePointerDown = (e: React.PointerEvent) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: React.PointerEvent) => {
     // Only trigger click if pointer hasn't moved much (not a drag)
     const dx = e.clientX - pointerDownPos.current.x;
     const dy = e.clientY - pointerDownPos.current.y;
@@ -97,11 +97,11 @@ export function LawnCareStation({
       velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
     }
 
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("velocity", new THREE.BufferAttribute(velocities, 3));
 
     return geom;
-  }, []);
+  }, [particleCount]);
 
   useFrame((state, delta) => {
     if (!active) return;
@@ -121,14 +121,24 @@ export function LawnCareStation({
         const distanceX = Math.abs(pos.x - mowerPos.x);
         const distanceZ = Math.abs(pos.z - mowerPos.z);
 
-        if (distanceX < mowerCutRadius && distanceZ < 0.5 && !cutGrass.current.has(i)) {
+        if (
+          distanceX < mowerCutRadius &&
+          distanceZ < 0.5 &&
+          !cutGrass.current.has(i)
+        ) {
           cutGrass.current.add(i);
         }
 
         const isCut = cutGrass.current.has(i);
-        const windOffset = Math.sin(windTime.current * 2 + pos.x + pos.z) * (isCut ? 0.05 : 0.15);
+        const windOffset =
+          Math.sin(windTime.current * 2 + pos.x + pos.z) *
+          (isCut ? 0.05 : 0.15);
         const baseHeight = isCut ? 0.3 : 1.0; // Cut grass is shorter
-        const height = THREE.MathUtils.lerp(baseHeight * 0.5, baseHeight, healthyState.current);
+        const height = THREE.MathUtils.lerp(
+          baseHeight * 0.5,
+          baseHeight,
+          healthyState.current,
+        );
 
         dummy.position.copy(pos);
         dummy.rotation.z = windOffset;
@@ -143,9 +153,13 @@ export function LawnCareStation({
       // Lerp grass color based on health
       const unhealthyColor = new THREE.Color(0x854d0e); // Brown
       const healthyColor = new THREE.Color(0x22c55e); // Vibrant green
-      const currentColor = unhealthyColor.clone().lerp(healthyColor, healthyState.current);
+      const currentColor = unhealthyColor
+        .clone()
+        .lerp(healthyColor, healthyState.current);
 
-      (grassRef.current.material as THREE.MeshLambertMaterial).color.copy(currentColor);
+      (grassRef.current.material as THREE.MeshLambertMaterial).color.copy(
+        currentColor,
+      );
     }
 
     // Animate mower
@@ -160,11 +174,12 @@ export function LawnCareStation({
 
       // Mowing pattern: straight passes with lateral movement between
       const lawnWidth = 7; // Total lawn width
-      const lawnLength = 6; // Total lawn length (-3 to 3)
-      const numPasses = Math.ceil(lawnWidth / mowerWidth); // Number of passes needed
-      const totalSegments = (numPasses * 2) + 1; // Each pass has straight + lateral movement, plus final pass
 
-      const segmentProgress = (mowerProgress.current * totalSegments) % totalSegments;
+      const numPasses = Math.ceil(lawnWidth / mowerWidth); // Number of passes needed
+      const totalSegments = numPasses * 2 + 1; // Each pass has straight + lateral movement, plus final pass
+
+      const segmentProgress =
+        (mowerProgress.current * totalSegments) % totalSegments;
       const currentSegment = Math.floor(segmentProgress);
       const segmentPercent = segmentProgress % 1;
 
@@ -184,13 +199,15 @@ export function LawnCareStation({
         const easedProgress = (1 - Math.cos(segmentPercent * Math.PI)) / 2;
 
         // Lateral movement to next lane with smooth easing
-        mowerRef.current.position.x = currentX + (nextX - currentX) * easedProgress;
+        mowerRef.current.position.x =
+          currentX + (nextX - currentX) * easedProgress;
         // Stay at the end position (top or bottom)
         mowerRef.current.position.z = isGoingDown ? 3 : -3;
 
         // Rotate 180° in alternating directions with same easing
         // Even passes: clockwise (+180°), Odd passes: counter-clockwise (-180°)
-        mowerRef.current.rotation.y = easedProgress * Math.PI * rotationDirection;
+        mowerRef.current.rotation.y =
+          easedProgress * Math.PI * rotationDirection;
       } else {
         // Smooth easing for straight passes too
         const easedProgress = (1 - Math.cos(segmentPercent * Math.PI)) / 2;
@@ -209,8 +226,10 @@ export function LawnCareStation({
 
     // Animate particles
     if (particlesRef.current && mowerProgress.current > 0) {
-      const positions = particleGeometry.attributes.position.array as Float32Array;
-      const velocities = particleGeometry.attributes.velocity.array as Float32Array;
+      const positions = particleGeometry.attributes.position
+        .array as Float32Array;
+      const velocities = particleGeometry.attributes.velocity
+        .array as Float32Array;
 
       for (let i = 0; i < particleCount; i++) {
         // Reset particle near mower when it falls
@@ -243,12 +262,12 @@ export function LawnCareStation({
         onPointerEnter={(e) => {
           if (onHover) onHover(true);
           e.stopPropagation();
-          document.body.style.cursor = 'pointer';
+          document.body.style.cursor = "pointer";
         }}
         onPointerLeave={(e) => {
           if (onHover) onHover(false);
           e.stopPropagation();
-          document.body.style.cursor = 'auto';
+          document.body.style.cursor = "auto";
         }}
         onPointerDown={handlePointerDown}
         onClick={handleClick}
@@ -258,7 +277,12 @@ export function LawnCareStation({
       </mesh>
 
       {/* Ground plane */}
-      <mesh ref={groundRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
+      <mesh
+        ref={groundRef}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.01, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[15, 15]} />
         <meshStandardMaterial color="#4ade80" />
       </mesh>
@@ -279,7 +303,11 @@ export function LawnCareStation({
           <boxGeometry args={[0.6, 0.4, 0.8]} />
           <meshStandardMaterial color="#cc0000" />
         </mesh>
-        <mesh position={[0, -0.15, 0.3]} rotation={[0, 0, Math.PI / 2]} castShadow>
+        <mesh
+          position={[0, -0.15, 0.3]}
+          rotation={[0, 0, Math.PI / 2]}
+          castShadow
+        >
           <cylinderGeometry args={[0.15, 0.15, 0.7, 16]} />
           <meshStandardMaterial color="#333333" />
         </mesh>
