@@ -1,17 +1,29 @@
 "use client";
 
-import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
+import { ServiceInfo } from "./ServiceStationsScene";
+import { InfoCard } from "./InfoCard";
 
 interface IrrigationStationProps {
   active?: boolean;
   isMobile?: boolean;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onHover?: (hovering: boolean) => void;
+  onClick?: () => void;
+  serviceInfo?: ServiceInfo;
 }
 
 export function IrrigationStation({
   active = false,
   isMobile = false,
+  isHovered = false,
+  isSelected = false,
+  onHover,
+  onClick,
+  serviceInfo,
 }: IrrigationStationProps) {
   const sprinklersRef = useRef<THREE.Group>(null);
   const waterParticlesRef = useRef<THREE.Points>(null);
@@ -22,6 +34,21 @@ export function IrrigationStation({
   const sprinklersActive = useRef(true);
   const moistureLevel = useRef(0); // 0 = dry, 1 = saturated
   const waterTime = useRef(0);
+  const pointerDownPos = useRef({ x: 0, y: 0 });
+
+  const handlePointerDown = (e: ThreeEvent<ReactPointerEvent>) => {
+    pointerDownPos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleClick = (e: ThreeEvent<ReactPointerEvent>) => {
+    const dx = e.clientX - pointerDownPos.current.x;
+    const dy = e.clientY - pointerDownPos.current.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 5 && onClick) {
+      onClick();
+    }
+  };
 
   // Ripple animation data
   const rippleData = useRef<
@@ -256,86 +283,112 @@ export function IrrigationStation({
   });
 
   return (
-    <group position={[10, 0, 10]}>
-      {/* Ground plane with moisture visualization */}
+    <group position={[10, 0, 10]}>)
+      {/* Invisible larger hitbox for reliable hover detection */}
       <mesh
-        ref={groundRef}
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0.01, 0]}
-        receiveShadow
+        position={[0, 2, 0]}
+        onPointerEnter={(e) => {
+          if (onHover) onHover(true);
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerLeave={(e) => {
+          if (onHover) onHover(false);
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
+        onPointerDown={handlePointerDown}
+        onClick={handleClick}
       >
-        <planeGeometry args={[15, 15, 32, 32]} />
-        <meshStandardMaterial color="#a87532" />
+        <cylinderGeometry args={[5, 5, 4, 16]} />
+        <meshBasicMaterial transparent opacity={0} />
       </mesh>
 
-      {/* Underground pipe network (semi-transparent) */}
-      <group ref={pipesRef} position={[0, -0.3, 0]}>
-        {/* Main line */}
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.08, 0.08, 12, 8]} />
-          <meshStandardMaterial color="#666666" transparent opacity={0.4} />
-        </mesh>
-        <mesh rotation={[0, Math.PI / 2, Math.PI / 2]}>
-          <cylinderGeometry args={[0.08, 0.08, 12, 8]} />
-          <meshStandardMaterial color="#666666" transparent opacity={0.4} />
+      {/* Info Cards - conditionally rendered */}
+      {serviceInfo && (isHovered || isSelected) && (
+        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+      )}
+      <group>
+        {/* Ground plane with moisture visualization */}
+        <mesh
+          ref={groundRef}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0.01, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[15, 15, 32, 32]} />
+          <meshStandardMaterial color="#a87532" />
         </mesh>
 
-        {/* Connections to sprinklers */}
-        {sprinklerPositions.map((pos, i) => (
-          <mesh key={i} position={[pos.x, 0.3, pos.z]}>
-            <cylinderGeometry args={[0.05, 0.05, 0.6, 8]} />
+        {/* Underground pipe network (semi-transparent) */}
+        <group ref={pipesRef} position={[0, -0.3, 0]}>
+          {/* Main line */}
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.08, 0.08, 12, 8]} />
             <meshStandardMaterial color="#666666" transparent opacity={0.4} />
           </mesh>
-        ))}
-      </group>
-
-      {/* Sprinklers */}
-      <group ref={sprinklersRef}>
-        {sprinklerPositions.map((pos, i) => (
-          <group key={i} position={pos.toArray()}>
-            {/* Base */}
-            <mesh>
-              <cylinderGeometry args={[0.1, 0.12, 0.15, 8]} />
-              <meshStandardMaterial color="#333333" />
-            </mesh>
-            {/* Rotating head */}
-            <mesh position={[0, 0.1, 0]}>
-              <coneGeometry args={[0.08, 0.15, 8]} />
-              <meshStandardMaterial color="#4ade80" />
-            </mesh>
-          </group>
-        ))}
-      </group>
-
-      {/* Coverage zones visualization */}
-      {coverageZones.map((zone, i) => (
-        <primitive key={i} object={zone} />
-      ))}
-
-      {/* Water spray particles */}
-      <points ref={waterParticlesRef} geometry={waterGeometry}>
-        <pointsMaterial
-          size={0.08}
-          color="#4ade80"
-          transparent
-          opacity={0.6}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
-
-      {/* Droplet ripples (animated circles on ground) */}
-      <group ref={ripplesRef} position={[0, 0.02, 0]}>
-        {rippleData.current.map((_, i) => (
-          <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[0.3, 0.4, 16]} />
-            <meshBasicMaterial
-              color="#4ade80"
-              transparent
-              opacity={0.5}
-              side={THREE.DoubleSide}
-            />
+          <mesh rotation={[0, Math.PI / 2, Math.PI / 2]}>
+            <cylinderGeometry args={[0.08, 0.08, 12, 8]} />
+            <meshStandardMaterial color="#666666" transparent opacity={0.4} />
           </mesh>
+
+          {/* Connections to sprinklers */}
+          {sprinklerPositions.map((pos, i) => (
+            <mesh key={i} position={[pos.x, 0.3, pos.z]}>
+              <cylinderGeometry args={[0.05, 0.05, 0.6, 8]} />
+              <meshStandardMaterial color="#666666" transparent opacity={0.4} />
+            </mesh>
+          ))}
+        </group>
+
+        {/* Sprinklers */}
+        <group ref={sprinklersRef}>
+          {sprinklerPositions.map((pos, i) => (
+            <group key={i} position={pos.toArray()}>
+              {/* Base */}
+              <mesh>
+                <cylinderGeometry args={[0.1, 0.12, 0.15, 8]} />
+                <meshStandardMaterial color="#333333" />
+              </mesh>
+              {/* Rotating head */}
+              <mesh position={[0, 0.1, 0]}>
+                <coneGeometry args={[0.08, 0.15, 8]} />
+                <meshStandardMaterial color="#4ade80" />
+              </mesh>
+            </group>
+          ))}
+        </group>
+
+        {/* Coverage zones visualization */}
+        {coverageZones.map((zone, i) => (
+          <primitive key={i} object={zone} />
         ))}
+
+        {/* Water spray particles */}
+        <points ref={waterParticlesRef} geometry={waterGeometry}>
+          <pointsMaterial
+            size={0.08}
+            color="#4ade80"
+            transparent
+            opacity={0.6}
+            blending={THREE.AdditiveBlending}
+          />
+        </points>
+
+        {/* Droplet ripples (animated circles on ground) */}
+        <group ref={ripplesRef} position={[0, 0.02, 0]}>
+          {rippleData.current.map((_, i) => (
+            <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.3, 0.4, 16]} />
+              <meshBasicMaterial
+                color="#4ade80"
+                transparent
+                opacity={0.5}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+          ))}
+        </group>
       </group>
     </group>
   );

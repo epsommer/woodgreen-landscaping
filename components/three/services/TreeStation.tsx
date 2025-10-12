@@ -3,6 +3,9 @@
 import { useRef, useMemo } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
+import { Text } from "@react-three/drei";
+import { ServiceInfo } from "./ServiceStationsScene";
+import { InfoCard } from "./InfoCard";
 
 interface TreeStationProps {
   active?: boolean;
@@ -11,13 +14,17 @@ interface TreeStationProps {
   isSelected?: boolean;
   onHover?: (hovering: boolean) => void;
   onClick?: (event: ThreeEvent<MouseEvent>) => void;
+  serviceInfo?: ServiceInfo;
 }
 
 export function TreeStation({
   active = false,
   isMobile = false,
+  isHovered = false,
+  isSelected = false,
   onHover,
   onClick,
+  serviceInfo,
 }: TreeStationProps) {
   const treeRef = useRef<THREE.Group>(null);
   const leavesRef = useRef<THREE.InstancedMesh>(null);
@@ -286,6 +293,11 @@ export function TreeStation({
       <points ref={fallingLeavesRef} geometry={fallingLeafGeometry}>
         <pointsMaterial size={0.15} color="#ea580c" transparent opacity={0.8} />
       </points>
+
+      {/* Info Cards - conditionally rendered */}
+      {serviceInfo && (isHovered || isSelected) && (
+        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+      )}
     </group>
   );
 }
