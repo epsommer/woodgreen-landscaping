@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useRef, PointerEvent as ReactPointerEvent } from "react";
-import { useFrame, ThreeEvent } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
+import { StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
 import { useStationInteraction } from "./useStationInteraction";
 

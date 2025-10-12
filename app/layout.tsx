@@ -32,7 +32,6 @@ export default function RootLayout({
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [initialService, setInitialService] = useState("");
-  const pathname = usePathname();
 
   useEffect(() => {
     const handleOpenEstimate = () => setShowEstimateCalculator(true);
