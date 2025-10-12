@@ -10,7 +10,6 @@ import { useState, useEffect } from "react";
 import { EstimateCalculator } from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
 import { subscribeToEvent, EVENTS } from "@/lib/events";
-import { usePathname } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
