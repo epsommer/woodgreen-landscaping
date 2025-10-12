@@ -210,7 +210,7 @@ export function ServiceStationsScene({ activeStation, isMobile = false, isDark =
       {/* Station labels (floating text) */}
       <StationLabel position={[-10, 5, -10]} text="LAWN CARE" active={activeStation === "lawn"} />
       <StationLabel position={[10, 5, -10]} text="GARDEN DESIGN" active={activeStation === "garden"} />
-      <StationLabel position={[-10, 5, 10]} text="TREE SERVICES" active={activeStation === "tree"} />
+      <StationLabel position={[-10, 4.5, 14]} text="TREE SERVICES" active={activeStation === "tree"} />
       <StationLabel position={[10, 5, 10]} text="IRRIGATION" active={activeStation === "irrigation"} />
     </>
   );

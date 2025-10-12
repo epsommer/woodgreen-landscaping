@@ -10,8 +10,8 @@ interface InfoCardProps {
 }
 
 export function InfoCard({ serviceInfo, isSelected }: InfoCardProps) {
-  return (
-    <group position={[0, 5, 0]}>
+  return ( // The group position is now controlled by the parent component
+    <group>
       {/* Upper card background plane - double sided */}
       <mesh position={[0, 0, 0]}>
         <planeGeometry args={[2.8, 0.6]} />
@@ -28,7 +28,7 @@ export function InfoCard({ serviceInfo, isSelected }: InfoCardProps) {
         <Text
           fontSize={0.18}
           color={serviceInfo.color}
-          anchorY="bottom"
+          anchorY="middle"
           fontWeight="bold"
         >
           {serviceInfo.name}
@@ -36,8 +36,8 @@ export function InfoCard({ serviceInfo, isSelected }: InfoCardProps) {
         <Text
           fontSize={0.12}
           color="white"
-          position={[0, -0.25, 0]}
-          anchorY="top"
+          position={[0, -0.22, 0]}
+          anchorY="middle"
         >
           {serviceInfo.title}
         </Text>
@@ -48,7 +48,7 @@ export function InfoCard({ serviceInfo, isSelected }: InfoCardProps) {
         <Text
           fontSize={0.18}
           color={serviceInfo.color}
-          anchorY="bottom"
+          anchorY="middle"
           fontWeight="bold"
         >
           {serviceInfo.name}
@@ -56,8 +56,8 @@ export function InfoCard({ serviceInfo, isSelected }: InfoCardProps) {
         <Text
           fontSize={0.12}
           color="white"
-          position={[0, -0.25, 0]}
-          anchorY="top"
+          position={[0, -0.22, 0]}
+          anchorY="middle"
         >
           {serviceInfo.title}
         </Text>

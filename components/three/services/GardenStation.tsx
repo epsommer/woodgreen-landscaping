@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
-import { useFrame, ThreeEvent } from "@react-three/fiber";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
@@ -253,7 +253,9 @@ export function GardenStation({
 
       {/* Info Cards - conditionally rendered */}
       {serviceInfo && (isHovered || isSelected) && (
-        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        <group position={[0, 5, 0]}>
+          <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        </group>
       )}
     </group>
   );

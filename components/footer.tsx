@@ -3,16 +3,39 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaFacebook, FaXTwitter, FaInstagram } from "react-icons/fa6";
-import { Phone, Mail } from "lucide-react";
+import {
+  FaFacebook,
+  FaXTwitter,
+  FaInstagram,
+  FaTiktok,
+  FaTwitch,
+} from "react-icons/fa6";
+import { Phone, Mail, ArrowUp } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [mounted, setMounted] = useState(false);
 
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
   useEffect(() => {
     setMounted(true);
+
+    const handleScroll = () => {
+      if (window.scrollY > 600) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const logoSrc = "/woodgreen-landscaping-logo-palmette-inverse.svg";
 
@@ -83,25 +106,66 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2">
-              <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" /> (647) 327-8401
+              <li>
+                <a
+                  href="tel:+16473278401"
+                  className="flex items-center hover:text-[#CEFF65]"
+                >
+                  <Phone className="h-4 w-4 mr-2" /> (647) 327-8401
+                </a>
               </li>
-              <li className="flex items-center">
-                <Mail className="h-4 w-4 mr-2" /> info@woodgreenlandscaping.com
+              <li>
+                <a
+                  href="mailto:info@woodgreenlandscaping.com"
+                  className="flex items-center hover:text-[#CEFF65]"
+                >
+                  <Mail className="h-4 w-4 mr-2" /> info@woodgreenlandscaping.com
+                </a>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-[#CEFF65]">
+              <a
+                href="https://www.facebook.com/woodgreenlandscaping"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#CEFF65]"
+              >
                 <FaFacebook className="h-6 w-6" />
               </a>
-              <a href="#" className="hover:text-[#CEFF65]">
+              <a
+                href="https://x.com/WoodgreenLand"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#CEFF65]"
+              >
                 <FaXTwitter className="h-6 w-6" />
               </a>
-              <a href="#" className="hover:text-[#CEFF65]">
+              <a
+                href="https://www.instagram.com/woodgreenlandscaping/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#CEFF65]"
+              >
                 <FaInstagram className="h-6 w-6" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@woodgreenlandscaping"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#CEFF65]"
+              >
+                <FaTiktok className="h-6 w-6" />
+              </a>
+              <a
+                href="https://www.twitch.tv/woodgreenlandscaping"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#CEFF65]"
+              >
+                <FaTwitch className="h-6 w-6" />
               </a>
             </div>
           </div>
@@ -111,6 +175,14 @@ export function Footer() {
             &copy; {currentYear} Woodgreen Landscaping. All rights reserved.
           </p>
         </div>
+        {showBackToTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 bg-[#CEFF65] text-[#2F3B30] p-3 rounded-full shadow-lg hover:bg-opacity-80 transition-opacity duration-300"
+          >
+            <ArrowUp className="h-6 w-6" />
+          </button>
+        )}
       </div>
     </footer>
   );

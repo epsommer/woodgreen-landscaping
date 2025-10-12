@@ -283,7 +283,9 @@ export function LawnCareStation({
 
       {/* Info Cards - conditionally rendered */}
       {serviceInfo && (isHovered || isSelected) && (
-        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        <group position={[0, 5, 0]}>
+          <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        </group>
       )}
     </group>
   );

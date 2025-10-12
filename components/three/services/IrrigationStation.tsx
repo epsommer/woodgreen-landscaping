@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
-import { useFrame } from "@react-three/fiber";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
@@ -263,7 +263,10 @@ export function IrrigationStation({
   return (
     <group position={[10, 0, 10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
-      <mesh position={[0, 2, 0]} {...interactionHandlers}>
+      <mesh
+        position={[0, 2, 0]}
+        {...interactionHandlers}
+      >
         <cylinderGeometry args={[5, 5, 4, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
@@ -351,7 +354,9 @@ export function IrrigationStation({
 
       {/* Info Cards - conditionally rendered */}
       {serviceInfo && (isHovered || isSelected) && (
-        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        <group position={[0, 5, 0]}>
+          <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        </group>
       )}
     </group>
   );

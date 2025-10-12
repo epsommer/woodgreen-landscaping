@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useMemo, PointerEvent as ReactPointerEvent } from "react";
-import { ThreeEvent, useFrame } from "@react-three/fiber";
+import { useMemo, useRef, PointerEvent as ReactPointerEvent } from "react";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { ServiceInfo, StationComponentProps } from "./ServiceStationsScene";
 import { InfoCard } from "./InfoCard";
@@ -22,7 +22,7 @@ export function TreeStation({
   const rootsRef = useRef<THREE.Group>(null);
 
   const treeAge = useRef(0.5); // 0 = sapling, 1 = mature
-  const health = useRef(0.7); // 0 = sick, 1 = healthy
+  const health = useRef(0.8); // 0 = sick, 1 = healthy
   const season = useRef(0); // 0-3 for spring/summer/fall/winter
 
   const interactionHandlers = useStationInteraction({ onHover, onClick });
@@ -44,7 +44,7 @@ export function TreeStation({
       const radius = 1.5 + Math.random() * 0.8;
 
       const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = 7 + radius * Math.cos(phi);
+      const y = 5.5 + radius * Math.cos(phi); // Lowered canopy
       const z = radius * Math.sin(phi) * Math.sin(theta);
 
       positions.push(new THREE.Vector3(x, y, z));
@@ -63,7 +63,7 @@ export function TreeStation({
 
     for (let i = 0; i < fallingLeafCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 4;
-      positions[i * 3 + 1] = 7.5 + Math.random() * 2.5;
+      positions[i * 3 + 1] = 6 + Math.random() * 2.5; // Lowered start position
       positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
 
       velocities[i * 3] = (Math.random() - 0.5) * 0.3;
@@ -159,7 +159,7 @@ export function TreeStation({
         // Reset leaf when it hits ground
         if (positions[i * 3 + 1] < 0) {
           positions[i * 3] = (Math.random() - 0.5) * 4;
-          positions[i * 3 + 1] = 9 + Math.random() * 2;
+          positions[i * 3 + 1] = 7 + Math.random() * 2; // Lowered reset position
           positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
         }
       }
@@ -183,7 +183,7 @@ export function TreeStation({
     <group position={[-10, 0, 10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
       <mesh position={[0, 4, 0]} {...interactionHandlers}>
-        <cylinderGeometry args={[4, 4, 8, 16]} />
+        <cylinderGeometry args={[4, 4, 8, 9]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
       {/* Ground */}
@@ -197,44 +197,44 @@ export function TreeStation({
       </mesh>
 
       {/* Tree group */}
-      <group ref={treeRef} position={[0, 0, 2.5]}>
+      <group ref={treeRef} position={[0, 0, 0]}>
         {/* Trunk */}
-        <mesh position={[0, 3.5, 0]} castShadow>
-          <cylinderGeometry args={[0.15, 0.25, 7, 12]} />
+        <mesh position={[0, 2.5, 0]} castShadow>
+          <cylinderGeometry args={[0.15, 0.2, 5, 12]} />
           <meshStandardMaterial color="#654321" roughness={0.9} />
         </mesh>
 
         {/* Main branches */}
         <mesh
-          position={[0.5, 6.5, 0]}
+          position={[0.5, 4.5, 0]}
           rotation={[0, 0, Math.PI / 4]}
           castShadow
         >
-          <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
+          <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
         <mesh
-          position={[-0.5, 6.5, 0]}
+          position={[-0.5, 4.5, 0]}
           rotation={[0, 0, -Math.PI / 4]}
           castShadow
         >
-          <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
+          <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
         <mesh
-          position={[0, 6.5, 0.5]}
+          position={[0, 4.5, 0.5]}
           rotation={[Math.PI / 4, 0, 0]}
           castShadow
         >
-          <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
+          <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
         <mesh
-          position={[0, 6.5, -0.5]}
+          position={[0, 4.5, -0.5]}
           rotation={[-Math.PI / 4, 0, 0]}
           castShadow
         >
-          <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
+          <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
 
@@ -275,7 +275,9 @@ export function TreeStation({
 
       {/* Info Cards - conditionally rendered */}
       {serviceInfo && (isHovered || isSelected) && (
-        <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        <group position={[0, 5, 4]}>
+          <InfoCard serviceInfo={serviceInfo} isSelected={isSelected} />
+        </group>
       )}
     </group>
   );
