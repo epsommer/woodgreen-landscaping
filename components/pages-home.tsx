@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { emitEvent, EVENTS } from "@/lib/events";
 import {
