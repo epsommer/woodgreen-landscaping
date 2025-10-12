@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -15,17 +15,23 @@ import { Phone, Mail, ArrowUp } from "lucide-react";
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [mounted, setMounted] = useState(false);
-
+  const footerRef = useRef<HTMLElement>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     setMounted(true);
 
     const handleScroll = () => {
-      if (window.scrollY > 600) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
+      if (footerRef.current) {
+        const footerTop = footerRef.current.offsetTop;
+        const viewportBottom = window.scrollY + window.innerHeight;
+
+        // Show button if user has scrolled down 400px and is within 300px of the footer
+        if (window.scrollY > 400 && viewportBottom > footerTop - 300) {
+          setShowBackToTop(true);
+        } else {
+          setShowBackToTop(false);
+        }
       }
     };
 
@@ -40,7 +46,10 @@ export function Footer() {
   const logoSrc = "/woodgreen-landscaping-logo-palmette-inverse.svg";
 
   return (
-    <footer className="bg-[#2F3B30] dark:bg-black text-white py-12 transition-colors duration-300">
+    <footer
+      ref={footerRef}
+      className="bg-[#2F3B30] dark:bg-black text-white py-12 transition-colors duration-300"
+    >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -175,14 +184,15 @@ export function Footer() {
             &copy; {currentYear} Woodgreen Landscaping. All rights reserved.
           </p>
         </div>
-        {showBackToTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#CEFF65] text-[#2F3B30] p-3 rounded-full shadow-lg hover:bg-opacity-80 transition-opacity duration-300"
-          >
-            <ArrowUp className="h-6 w-6" />
-          </button>
-        )}
+        <button
+          onClick={scrollToTop}
+          className={`fixed bottom-8 right-8 bg-[#CEFF65] text-[#2F3B30] p-3 rounded-full shadow-lg hover:bg-opacity-80 transition-opacity duration-300 ${
+            showBackToTop ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          aria-hidden={!showBackToTop}
+        >
+          <ArrowUp className="h-6 w-6" />
+        </button>
       </div>
     </footer>
   );
