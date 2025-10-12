@@ -7,8 +7,9 @@ import {
 
 export function middleware(request: NextRequest) {
   // Use centralized maintenance detection
-  const isMaintenanceActive =
-    isInMaintenanceMode() || shouldShowMaintenanceForHeaders(request.headers);
+  // const isMaintenanceActive =
+  //   isInMaintenanceMode() || shouldShowMaintenanceForHeaders(request.headers);
+  const isMaintenanceActive = false;
 
   if (
     isMaintenanceActive &&
