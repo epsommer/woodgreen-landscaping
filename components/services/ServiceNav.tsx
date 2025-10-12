@@ -17,7 +17,7 @@ const services: Array<{ type: ServiceType; icon: React.ReactNode; label: string 
 
 export function ServiceNav({ activeStation, onStationChange }: ServiceNavProps) {
   return (
-    <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+    <div className="absolute bottom-32 right-8 md:right-16 z-30 grid grid-cols-2 gap-3">
       {services.map((service) => {
         const isActive = activeStation === service.type;
 
@@ -38,7 +38,7 @@ export function ServiceNav({ activeStation, onStationChange }: ServiceNavProps) 
           >
             <div className="flex items-center gap-2">
               {service.icon}
-              <span className="hidden md:inline">{service.label}</span>
+              <span className="hidden lg:inline">{service.label}</span>
             </div>
 
             {/* Active indicator glow */}

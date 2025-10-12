@@ -14,10 +14,33 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
   const waterParticlesRef = useRef<THREE.Points>(null);
   const groundRef = useRef<THREE.Mesh>(null);
   const pipesRef = useRef<THREE.Group>(null);
+  const ripplesRef = useRef<THREE.Group>(null);
 
   const sprinklersActive = useRef(true);
   const moistureLevel = useRef(0); // 0 = dry, 1 = saturated
   const waterTime = useRef(0);
+
+  // Ripple animation data
+  const rippleData = useRef<Array<{
+    position: THREE.Vector3;
+    lifetime: number;
+    maxLifetime: number;
+  }>>([]);
+
+  // Initialize ripples
+  if (rippleData.current.length === 0) {
+    for (let i = 0; i < 8; i++) {
+      rippleData.current.push({
+        position: new THREE.Vector3(
+          (Math.random() - 0.5) * 8,
+          0,
+          (Math.random() - 0.5) * 8
+        ),
+        lifetime: Math.random() * 2,
+        maxLifetime: 1.5 + Math.random() * 0.5,
+      });
+    }
+  }
 
   // Sprinkler positions
   const sprinklerPositions = useMemo(() => [
@@ -77,7 +100,7 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.x = -Math.PI / 2;
       mesh.position.copy(pos);
-      mesh.position.y = 0.01;
+      mesh.position.y = 0.03;
       zones.push(mesh);
     });
     return zones;
@@ -179,6 +202,39 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
         }
       });
     }
+
+    // Animate ripples
+    if (ripplesRef.current && sprinklersActive.current) {
+      rippleData.current.forEach((ripple, i) => {
+        ripple.lifetime += delta;
+
+        // Reset ripple when it completes
+        if (ripple.lifetime > ripple.maxLifetime) {
+          ripple.position.set(
+            (Math.random() - 0.5) * 8,
+            0,
+            (Math.random() - 0.5) * 8
+          );
+          ripple.lifetime = 0;
+          ripple.maxLifetime = 1.5 + Math.random() * 0.5;
+        }
+
+        // Update ripple mesh
+        const rippleMesh = ripplesRef.current!.children[i] as THREE.Mesh;
+        if (rippleMesh) {
+          rippleMesh.position.copy(ripple.position);
+
+          // Scale grows over lifetime
+          const progress = ripple.lifetime / ripple.maxLifetime;
+          const scale = 0.2 + progress * 0.6;
+          rippleMesh.scale.set(scale, scale, 1);
+
+          // Fade out over lifetime
+          const opacity = Math.max(0, 0.5 * (1 - progress));
+          (rippleMesh.material as THREE.MeshBasicMaterial).opacity = opacity;
+        }
+      });
+    }
   });
 
   return (
@@ -187,11 +243,11 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
       <mesh
         ref={groundRef}
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.01, 0]}
+        position={[0, 0.01, 0]}
         receiveShadow
       >
         <planeGeometry args={[15, 15, 32, 32]} />
-        <meshStandardMaterial color="#78350f" />
+        <meshStandardMaterial color="#a87532" />
       </mesh>
 
       {/* Underground pipe network (semi-transparent) */}
@@ -249,25 +305,19 @@ export function IrrigationStation({ active = false, isMobile = false }: Irrigati
         />
       </points>
 
-      {/* Droplet ripples (simple circles on ground) */}
-      <group position={[0, 0.02, 0]}>
-        {[0, 1, 2, 3, 4].map((i) => {
-          const x = (Math.random() - 0.5) * 6;
-          const z = (Math.random() - 0.5) * 6;
-          const scale = 0.3 + Math.random() * 0.4;
-
-          return (
-            <mesh key={i} position={[x, 0, z]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[scale, scale + 0.1, 16]} />
-              <meshBasicMaterial
-                color="#4ade80"
-                transparent
-                opacity={0.3}
-                side={THREE.DoubleSide}
-              />
-            </mesh>
-          );
-        })}
+      {/* Droplet ripples (animated circles on ground) */}
+      <group ref={ripplesRef} position={[0, 0.02, 0]}>
+        {rippleData.current.map((_, i) => (
+          <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.3, 0.4, 16]} />
+            <meshBasicMaterial
+              color="#4ade80"
+              transparent
+              opacity={0.5}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        ))}
       </group>
     </group>
   );

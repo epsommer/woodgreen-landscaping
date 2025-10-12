@@ -16,7 +16,10 @@ interface TreeStationProps {
   serviceInfo?: ServiceInfo;
 }
 
-export function TreeStation({ active = false, isMobile = false }: TreeStationProps) {
+export function TreeStation({
+  active = false,
+  isMobile = false,
+}: TreeStationProps) {
   const treeRef = useRef<THREE.Group>(null);
   const leavesRef = useRef<THREE.InstancedMesh>(null);
   const fallingLeavesRef = useRef<THREE.Points>(null);
@@ -43,7 +46,7 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
       const radius = 1.5 + Math.random() * 0.8;
 
       const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = 3 + radius * Math.cos(phi);
+      const y = 7 + radius * Math.cos(phi);
       const z = radius * Math.sin(phi) * Math.sin(theta);
 
       positions.push(new THREE.Vector3(x, y, z));
@@ -62,7 +65,7 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
 
     for (let i = 0; i < fallingLeafCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 4;
-      positions[i * 3 + 1] = 2 + Math.random() * 3;
+      positions[i * 3 + 1] = 7.5 + Math.random() * 2.5;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
 
       velocities[i * 3] = (Math.random() - 0.5) * 0.3;
@@ -72,9 +75,9 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
       rotations[i] = Math.random() * Math.PI * 2;
     }
 
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-    geom.setAttribute('rotation', new THREE.BufferAttribute(rotations, 1));
+    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute("velocity", new THREE.BufferAttribute(velocities, 3));
+    geom.setAttribute("rotation", new THREE.BufferAttribute(rotations, 1));
 
     return geom;
   }, []);
@@ -103,7 +106,10 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
     // Animate tree growth
     if (treeRef.current) {
       const targetScale = 0.3 + treeAge.current * 0.7;
-      treeRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.02);
+      treeRef.current.scale.lerp(
+        new THREE.Vector3(targetScale, targetScale, targetScale),
+        0.02,
+      );
     }
 
     // Update leaves
@@ -128,14 +134,19 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
       });
 
       leavesRef.current.instanceMatrix.needsUpdate = true;
-      (leavesRef.current.material as THREE.MeshStandardMaterial).color.copy(leafColor);
+      (leavesRef.current.material as THREE.MeshStandardMaterial).color.copy(
+        leafColor,
+      );
     }
 
     // Animate falling leaves (mainly in fall)
     if (fallingLeavesRef.current) {
-      const positions = fallingLeafGeometry.attributes.position.array as Float32Array;
-      const velocities = fallingLeafGeometry.attributes.velocity.array as Float32Array;
-      const rotations = fallingLeafGeometry.attributes.rotation.array as Float32Array;
+      const positions = fallingLeafGeometry.attributes.position
+        .array as Float32Array;
+      const velocities = fallingLeafGeometry.attributes.velocity
+        .array as Float32Array;
+      const rotations = fallingLeafGeometry.attributes.rotation
+        .array as Float32Array;
 
       const isFall = Math.floor(season.current) === 2;
       const fallRate = isFall ? 1 : 0.2;
@@ -150,7 +161,7 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
         // Reset leaf when it hits ground
         if (positions[i * 3 + 1] < 0) {
           positions[i * 3] = (Math.random() - 0.5) * 4;
-          positions[i * 3 + 1] = 4 + Math.random() * 2;
+          positions[i * 3 + 1] = 9 + Math.random() * 2;
           positions[i * 3 + 2] = (Math.random() - 0.5) * 4;
         }
       }
@@ -173,33 +184,53 @@ export function TreeStation({ active = false, isMobile = false }: TreeStationPro
   return (
     <group position={[-10, 0, 10]}>
       {/* Ground */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.01, 0]}
+        receiveShadow
+      >
         <planeGeometry args={[15, 15]} />
-        <meshStandardMaterial color="#3d2817" />
+        <meshStandardMaterial color="#8b6f47" />
       </mesh>
 
       {/* Tree group */}
-      <group ref={treeRef}>
+      <group ref={treeRef} position={[0, 0, 2.5]}>
         {/* Trunk */}
-        <mesh position={[0, 1.5, 0]} castShadow>
-          <cylinderGeometry args={[0.15, 0.25, 3, 12]} />
+        <mesh position={[0, 3.5, 0]} castShadow>
+          <cylinderGeometry args={[0.15, 0.25, 7, 12]} />
           <meshStandardMaterial color="#654321" roughness={0.9} />
         </mesh>
 
         {/* Main branches */}
-        <mesh position={[0.5, 2.5, 0]} rotation={[0, 0, Math.PI / 4]} castShadow>
+        <mesh
+          position={[0.5, 6.5, 0]}
+          rotation={[0, 0, Math.PI / 4]}
+          castShadow
+        >
           <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
-        <mesh position={[-0.5, 2.5, 0]} rotation={[0, 0, -Math.PI / 4]} castShadow>
+        <mesh
+          position={[-0.5, 6.5, 0]}
+          rotation={[0, 0, -Math.PI / 4]}
+          castShadow
+        >
           <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
-        <mesh position={[0, 2.5, 0.5]} rotation={[Math.PI / 4, 0, 0]} castShadow>
+        <mesh
+          position={[0, 6.5, 0.5]}
+          rotation={[Math.PI / 4, 0, 0]}
+          castShadow
+        >
           <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>
-        <mesh position={[0, 2.5, -0.5]} rotation={[-Math.PI / 4, 0, 0]} castShadow>
+        <mesh
+          position={[0, 6.5, -0.5]}
+          rotation={[-Math.PI / 4, 0, 0]}
+          castShadow
+        >
           <cylinderGeometry args={[0.08, 0.12, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
         </mesh>

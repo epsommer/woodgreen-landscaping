@@ -231,9 +231,9 @@ export function GardenStation({
       </mesh>
 
       {/* Ground with garden beds */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
         <planeGeometry args={[15, 15]} />
-        <meshStandardMaterial color="#3d2817" /> {/* Mulch color */}
+        <meshStandardMaterial color="#8b6f47" /> {/* Lighter mulch color */}
       </mesh>
 
       {/* Raised garden bed borders */}

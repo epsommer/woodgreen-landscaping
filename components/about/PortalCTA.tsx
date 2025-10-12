@@ -71,7 +71,7 @@ export function PortalCTA() {
               size="lg"
               variant="outline"
               asChild
-              className="border-2 border-nature-400/50 text-nature-300 hover:bg-nature-500/10 hover:border-nature-400 font-semibold px-8 py-6 text-lg transition-all hover:scale-105"
+              className="border-2 border-nature-400/50 text-nature-300 hover:bg-nature-500/10 hover:border-nature-400 hover:text-nature-400 font-semibold px-8 py-6 text-lg transition-all hover:scale-105"
             >
               <Link href="/services">Explore Services</Link>
             </Button>

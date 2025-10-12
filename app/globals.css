@@ -76,3 +76,55 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Z-Index Hierarchy */
+/* Define a clear z-index scale to prevent stacking conflicts */
+:root {
+  /* Base layers */
+  --z-base: 0;
+  --z-background: 0;
+
+  /* Content layers */
+  --z-content: 10;
+  --z-hero-scene: 10;
+  --z-hero-controls: 20;
+  --z-hero-content: 30;
+
+  /* UI elements */
+  --z-sticky: 40;
+  --z-header: 50;
+
+  /* Overlays */
+  --z-dropdown: 60;
+  --z-modal-backdrop: 70;
+  --z-modal: 80;
+
+  /* Navigation (highest priority) */
+  --z-nav: 100;
+  --z-mobile-menu: 110;
+}
+
+/* Apply z-index to common elements */
+.z-hero-scene {
+  z-index: var(--z-hero-scene);
+}
+
+.z-hero-controls {
+  z-index: var(--z-hero-controls);
+}
+
+.z-hero-content {
+  z-index: var(--z-hero-content);
+}
+
+.z-header {
+  z-index: var(--z-header);
+}
+
+.z-nav {
+  z-index: var(--z-nav);
+}
+
+.z-mobile-menu {
+  z-index: var(--z-mobile-menu);
+}

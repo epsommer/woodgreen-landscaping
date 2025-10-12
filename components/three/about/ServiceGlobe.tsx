@@ -10,7 +10,11 @@ const TORONTO_LAT = 43.6532;
 const TORONTO_LON = -79.3832;
 
 // Convert lat/lon to 3D coordinates on sphere
-function latLonToVector3(lat: number, lon: number, radius: number): THREE.Vector3 {
+function latLonToVector3(
+  lat: number,
+  lon: number,
+  radius: number,
+): THREE.Vector3 {
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lon + 180) * (Math.PI / 180);
 
@@ -26,7 +30,25 @@ export function ServiceGlobe() {
   const markerRef = useRef<THREE.Group>(null);
   const coverageRef = useRef<THREE.Mesh>(null);
 
-  const torontoPosition = useMemo(() => latLonToVector3(TORONTO_LAT, TORONTO_LON, 2), []);
+  const torontoPosition = useMemo(
+    () => latLonToVector3(TORONTO_LAT, TORONTO_LON, 2),
+    [],
+  );
+
+  // Calculate rotation to make rings lie flat on the sphere surface
+  const ringRotation = useMemo(() => {
+    // Ring's normal should point radially outward from sphere center
+    const normal = torontoPosition.clone().normalize();
+
+    // Align ring's Z-axis (normal) with the radial direction
+    const quaternion = new THREE.Quaternion();
+    const defaultNormal = new THREE.Vector3(0, 0, 1); // Ring's default normal
+    quaternion.setFromUnitVectors(defaultNormal, normal);
+
+    const euler = new THREE.Euler();
+    euler.setFromQuaternion(quaternion);
+    return euler;
+  }, [torontoPosition]);
 
   // Create simple continent outlines
   const continentGeometry = useMemo(() => {
@@ -35,9 +57,20 @@ export function ServiceGlobe() {
 
     // Simplified North America outline
     const naPoints = [
-      [60, -130], [70, -110], [75, -90], [70, -75], [60, -65],
-      [50, -60], [40, -70], [30, -80], [25, -95], [20, -105],
-      [25, -115], [35, -125], [50, -135], [60, -130]
+      [60, -130],
+      [70, -110],
+      [75, -90],
+      [70, -75],
+      [60, -65],
+      [50, -60],
+      [40, -70],
+      [30, -80],
+      [25, -95],
+      [20, -105],
+      [25, -115],
+      [35, -125],
+      [50, -135],
+      [60, -130],
     ];
 
     naPoints.forEach(([lat, lon]) => {
@@ -72,11 +105,7 @@ export function ServiceGlobe() {
       {/* Main globe */}
       <mesh ref={globeRef}>
         <sphereGeometry args={[2, 64, 64]} />
-        <meshStandardMaterial
-          color="#0f2f1f"
-          roughness={0.8}
-          metalness={0.2}
-        />
+        <meshStandardMaterial color="#0f2f1f" roughness={0.8} metalness={0.2} />
       </mesh>
 
       {/* Ocean texture (slightly lighter blue) */}
@@ -86,7 +115,14 @@ export function ServiceGlobe() {
       </mesh>
 
       {/* Continent outlines */}
-      <primitive object={new THREE.Line(continentGeometry, new THREE.LineBasicMaterial({ color: "#4ade80" }))} />
+      <primitive
+        object={
+          new THREE.Line(
+            continentGeometry,
+            new THREE.LineBasicMaterial({ color: "#4ade80" }),
+          )
+        }
+      />
 
       {/* Grid lines (latitude/longitude) */}
       {/* Latitude lines */}
@@ -100,7 +136,16 @@ export function ServiceGlobe() {
         return (
           <primitive
             key={`lat-${lat}`}
-            object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: "#22c55e", transparent: true, opacity: 0.2 }))}
+            object={
+              new THREE.Line(
+                geometry,
+                new THREE.LineBasicMaterial({
+                  color: "#22c55e",
+                  transparent: true,
+                  opacity: 0.2,
+                }),
+              )
+            }
           />
         );
       })}
@@ -116,62 +161,101 @@ export function ServiceGlobe() {
         return (
           <primitive
             key={`lon-${lon}`}
-            object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: "#22c55e", transparent: true, opacity: 0.2 }))}
+            object={
+              new THREE.Line(
+                geometry,
+                new THREE.LineBasicMaterial({
+                  color: "#22c55e",
+                  transparent: true,
+                  opacity: 0.2,
+                }),
+              )
+            }
           />
         );
       })}
 
       {/* Toronto marker */}
-      <group ref={markerRef} position={torontoPosition}>
-        {/* Pin */}
-        <mesh position={[0, 0.3, 0]}>
-          <coneGeometry args={[0.08, 0.3, 8]} />
-          <meshStandardMaterial color="#CEFF65" emissive="#CEFF65" emissiveIntensity={0.8} />
+      <group ref={markerRef} position={torontoPosition} rotation={ringRotation}>
+        {/* Filled center point where pin is pointing */}
+        <mesh position={[0, 0, -0.02]}>
+          <circleGeometry args={[0.08, 32]} />
+          <meshBasicMaterial color="#CEFF65" side={THREE.DoubleSide} />
+        </mesh>
+
+        {/* Pin pointing outward from sphere - rotated to point along Z-axis */}
+        <mesh position={[0, 0, 0.1]} rotation={[Math.PI / -2, 0, 0]}>
+          <coneGeometry args={[0.05, 0.2, 8]} />
+          <meshStandardMaterial
+            color="#CEFF65"
+            emissive="#CEFF65"
+            emissiveIntensity={0.8}
+          />
         </mesh>
 
         {/* Pin base */}
-        <mesh>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="#CEFF65" emissive="#CEFF65" emissiveIntensity={1} />
+        <mesh position={[0, 0, 0.35]}>
+          <sphereGeometry args={[0.06, 16, 16]} />
+          <meshStandardMaterial
+            color="#CEFF65"
+            emissive="#CEFF65"
+            emissiveIntensity={1}
+          />
         </mesh>
 
-        {/* Glow rings */}
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.15, 0.2, 32]} />
-          <meshBasicMaterial color="#CEFF65" transparent opacity={0.6} side={THREE.DoubleSide} />
+        {/* Bullseye rings */}
+        <mesh>
+          <circleGeometry args={[0.09, 32]} />
+          <meshBasicMaterial
+            color="#CEFF65"
+            transparent
+            opacity={0.8}
+            side={THREE.DoubleSide}
+          />
         </mesh>
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <mesh>
+          <ringGeometry args={[0.15, 0.2, 32]} />
+          <meshBasicMaterial
+            color="#CEFF65"
+            transparent
+            opacity={0.6}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+        <mesh>
           <ringGeometry args={[0.25, 0.3, 32]} />
-          <meshBasicMaterial color="#CEFF65" transparent opacity={0.3} side={THREE.DoubleSide} />
+          <meshBasicMaterial
+            color="#CEFF65"
+            transparent
+            opacity={0.3}
+            side={THREE.DoubleSide}
+          />
         </mesh>
 
         {/* Label */}
         <Text
-          position={[0, 0.7, 0]}
+          position={[0, 0, 0.5]}
           fontSize={0.12}
           color="white"
           anchorY="bottom"
         >
           Toronto, ON
         </Text>
-        <Text
-          position={[0, 0.55, 0]}
-          fontSize={0.08}
-          color="#CEFF65"
-          anchorY="bottom"
-        >
-          84 Newton Drive
-        </Text>
       </group>
 
-      {/* Service coverage area (circle around Toronto) */}
+      {/* Service coverage area (circle around Toronto) - aligned with surface normal */}
       <mesh
         ref={coverageRef}
         position={torontoPosition}
-        rotation={[Math.PI / 2, 0, 0]}
+        rotation={ringRotation}
       >
         <ringGeometry args={[0.4, 0.8, 64]} />
-        <meshBasicMaterial color="#4ade80" transparent opacity={0.4} side={THREE.DoubleSide} />
+        <meshBasicMaterial
+          color="#4ade80"
+          transparent
+          opacity={0.4}
+          side={THREE.DoubleSide}
+        />
       </mesh>
 
       {/* Atmosphere glow */}

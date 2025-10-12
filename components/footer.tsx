@@ -1,17 +1,43 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FaFacebook, FaXTwitter, FaInstagram } from "react-icons/fa6";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const logoSrc = "/woodgreen-landscaping-logo-palmette-inverse.svg";
 
   return (
     <footer className="bg-[#2F3B30] dark:bg-black text-white py-12 transition-colors duration-300">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
+            <Link href="/" className="flex items-center mb-4">
+              {mounted ? (
+                <Image
+                  src={logoSrc}
+                  alt="Woodgreen Landscaping Logo"
+                  width={100}
+                  height={100}
+                  className="h-auto"
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                />
+              ) : (
+                <div className="w-[100px] h-[100px]"></div>
+              )}
+            </Link>
             <h3 className="text-lg font-semibold mb-4">About Us</h3>
             <p className="text-sm">
               Woodgreen Landscaping has been providing top-quality landscaping
@@ -62,10 +88,6 @@ export function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" /> info@woodgreenlandscaping.com
-              </li>
-              <li className="flex items-center">
-                <MapPin className="h-4 w-4 mr-2" /> 84 Newton Drive, Toronto, ON
-                M2M 2M9
               </li>
             </ul>
           </div>

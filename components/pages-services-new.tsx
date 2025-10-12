@@ -53,13 +53,15 @@ export function ServicesNew() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50 pointer-events-none" />
 
         {/* Hero text */}
-        <div className="absolute top-0 left-0 right-0 pt-32 pb-20 text-center z-20 pointer-events-none">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-[#2F3B30] dark:text-white animate-in fade-in duration-1000">
-            Professional Services, Zero Emissions
-          </h1>
-          <p className="text-xl md:text-2xl text-[#4A5D4C] dark:text-gray-300 max-w-3xl mx-auto px-4 animate-in fade-in duration-1000 delay-300">
-            Design-focused landscaping powered by 100% battery equipment
-          </p>
+        <div className="absolute top-0 left-0 right-0 pt-32 pb-20 z-20 pointer-events-none">
+          <div className="px-8 md:px-16 max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] animate-in fade-in duration-1000">
+              Professional Services, Zero Emissions
+            </h1>
+            <p className="text-xl md:text-2xl text-white/95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)] animate-in fade-in duration-1000 delay-300">
+              Design-focused landscaping powered by 100% battery equipment
+            </p>
+          </div>
         </div>
 
         {/* Floating navigation */}
@@ -69,7 +71,7 @@ export function ServicesNew() {
         />
 
         {/* Info overlay - Click to learn more */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
+        <div className="absolute bottom-48 md:bottom-56 left-8 md:left-16 z-20">
           <button
             onClick={() => handleStationClick(activeStation)}
             className="group bg-nature-500/90 hover:bg-nature-600 backdrop-blur-md px-8 py-4 rounded-full font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-nature-400/50"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
@@ -19,7 +19,8 @@ const capabilities: Capability[] = [
   {
     name: "Custom Design",
     title: "Landscape Design",
-    description: "Graphic design background brings artistic vision to every project",
+    description:
+      "Graphic design background brings artistic vision to every project",
     position: [-5, 0, -2],
     type: "design",
     color: "#CEFF65",
@@ -27,7 +28,8 @@ const capabilities: Capability[] = [
   {
     name: "Maintenance",
     title: "Zero-Emission Care",
-    description: "Professional DeWalt 60V battery equipment - Gallery-worthy results, neighbor-friendly operation",
+    description:
+      "Professional DeWalt 60V battery equipment - Gallery-worthy results, neighbor-friendly operation",
     position: [5, 0, -2],
     type: "maintenance",
     color: "#4ade80",
@@ -67,7 +69,13 @@ interface CapabilityIslandProps {
   onClick: () => void;
 }
 
-function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick }: CapabilityIslandProps) {
+function CapabilityIsland({
+  capability,
+  isHovered,
+  isSelected,
+  onHover,
+  onClick,
+}: CapabilityIslandProps) {
   const rotatingGroupRef = useRef<THREE.Group>(null); // For icons and cards that rotate
   const iconRef = useRef<THREE.Group>(null);
   const upperCardRef = useRef<THREE.Group>(null); // For upper card animation
@@ -76,7 +84,7 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
   const targetY = isHovered || isSelected ? 0.3 : 0; // Levitation height for icon only
 
   // Upper card: fade in and slide up on hover, move higher on select
-  const upperCardTargetY = isSelected ? 1.9 : ((isHovered) ? 0.6 : 0);
+  const upperCardTargetY = isSelected ? 1.9 : isHovered ? 0.6 : 0;
   const upperCardOpacity = useRef(0);
 
   // Lower card: slide up on select (positioned to touch upper card with bottom at ~0.6)
@@ -92,7 +100,8 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
     const dy = e.clientY - pointerDownPos.current.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance < 5) { // Less than 5 pixels = click, not drag
+    if (distance < 5) {
+      // Less than 5 pixels = click, not drag
       onClick();
     }
   };
@@ -100,28 +109,34 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
   useFrame((state, delta) => {
     if (iconRef.current) {
       // Smooth height transition for icon only (only when hovered/selected)
-      iconRef.current.position.y += (targetY - iconRef.current.position.y) * delta * 5;
+      iconRef.current.position.y +=
+        (targetY - iconRef.current.position.y) * delta * 5;
 
       // Float animation only when hovered or selected
       if (isHovered || isSelected) {
-        const float = Math.sin(state.clock.elapsedTime * 2 + capability.position[0]) * 0.1;
+        const float =
+          Math.sin(state.clock.elapsedTime * 2 + capability.position[0]) * 0.1;
         iconRef.current.position.y += float * delta;
       }
     }
 
     // Animate upper card: slide up and fade in on hover
     if (upperCardRef.current) {
-      upperCardRef.current.position.y += (upperCardTargetY - upperCardRef.current.position.y) * delta * 5;
+      upperCardRef.current.position.y +=
+        (upperCardTargetY - upperCardRef.current.position.y) * delta * 5;
 
       // Fade opacity
-      const targetOpacity = (isHovered || isSelected) ? 1 : 0;
-      upperCardOpacity.current += (targetOpacity - upperCardOpacity.current) * delta * 8;
+      const targetOpacity = isHovered || isSelected ? 1 : 0;
+      upperCardOpacity.current +=
+        (targetOpacity - upperCardOpacity.current) * delta * 8;
 
       // Update opacity on all children (meshes and text)
       upperCardRef.current.traverse((child: any) => {
         // Handle mesh materials
         if (child instanceof THREE.Mesh && child.material) {
-          const material = child.material as THREE.Material & { opacity?: number };
+          const material = child.material as THREE.Material & {
+            opacity?: number;
+          };
           if (material.opacity !== undefined) {
             material.opacity = upperCardOpacity.current * 0.85;
           }
@@ -135,7 +150,8 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
 
     // Animate lower card: slide up on select
     if (lowerCardRef.current) {
-      lowerCardRef.current.position.y += (lowerCardTargetY - lowerCardRef.current.position.y) * delta * 5;
+      lowerCardRef.current.position.y +=
+        (lowerCardTargetY - lowerCardRef.current.position.y) * delta * 5;
     }
 
     // Rotate icons and cards together (not the base plate)
@@ -165,10 +181,16 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
               <meshStandardMaterial color="#CEFF65" />
             </mesh>
             {/* Color palette orbs */}
-            {[[-0.2, 0, 0], [0, 0, 0.2], [0.2, 0, 0]].map((pos, i) => (
+            {[
+              [-0.2, 0, 0],
+              [0, 0, 0.2],
+              [0.2, 0, 0],
+            ].map((pos, i) => (
               <mesh key={i} position={[pos[0], 0.3, pos[2]]}>
                 <sphereGeometry args={[0.05, 8, 8]} />
-                <meshStandardMaterial color={i === 0 ? "#22c55e" : i === 1 ? "#CEFF65" : "#4ade80"} />
+                <meshStandardMaterial
+                  color={i === 0 ? "#22c55e" : i === 1 ? "#CEFF65" : "#4ade80"}
+                />
               </mesh>
             ))}
           </>
@@ -218,7 +240,14 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
               const angle = (i / 12) * Math.PI * 2;
               const radius = 0.5;
               return (
-                <mesh key={i} position={[Math.cos(angle) * radius, 0.2 + Math.sin(i) * 0.1, Math.sin(angle) * radius]}>
+                <mesh
+                  key={i}
+                  position={[
+                    Math.cos(angle) * radius,
+                    0.2 + Math.sin(i) * 0.1,
+                    Math.sin(angle) * radius,
+                  ]}
+                >
                   <sphereGeometry args={[0.02, 6, 6]} />
                   <meshBasicMaterial
                     color="#4ade80"
@@ -232,11 +261,7 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
             {/* "0 Emissions" indicator */}
             <mesh position={[0, 0.5, 0]}>
               <sphereGeometry args={[0.08, 16, 16]} />
-              <meshBasicMaterial
-                color="#22c55e"
-                transparent
-                opacity={0.3}
-              />
+              <meshBasicMaterial color="#22c55e" transparent opacity={0.3} />
             </mesh>
           </>
         );
@@ -250,7 +275,11 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
               <meshStandardMaterial color="#a0522d" />
             </mesh>
             {/* Flowers */}
-            {[[-0.15, 0, 0], [0, 0, 0.15], [0.15, 0, -0.1]].map((pos, i) => (
+            {[
+              [-0.15, 0, 0],
+              [0, 0, 0.15],
+              [0.15, 0, -0.1],
+            ].map((pos, i) => (
               <group key={i} position={[pos[0], 0.3, pos[2]]}>
                 <mesh position={[0, 0.1, 0]}>
                   <cylinderGeometry args={[0.02, 0.02, 0.2, 6]} />
@@ -258,7 +287,9 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
                 </mesh>
                 <mesh position={[0, 0.25, 0]}>
                   <sphereGeometry args={[0.06, 8, 8]} />
-                  <meshStandardMaterial color={["#ff6b9d", "#CEFF65", "#60a5fa"][i]} />
+                  <meshStandardMaterial
+                    color={["#ff6b9d", "#CEFF65", "#60a5fa"][i]}
+                  />
                 </mesh>
               </group>
             ))}
@@ -270,16 +301,26 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
           <>
             {/* Stone pavers stacked */}
             {[0, 0.08, 0.16].map((y, i) => (
-              <mesh key={i} position={[0, y + 0.1, 0]} rotation={[0, i * (Math.PI / 6), 0]}>
+              <mesh
+                key={i}
+                position={[0, y + 0.1, 0]}
+                rotation={[0, i * (Math.PI / 6), 0]}
+              >
                 <boxGeometry args={[0.4, 0.06, 0.4]} />
-                <meshStandardMaterial color={["#808080", "#999999", "#707070"][i]} />
+                <meshStandardMaterial
+                  color={["#808080", "#999999", "#707070"][i]}
+                />
               </mesh>
             ))}
             {/* "Coming Soon" badge */}
             {capability.comingSoon && (
               <mesh position={[0, 0.5, 0]}>
                 <sphereGeometry args={[0.15, 16, 16]} />
-                <meshStandardMaterial color="#60a5fa" emissive="#60a5fa" emissiveIntensity={0.5} />
+                <meshStandardMaterial
+                  color="#60a5fa"
+                  emissive="#60a5fa"
+                  emissiveIntensity={0.5}
+                />
               </mesh>
             )}
           </>
@@ -325,9 +366,19 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
       {DEBUG_MODE && (
         <>
           {/* Point light at card hover position */}
-          <pointLight position={[0, 0.6, 0]} intensity={2} color="#ff0000" distance={3} />
+          <pointLight
+            position={[0, 0.6, 0]}
+            intensity={2}
+            color="#ff0000"
+            distance={3}
+          />
           {/* Point light at card click position */}
-          <pointLight position={[0, 1.9, 0]} intensity={2} color="#00ff00" distance={3} />
+          <pointLight
+            position={[0, 1.9, 0]}
+            intensity={2}
+            color="#00ff00"
+            distance={3}
+          />
           {/* Sphere markers */}
           <mesh position={[0, 0.6, 0]}>
             <sphereGeometry args={[0.1]} />
@@ -340,24 +391,28 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
         </>
       )}
 
-      {/* Invisible larger hitbox for reliable hover detection */}
+      {/* Invisible hitbox closely matching plate size */}
       <mesh
-        position={[0, 0.5, 0]}
+        position={[0, -0.4, 0]}
         onPointerEnter={(e) => {
           onHover(true);
           e.stopPropagation();
-          document.body.style.cursor = 'pointer';
+          document.body.style.cursor = "pointer";
         }}
         onPointerLeave={(e) => {
           onHover(false);
           e.stopPropagation();
-          document.body.style.cursor = 'auto';
+          document.body.style.cursor = "auto";
         }}
         onPointerDown={handlePointerDown}
         onClick={handleClick}
       >
-        <cylinderGeometry args={[1.5, 1.5, 2, 16]} />
-        <meshBasicMaterial transparent opacity={DEBUG_MODE ? 0.3 : 0} color="#ff0000" />
+        <cylinderGeometry args={[0.9, 0.9, 0.6, 16]} />
+        <meshBasicMaterial
+          transparent
+          opacity={DEBUG_MODE ? 0.3 : 0}
+          color="#ff0000"
+        />
       </mesh>
 
       {/* Static base plate (no rotation) */}
@@ -397,7 +452,11 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
       {isSelected && (
         <mesh position={[0, -0.77, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.3, 1.4, 32]} />
-          <meshBasicMaterial color={capability.color} transparent opacity={0.4} />
+          <meshBasicMaterial
+            color={capability.color}
+            transparent
+            opacity={0.4}
+          />
         </mesh>
       )}
 
@@ -405,13 +464,11 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
       <group ref={rotatingGroupRef}>
         {/* Capability icon - levitates independently */}
         <group position={[0, -0.79, 0]}>
-          <group ref={iconRef}>
-            {renderCapabilityIcon()}
-          </group>
+          <group ref={iconRef}>{renderCapabilityIcon()}</group>
         </group>
 
         {/* Upper card - always rendered, fades in on hover */}
-        <group ref={upperCardRef} position={[0, 0, 2]}>
+        <group ref={upperCardRef} position={[0, 0, 0]}>
           {/* Upper card background plane - double sided */}
           <mesh position={[0, 0, 0]}>
             <planeGeometry args={[2.8, 0.6]} />
@@ -423,8 +480,8 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
             />
           </mesh>
 
-          {/* Front side text - upper card with padding from top and leading between title/subhead */}
-          <group position={[0, 0.05, 0.01]}>
+          {/* Front side text - upper card with lowered title and minimal leading */}
+          <group position={[0, 0, 0.01]}>
             <Text
               fontSize={0.18}
               color={capability.color}
@@ -437,7 +494,7 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
             <Text
               fontSize={0.12}
               color="white"
-              position={[0, -0.32, 0]}
+              position={[0, -0.04, 0]}
               anchorY="top"
               fillOpacity={1}
             >
@@ -445,8 +502,8 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
             </Text>
           </group>
 
-          {/* Back side text - upper card (flipped 180°) with padding from top and leading between title/subhead */}
-          <group position={[0, 0.05, -0.01]} rotation={[0, Math.PI, 0]}>
+          {/* Back side text - upper card (flipped 180°) with lowered title and minimal leading */}
+          <group position={[0, 0, -0.01]} rotation={[0, Math.PI, 0]}>
             <Text
               fontSize={0.18}
               color={capability.color}
@@ -459,7 +516,7 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
             <Text
               fontSize={0.12}
               color="white"
-              position={[0, -0.32, 0]}
+              position={[0, -0.04, 0]}
               anchorY="top"
               fillOpacity={1}
             >
@@ -470,51 +527,15 @@ function CapabilityIsland({ capability, isHovered, isSelected, onHover, onClick 
 
         {/* Lower description cube card - always rendered, slides up on select */}
         {isSelected && (
-          <group ref={lowerCardRef} position={[0, -0.5, 2]}>
-            {/* Front face of thin card */}
-            <mesh position={[0, 0, 0.04]}>
-              <planeGeometry args={[3.0, 1.0]} />
+          <group ref={lowerCardRef} position={[0, -0.5, 0]}>
+            {/* Use a single box geometry for proper 3D card */}
+            <mesh>
+              <boxGeometry args={[3.0, 1.0, 0.08]} />
               <meshBasicMaterial
                 color="#1a1a1a"
                 transparent
                 opacity={0.9}
-                side={THREE.FrontSide}
               />
-            </mesh>
-
-            {/* Back face of thin card (rotated to face backward) */}
-            <mesh position={[0, 0, -0.04]} rotation={[0, Math.PI, 0]}>
-              <planeGeometry args={[3.0, 1.0]} />
-              <meshBasicMaterial
-                color="#1a1a1a"
-                transparent
-                opacity={0.9}
-                side={THREE.FrontSide}
-              />
-            </mesh>
-
-            {/* Top edge */}
-            <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[3.0, 0.08]} />
-              <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
-            </mesh>
-
-            {/* Bottom edge */}
-            <mesh position={[0, -0.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[3.0, 0.08]} />
-              <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} />
-            </mesh>
-
-            {/* Left edge */}
-            <mesh position={[-1.5, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-              <planeGeometry args={[0.08, 1.0]} />
-              <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} side={THREE.DoubleSide} />
-            </mesh>
-
-            {/* Right edge */}
-            <mesh position={[1.5, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-              <planeGeometry args={[0.08, 1.0]} />
-              <meshBasicMaterial color="#1a1a1a" transparent opacity={0.9} side={THREE.DoubleSide} />
             </mesh>
 
             {/* Front side description text */}
@@ -553,7 +574,55 @@ interface CapabilitiesShowcaseProps {
   isDark?: boolean;
 }
 
-export function CapabilitiesShowcase({ isDark = true }: CapabilitiesShowcaseProps) {
+function ParticleWaves() {
+  const particlesRef = useRef<THREE.Group>(null);
+
+  // Create fewer particles with stored positions
+  const particles = useMemo(() => {
+    return [...Array(8)].map((_, i) => ({
+      baseX: (Math.random() - 0.5) * 16,
+      baseY: Math.random() * 2 + 1,
+      baseZ: (Math.random() - 0.5) * 10,
+      offset: i * 0.8, // Phase offset for wave
+      amplitude: 0.15 + Math.random() * 0.1, // Wave amplitude
+      speed: 0.3 + Math.random() * 0.2, // Wave speed
+    }));
+  }, []);
+
+  useFrame((state) => {
+    if (!particlesRef.current) return;
+
+    particlesRef.current.children.forEach((child, i) => {
+      const particle = particles[i];
+      const time = state.clock.elapsedTime;
+
+      // Gentle wave motion
+      const waveY = Math.sin(time * particle.speed + particle.offset) * particle.amplitude;
+      const waveX = Math.cos(time * particle.speed * 0.5 + particle.offset) * particle.amplitude * 0.5;
+
+      child.position.set(
+        particle.baseX + waveX,
+        particle.baseY + waveY,
+        particle.baseZ
+      );
+    });
+  });
+
+  return (
+    <group ref={particlesRef}>
+      {particles.map((_, i) => (
+        <mesh key={i}>
+          <sphereGeometry args={[0.02, 6, 6]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.15} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+export function CapabilitiesShowcase({
+  isDark = true,
+}: CapabilitiesShowcaseProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -562,18 +631,8 @@ export function CapabilitiesShowcase({ isDark = true }: CapabilitiesShowcaseProp
 
   return (
     <group>
-      {/* Ambient particles */}
-      {[...Array(40)].map((_, i) => {
-        const x = (Math.random() - 0.5) * 16;
-        const y = Math.random() * 3;
-        const z = (Math.random() - 0.5) * 10;
-        return (
-          <mesh key={i} position={[x, y, z]}>
-            <sphereGeometry args={[0.03, 6, 6]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={0.4} />
-          </mesh>
-        );
-      })}
+      {/* Ambient particles with gentle wave motion */}
+      <ParticleWaves />
 
       {/* Capability islands */}
       {capabilities.map((capability, index) => (
@@ -583,7 +642,9 @@ export function CapabilitiesShowcase({ isDark = true }: CapabilitiesShowcaseProp
           isHovered={hoveredIndex === index}
           isSelected={selectedIndex === index}
           onHover={(hovering) => setHoveredIndex(hovering ? index : null)}
-          onClick={() => setSelectedIndex(selectedIndex === index ? null : index)}
+          onClick={() =>
+            setSelectedIndex(selectedIndex === index ? null : index)
+          }
         />
       ))}
 

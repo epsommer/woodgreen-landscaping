@@ -14,8 +14,7 @@ export function AddressInfo() {
           <MapPin className="w-5 h-5 mt-1 text-[#CEFF65]" />
           <div>
             <p className="font-semibold">Address:</p>
-            <p>84 Newton Drive</p>
-            <p>Toronto, ON M2M 2M9</p>
+            <p>Toronto, ON</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">

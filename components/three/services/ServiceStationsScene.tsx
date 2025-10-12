@@ -90,9 +90,9 @@ export function ServiceStationsScene({ activeStation, isMobile = false, isDark =
   const [hoveredStation, setHoveredStation] = useState<ServiceType | null>(null);
   const [selectedStation, setSelectedStation] = useState<ServiceType | null>(null);
 
-  // Ground color based on theme
-  const groundColor = isDark ? "#0f1810" : "#d4e8d4";
-  const fogColor = isDark ? 0x0a0f0a : 0xf0f4f0;
+  // Ground color based on theme - lighter for better text contrast
+  const groundColor = isDark ? "#2a3d2a" : "#e8f4e8";
+  const fogColor = isDark ? 0x1a2a1a : 0xf8fcf8;
 
   // Update target position when station changes
   useEffect(() => {
@@ -154,7 +154,7 @@ export function ServiceStationsScene({ activeStation, isMobile = false, isDark =
 
       {/* Base ground plane (connects all stations) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-        <planeGeometry args={[50, 50]} />
+        <planeGeometry args={[200, 200]} />
         <meshStandardMaterial color={groundColor} />
       </mesh>
 

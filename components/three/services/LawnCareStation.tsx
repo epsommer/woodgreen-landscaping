@@ -34,6 +34,7 @@ export function LawnCareStation({
   const healthyState = useRef(0); // 0 = unhealthy, 1 = healthy
   const mowerProgress = useRef(0);
   const windTime = useRef(0);
+  const cutGrass = useRef<Set<number>>(new Set()); // Track which grass blades are cut
 
   const handlePointerDown = (e: any) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
@@ -60,15 +61,24 @@ export function LawnCareStation({
 
   const grassPositions = useMemo(() => {
     const positions: THREE.Vector3[] = [];
-    const size = 7; // 7x7 lawn area
+    const mowerWidth = 1.4; // Match mower cutting deck width
+    const lawnWidth = 7;
+    const numLanes = Math.ceil(lawnWidth / mowerWidth) + 1; // +1 for the extra final pass
+    const bladesPerLane = Math.floor(grassCount / numLanes);
 
-    for (let i = 0; i < grassCount; i++) {
-      const x = (Math.random() - 0.5) * size;
-      const z = (Math.random() - 0.5) * size;
-      positions.push(new THREE.Vector3(x, 0, z));
+    // Create grass blades aligned with mower lanes
+    for (let lane = 0; lane < numLanes; lane++) {
+      const laneX = -3.5 + lane * mowerWidth;
+
+      for (let i = 0; i < bladesPerLane; i++) {
+        // Spread blades within the lane width
+        const x = laneX + (Math.random() - 0.5) * mowerWidth;
+        const z = (Math.random() - 0.5) * 7; // Full length of lawn
+        positions.push(new THREE.Vector3(x, 0, z));
+      }
     }
     return positions;
-  }, []);
+  }, [grassCount]);
 
   // Grass clipping particles
   const particleCount = isMobile ? 30 : 100;
@@ -98,13 +108,27 @@ export function LawnCareStation({
 
     windTime.current += delta;
 
+    const mowerWidth = 1.4; // Mower cutting deck width
+
     // Animate grass blades
-    if (grassRef.current) {
+    if (grassRef.current && mowerRef.current) {
       const dummy = new THREE.Object3D();
+      const mowerPos = mowerRef.current.position;
+      const mowerCutRadius = mowerWidth * 0.6; // Cutting radius
 
       grassPositions.forEach((pos, i) => {
-        const windOffset = Math.sin(windTime.current * 2 + pos.x + pos.z) * 0.15;
-        const height = THREE.MathUtils.lerp(0.5, 1.0, healthyState.current);
+        // Check if mower is over this grass blade
+        const distanceX = Math.abs(pos.x - mowerPos.x);
+        const distanceZ = Math.abs(pos.z - mowerPos.z);
+
+        if (distanceX < mowerCutRadius && distanceZ < 0.5 && !cutGrass.current.has(i)) {
+          cutGrass.current.add(i);
+        }
+
+        const isCut = cutGrass.current.has(i);
+        const windOffset = Math.sin(windTime.current * 2 + pos.x + pos.z) * (isCut ? 0.05 : 0.15);
+        const baseHeight = isCut ? 0.3 : 1.0; // Cut grass is shorter
+        const height = THREE.MathUtils.lerp(baseHeight * 0.5, baseHeight, healthyState.current);
 
         dummy.position.copy(pos);
         dummy.rotation.z = windOffset;
@@ -126,15 +150,61 @@ export function LawnCareStation({
 
     // Animate mower
     if (mowerRef.current) {
-      mowerProgress.current += delta * 0.3;
+      mowerProgress.current += delta * 0.15; // Slower speed (was 0.3)
       if (mowerProgress.current > 1) {
         mowerProgress.current = 0;
         healthyState.current = Math.min(1, healthyState.current + 0.1);
+        // Reset cut grass for next cycle
+        cutGrass.current.clear();
       }
 
-      const path = Math.sin(mowerProgress.current * Math.PI * 2) * 3;
-      mowerRef.current.position.x = path;
-      mowerRef.current.position.z = -3 + mowerProgress.current * 6;
+      // Mowing pattern: straight passes with lateral movement between
+      const lawnWidth = 7; // Total lawn width
+      const lawnLength = 6; // Total lawn length (-3 to 3)
+      const numPasses = Math.ceil(lawnWidth / mowerWidth); // Number of passes needed
+      const totalSegments = (numPasses * 2) + 1; // Each pass has straight + lateral movement, plus final pass
+
+      const segmentProgress = (mowerProgress.current * totalSegments) % totalSegments;
+      const currentSegment = Math.floor(segmentProgress);
+      const segmentPercent = segmentProgress % 1;
+
+      const passNumber = Math.floor(currentSegment / 2);
+      const isLateralMovement = currentSegment % 2 === 1;
+      const isGoingDown = passNumber % 2 === 0;
+
+      const currentX = -3.5 + passNumber * mowerWidth;
+      const nextX = -3.5 + (passNumber + 1) * mowerWidth;
+
+      // Determine rotation direction - alternates clockwise/counter-clockwise
+      const isClockwise = passNumber % 2 === 0;
+      const rotationDirection = isClockwise ? 1 : -1;
+
+      if (isLateralMovement) {
+        // Smooth easing for lateral movement and rotation
+        const easedProgress = (1 - Math.cos(segmentPercent * Math.PI)) / 2;
+
+        // Lateral movement to next lane with smooth easing
+        mowerRef.current.position.x = currentX + (nextX - currentX) * easedProgress;
+        // Stay at the end position (top or bottom)
+        mowerRef.current.position.z = isGoingDown ? 3 : -3;
+
+        // Rotate 180° in alternating directions with same easing
+        // Even passes: clockwise (+180°), Odd passes: counter-clockwise (-180°)
+        mowerRef.current.rotation.y = easedProgress * Math.PI * rotationDirection;
+      } else {
+        // Smooth easing for straight passes too
+        const easedProgress = (1 - Math.cos(segmentPercent * Math.PI)) / 2;
+
+        // Straight pass up or down - no rotation (face forward)
+        const zStart = isGoingDown ? -3 : 3;
+        const zEnd = isGoingDown ? 3 : -3;
+
+        mowerRef.current.position.x = currentX;
+        mowerRef.current.position.z = zStart + (zEnd - zStart) * easedProgress;
+
+        // Reset to neutral position after completing turn
+        mowerRef.current.rotation.y = 0;
+      }
     }
 
     // Animate particles
@@ -188,9 +258,9 @@ export function LawnCareStation({
       </mesh>
 
       {/* Ground plane */}
-      <mesh ref={groundRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+      <mesh ref={groundRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
         <planeGeometry args={[15, 15]} />
-        <meshStandardMaterial color="#166534" />
+        <meshStandardMaterial color="#4ade80" />
       </mesh>
 
       {/* Instanced grass */}
