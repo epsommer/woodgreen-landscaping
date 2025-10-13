@@ -96,18 +96,16 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
       {/* Collapsible Side Panel with Controls */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        initial={{ x: 0 }}
+        animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
+        transition={{ type: "spring", stiffness: 400, damping: 40 }}
         className="absolute left-0 top-24 md:top-32 z-hero-controls"
       >
         <div className="flex items-center">
           {/* Controls Panel */}
-          <motion.div
-            initial={false}
-            animate={{ x: controlsOpen ? 0 : "-100%" }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+          <div
             className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4"
+            style={{ width: 101 }} // Explicit width for panel
           >
             {/* Season controls - vertical slider */}
             <div className="mb-6">
@@ -248,11 +246,9 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                           setSeasonProgress(index);
                         }}
                         whileTap={{ scale: 0.95 }}
-                        className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
-                          season === s
-                            ? "bg-nature-500 text-white scale-110"
-                            : "bg-white/10 text-white/60 hover:bg-white/20"
-                        }`}
+                        className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${season === s
+                            ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
+                            : "bg-white/10 text-white/60 hover:bg-white/20"}`}
                         aria-label={`Set season to ${s}`}
                       >
                         {seasonIcons[s]}
@@ -272,11 +268,9 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <motion.button
                   onClick={() => setTimeOfDay("day")}
                   whileTap={{ scale: 0.95 }}
-                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
-                    timeOfDay === "day"
-                      ? "bg-nature-500 text-white scale-110"
-                      : "bg-white/10 text-white/60 hover:bg-white/20"
-                  }`}
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${timeOfDay === "day"
+                      ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
+                      : "bg-white/10 text-white/60 hover:bg-white/20"}`}
                   aria-label="Set to day time"
                 >
                   <Sun className="w-4 h-4" />
@@ -284,18 +278,16 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <motion.button
                   onClick={() => setTimeOfDay("night")}
                   whileTap={{ scale: 0.95 }}
-                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
-                    timeOfDay === "night"
-                      ? "bg-nature-500 text-white scale-110"
-                      : "bg-white/10 text-white/60 hover:bg-white/20"
-                  }`}
+                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${timeOfDay === "night"
+                      ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
+                      : "bg-white/10 text-white/60 hover:bg-white/20"}`}
                   aria-label="Set to night time"
                 >
                   <Moon className="w-4 h-4" />
                 </motion.button>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Toggle Button */}
           <button
