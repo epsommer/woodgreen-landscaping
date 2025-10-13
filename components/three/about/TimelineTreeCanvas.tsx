@@ -103,7 +103,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           // 1 finger to scroll page, 2 fingers to rotate
           mouseButtons={{
             left: CameraControlsImpl.ACTION.ROTATE,
-            wheel: CameraControlsImpl.ACTION.DOLLY,
+            wheel: CameraControlsImpl.ACTION.NONE,
             middle: CameraControlsImpl.ACTION.NONE,
             right: CameraControlsImpl.ACTION.NONE,
           }}
