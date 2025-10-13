@@ -17,6 +17,49 @@ interface TimelineTreeCanvasProps {
   className?: string;
 }
 
+function Scene({
+  cameraControlsRef,
+  backgroundColor,
+  isMobile,
+  isVisible,
+}: {
+  cameraControlsRef: React.RefObject<CameraControls | null>;
+  backgroundColor: string;
+  isMobile: boolean;
+  isVisible: boolean;
+}) {
+  useFrame((state, delta) => {
+    if (cameraControlsRef.current) {
+      // Apply auto-rotation
+      cameraControlsRef.current.rotate(0.1 * delta, 0, true);
+    }
+  });
+
+  return (
+    <>
+      <color attach="background" args={[backgroundColor]} />
+
+      <PerspectiveCamera makeDefault position={[0, 6, 18]} fov={50} />
+
+      {/* Lighting */}
+      <ambientLight intensity={0.6} />
+      <directionalLight
+        position={[5, 10, 5]}
+        intensity={1.5}
+        castShadow={!isMobile}
+        shadow-mapSize={isMobile ? [512, 512] : [1024, 1024]}
+      />
+      <pointLight position={[-5, 5, -5]} intensity={0.8} color="#CEFF65" />
+      <pointLight position={[5, 8, 5]} intensity={0.6} color="#22c55e" />
+
+      {/* OrbitControls, CameraControls, and the rest of the scene are now here */}
+      <Suspense fallback={<LoadingPlant />}>
+        <TimelineTree isVisible={isVisible} />
+      </Suspense>
+    </>
+  );
+}
+
 export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -76,13 +119,6 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
     }
   }, []);
 
-  useFrame((state, delta) => {
-    if (cameraControlsRef.current) {
-      // Apply auto-rotation
-      cameraControlsRef.current.rotate(0.1 * delta, 0, true);
-    }
-  });
-
   return (
     <div ref={containerRef} className={className}>
       <Canvas
@@ -91,22 +127,12 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
         className="w-full h-full"
         gl={{ antialias: true, alpha: true }}
       >
-        <color attach="background" args={[backgroundColor]} />
-
-        <PerspectiveCamera makeDefault position={[0, 6, 18]} fov={50} />
-
-        {/* Lighting */}
-        <ambientLight intensity={0.6} />
-        <directionalLight
-          position={[5, 10, 5]}
-          intensity={1.5}
-          castShadow={!isMobile}
-          shadow-mapSize={isMobile ? [512, 512] : [1024, 1024]}
+        <Scene
+          cameraControlsRef={cameraControlsRef}
+          backgroundColor={backgroundColor}
+          isMobile={isMobile}
+          isVisible={isVisible}
         />
-        <pointLight position={[-5, 5, -5]} intensity={0.8} color="#CEFF65" />
-        <pointLight position={[5, 8, 5]} intensity={0.6} color="#22c55e" />
-
-        {/* OrbitControls for user interaction - rotation only */}
         <CameraControls
           ref={cameraControlsRef}
           minDistance={12}
@@ -127,10 +153,6 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
             three: CameraControlsImpl.ACTION.NONE,
           }}
         />
-
-        <Suspense fallback={<LoadingPlant />}>
-          <TimelineTree isVisible={isVisible} />
-        </Suspense>
       </Canvas>
 
       {/* Zoom Controls */}
