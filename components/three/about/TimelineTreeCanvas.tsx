@@ -77,7 +77,6 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   const isMobile =
     (GPUTier.isMobile ?? false) || (GPUTier.tier ?? 0) < 2;
   const isUserInteracting = useRef(false);
-  const interactionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
