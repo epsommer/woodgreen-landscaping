@@ -107,6 +107,8 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           mouseButtons={{
             left: THREE.MOUSE.ROTATE,
             wheel: THREE.MOUSE.DOLLY,
+            middle: THREE.MOUSE.NONE,
+            right: THREE.MOUSE.NONE,
           }}
           touches={{
             one: THREE.TOUCH.DOLLY_PAN, // Allows page scroll
