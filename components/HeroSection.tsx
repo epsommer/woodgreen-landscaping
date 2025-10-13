@@ -96,17 +96,18 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
       {/* Collapsible Side Panel with Controls */}
       <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: controlsOpen ? 0 : -80, opacity: 1 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
         className="absolute left-0 top-24 md:top-32 z-hero-controls"
       >
         <div className="flex items-center">
           {/* Controls Panel */}
-          <div
-            className={`backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4 transition-all duration-300 ${
-              controlsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+          <motion.div
+            initial={false}
+            animate={{ x: controlsOpen ? 0 : "-100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4"
           >
             {/* Season controls - vertical slider */}
             <div className="mb-6">
@@ -294,7 +295,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 </motion.button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Toggle Button */}
           <button
