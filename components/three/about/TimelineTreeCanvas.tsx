@@ -148,7 +148,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
             right: CameraControlsImpl.ACTION.NONE,
           }}
           touches={{
-            one: CameraControlsImpl.ACTION.NONE, // Allows page scroll
+            one: isMobile ? CameraControlsImpl.ACTION.NONE : CameraControlsImpl.ACTION.TOUCH_ROTATE,
             two: CameraControlsImpl.ACTION.TOUCH_ZOOM_ROTATE,
             three: CameraControlsImpl.ACTION.NONE,
           }}
