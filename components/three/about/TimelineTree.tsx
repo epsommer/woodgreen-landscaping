@@ -243,225 +243,227 @@ export function TimelineTree({ isVisible = false }: TimelineTreeProps) {
   });
 
   return (
-    <group ref={treeRef}>
-      {/* Main trunk - grows with milestones */}
-      <mesh position={[0, maxHeight / 2, 0]} castShadow>
-        <cylinderGeometry args={[0.3, 0.5, maxHeight, 12]} />
-        <meshStandardMaterial color="#4a3520" roughness={0.9} />
-      </mesh>
-
-      {/* Trunk texture (bark lines) - only up to current height */}
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((h) => {
-        if (h > maxHeight) return null;
-        return (
-          <mesh key={h} position={[0, h, 0]} rotation={[0, h * 0.3, 0]}>
-            <torusGeometry
-              args={[0.32 + Math.max(0, maxHeight - h) * 0.015, 0.02, 8, 12]}
-            />
-            <meshStandardMaterial color="#3a2510" />
-          </mesh>
-        );
-      })}
-
-      {/* Roots underground */}
-      {[-Math.PI / 3, 0, Math.PI / 3].map((angle, i) => (
-        <mesh
-          key={i}
-          position={[Math.sin(angle) * 0.5, -0.3, Math.cos(angle) * 0.5]}
-          rotation={[0, angle, Math.PI / 6]}
-        >
-          <cylinderGeometry args={[0.08, 0.15, 1, 8]} />
-          <meshStandardMaterial color="#4a3520" transparent opacity={0.6} />
+    <group position={[0, -7, 0]}>
+      <group ref={treeRef}>
+        {/* Main trunk - grows with milestones */}
+        <mesh position={[0, maxHeight / 2, 0]} castShadow>
+          <cylinderGeometry args={[0.3, 0.5, maxHeight, 12]} />
+          <meshStandardMaterial color="#4a3520" roughness={0.9} />
         </mesh>
-      ))}
 
-      {/* Milestone branches */}
-      {milestones.slice(0, visibleMilestones).map((milestone, index) => {
-        const isHovered = hoveredMilestone === index;
-        const [x, y, z] = milestone.position;
-
-        // BIKE WHEEL SPOKE GEOMETRY
-        // Trunk = vertical cylinder (axle), Branches = horizontal spokes
-
-        // Trunk radius at this height (tapers from 0.5 at base to 0.3 at top)
-        const trunkRadius = 0.5 - (0.2 * y) / maxHeight;
-
-        // Distance from trunk axis to milestone in XZ plane (horizontal)
-        const radialDistance = Math.sqrt(x * x + z * z);
-
-        // Branch length: from trunk surface to milestone
-        const branchLength = radialDistance - trunkRadius;
-
-        // Angle around trunk axis (Y) - direction the spoke points
-        // Add significant variation so branches don't appear in a vertical line
-        // Negative angle for clockwise rotation (when viewed from above)
-        const baseSpokeAngle = Math.atan2(x, z);
-        const staggerOffset =
-          index * Math.PI * 0.6 + Math.sin(index * 1.7) * 0.8;
-        const spokeAngle = -(baseSpokeAngle + staggerOffset);
-
-        // Branch position: midpoint between trunk surface and branch end
-        const branchRadialPosition = (trunkRadius + radialDistance) / 2;
-
-        // Calculate actual branch tip position (thin end)
-        // Each branch needs individual angle correction due to geometry variations
-        const angleOffsets = [20, 270, 180, 270, 10, 5, 20, 50]; // Individual corrections per milestone
-        const sphereAngleOffset = angleOffsets[index] || 0;
-        const sphereAngle = spokeAngle + (sphereAngleOffset * Math.PI) / 180;
-        const branchTipX = Math.cos(sphereAngle) * radialDistance;
-        const branchTipY = y;
-        const branchTipZ = Math.sin(sphereAngle) * radialDistance;
-
-        // Card hovers above branch tip
-        const cardYOffset = 0.8;
-        const cardPosition: [number, number, number] = [
-          branchTipX,
-          branchTipY + cardYOffset,
-          branchTipZ + (index === 0 ? 1.5 : 0),
-        ];
-
-        return (
-          <group key={index}>
-            {/* Branch = horizontal spoke radiating from vertical trunk */}
-            {/* Rotate around Y axis first to point in spoke direction, then position and rotate to horizontal */}
-            <group position={[0, y, 0]} rotation={[0, spokeAngle, 0]}>
-              <mesh
-                position={[branchRadialPosition, 0, 0]}
-                rotation={[0, 0, Math.PI / 2]}
-                castShadow
-              >
-                {/* Thick end (0.12) at trunk, thin end (0.06) outward at milestone */}
-                <cylinderGeometry args={[0.12, 0.06, branchLength, 8]} />
-                <meshStandardMaterial color="#654321" />
-              </mesh>
-            </group>
-
-            {/* Milestone node (clickable sphere at thin branch tip) */}
-            <mesh
-              position={[branchTipX, branchTipY, branchTipZ]}
-              onPointerEnter={() => setHoveredMilestone(index)}
-              onPointerLeave={() => setHoveredMilestone(null)}
-              scale={isHovered ? 1.3 : 1}
-            >
-              <sphereGeometry args={[0.2, 16, 16]} />
-              <meshStandardMaterial
-                color={isHovered ? "#CEFF65" : "#22c55e"}
-                emissive={isHovered ? "#CEFF65" : "#000000"}
-                emissiveIntensity={isHovered ? 0.5 : 0}
+        {/* Trunk texture (bark lines) - only up to current height */}
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((h) => {
+          if (h > maxHeight) return null;
+          return (
+            <mesh key={h} position={[0, h, 0]} rotation={[0, h * 0.3, 0]}>
+              <torusGeometry
+                args={[0.32 + Math.max(0, maxHeight - h) * 0.015, 0.02, 8, 12]}
               />
+              <meshStandardMaterial color="#3a2510" />
             </mesh>
+          );
+        })}
 
-            {/* Milestone label - hovering above branch, facing radially outward */}
-            <group position={cardPosition} rotation={[0, spokeAngle, 0]}>
-              {/* Background panel for better readability - double-sided */}
-              <mesh position={[0, 0.35, 0]} rotation={[0, -Math.PI / 6, 0]}>
-                <planeGeometry args={[3, 0.8]} />
-                <meshBasicMaterial
-                  color="#000000"
-                  transparent
-                  opacity={0.7}
-                  side={THREE.DoubleSide}
+        {/* Roots underground */}
+        {[-Math.PI / 3, 0, Math.PI / 3].map((angle, i) => (
+          <mesh
+            key={i}
+            position={[Math.sin(angle) * 0.5, -0.3, Math.cos(angle) * 0.5]}
+            rotation={[0, angle, Math.PI / 6]}
+          >
+            <cylinderGeometry args={[0.08, 0.15, 1, 8]} />
+            <meshStandardMaterial color="#4a3520" transparent opacity={0.6} />
+          </mesh>
+        ))}
+
+        {/* Milestone branches */}
+        {milestones.slice(0, visibleMilestones).map((milestone, index) => {
+          const isHovered = hoveredMilestone === index;
+          const [x, y, z] = milestone.position;
+
+          // BIKE WHEEL SPOKE GEOMETRY
+          // Trunk = vertical cylinder (axle), Branches = horizontal spokes
+
+          // Trunk radius at this height (tapers from 0.5 at base to 0.3 at top)
+          const trunkRadius = 0.5 - (0.2 * y) / maxHeight;
+
+          // Distance from trunk axis to milestone in XZ plane (horizontal)
+          const radialDistance = Math.sqrt(x * x + z * z);
+
+          // Branch length: from trunk surface to milestone
+          const branchLength = radialDistance - trunkRadius;
+
+          // Angle around trunk axis (Y) - direction the spoke points
+          // Add significant variation so branches don't appear in a vertical line
+          // Negative angle for clockwise rotation (when viewed from above)
+          const baseSpokeAngle = Math.atan2(x, z);
+          const staggerOffset =
+            index * Math.PI * 0.6 + Math.sin(index * 1.7) * 0.8;
+          const spokeAngle = -(baseSpokeAngle + staggerOffset);
+
+          // Branch position: midpoint between trunk surface and branch end
+          const branchRadialPosition = (trunkRadius + radialDistance) / 2;
+
+          // Calculate actual branch tip position (thin end)
+          // Each branch needs individual angle correction due to geometry variations
+          const angleOffsets = [20, 270, 180, 270, 10, 5, 20, 50]; // Individual corrections per milestone
+          const sphereAngleOffset = angleOffsets[index] || 0;
+          const sphereAngle = spokeAngle + (sphereAngleOffset * Math.PI) / 180;
+          const branchTipX = Math.cos(sphereAngle) * radialDistance;
+          const branchTipY = y;
+          const branchTipZ = Math.sin(sphereAngle) * radialDistance;
+
+          // Card hovers above branch tip
+          const cardYOffset = 0.8;
+          const cardPosition: [number, number, number] = [
+            branchTipX,
+            branchTipY + cardYOffset,
+            branchTipZ + (index === 0 ? 1.5 : 0),
+          ];
+
+          return (
+            <group key={index}>
+              {/* Branch = horizontal spoke radiating from vertical trunk */}
+              {/* Rotate around Y axis first to point in spoke direction, then position and rotate to horizontal */}
+              <group position={[0, y, 0]} rotation={[0, spokeAngle, 0]}>
+                <mesh
+                  position={[branchRadialPosition, 0, 0]}
+                  rotation={[0, 0, Math.PI / 2]}
+                  castShadow
+                >
+                  {/* Thick end (0.12) at trunk, thin end (0.06) outward at milestone */}
+                  <cylinderGeometry args={[0.12, 0.06, branchLength, 8]} />
+                  <meshStandardMaterial color="#654321" />
+                </mesh>
+              </group>
+
+              {/* Milestone node (clickable sphere at thin branch tip) */}
+              <mesh
+                position={[branchTipX, branchTipY, branchTipZ]}
+                onPointerEnter={() => setHoveredMilestone(index)}
+                onPointerLeave={() => setHoveredMilestone(null)}
+                scale={isHovered ? 1.3 : 1}
+              >
+                <sphereGeometry args={[0.2, 16, 16]} />
+                <meshStandardMaterial
+                  color={isHovered ? "#CEFF65" : "#22c55e"}
+                  emissive={isHovered ? "#CEFF65" : "#000000"}
+                  emissiveIntensity={isHovered ? 0.5 : 0}
                 />
               </mesh>
 
-              {/* Front side text */}
-              <group rotation={[0, -Math.PI / 6, 0]}>
-                {/* Year text */}
-                <Text
-                  position={[0, 0.5, 0.05]}
-                  fontSize={0.35}
-                  color="#CEFF65"
-                  anchorX="center"
-                  anchorY="middle"
-                  outlineWidth={0.03}
-                  outlineColor="#000000"
-                  fontWeight="bold"
-                >
-                  {milestone.year}
-                </Text>
+              {/* Milestone label - hovering above branch, facing radially outward */}
+              <group position={cardPosition} rotation={[0, spokeAngle, 0]}>
+                {/* Background panel for better readability - double-sided */}
+                <mesh position={[0, 0.35, 0]} rotation={[0, -Math.PI / 6, 0]}>
+                  <planeGeometry args={[3, 0.8]} />
+                  <meshBasicMaterial
+                    color="#000000"
+                    transparent
+                    opacity={0.7}
+                    side={THREE.DoubleSide}
+                  />
+                </mesh>
 
-                {/* Title text */}
-                <Text
-                  position={[0, 0.15, 0.05]}
-                  fontSize={0.2}
-                  color="white"
-                  anchorX="center"
-                  anchorY="middle"
-                  maxWidth={2.8}
-                  textAlign="center"
-                  outlineWidth={0.02}
-                  outlineColor="#000000"
-                >
-                  {milestone.title}
-                </Text>
+                {/* Front side text */}
+                <group rotation={[0, -Math.PI / 6, 0]}>
+                  {/* Year text */}
+                  <Text
+                    position={[0, 0.5, 0.05]}
+                    fontSize={0.35}
+                    color="#CEFF65"
+                    anchorX="center"
+                    anchorY="middle"
+                    outlineWidth={0.03}
+                    outlineColor="#000000"
+                    fontWeight="bold"
+                  >
+                    {milestone.year}
+                  </Text>
+
+                  {/* Title text */}
+                  <Text
+                    position={[0, 0.15, 0.05]}
+                    fontSize={0.2}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={2.8}
+                    textAlign="center"
+                    outlineWidth={0.02}
+                    outlineColor="#000000"
+                  >
+                    {milestone.title}
+                  </Text>
+                </group>
+
+                {/* Back side text (flipped) */}
+                <group rotation={[0, Math.PI - Math.PI / 6, 0]}>
+                  {/* Year text */}
+                  <Text
+                    position={[0, 0.5, 0.05]}
+                    fontSize={0.35}
+                    color="#CEFF65"
+                    anchorX="center"
+                    anchorY="middle"
+                    outlineWidth={0.03}
+                    outlineColor="#000000"
+                    fontWeight="bold"
+                  >
+                    {milestone.year}
+                  </Text>
+
+                  {/* Title text */}
+                  <Text
+                    position={[0, 0.15, 0.05]}
+                    fontSize={0.2}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                    maxWidth={2.8}
+                    textAlign="center"
+                    outlineWidth={0.02}
+                    outlineColor="#000000"
+                  >
+                    {milestone.title}
+                  </Text>
+                </group>
               </group>
 
-              {/* Back side text (flipped) */}
-              <group rotation={[0, Math.PI - Math.PI / 6, 0]}>
-                {/* Year text */}
-                <Text
-                  position={[0, 0.5, 0.05]}
-                  fontSize={0.35}
-                  color="#CEFF65"
-                  anchorX="center"
-                  anchorY="middle"
-                  outlineWidth={0.03}
-                  outlineColor="#000000"
-                  fontWeight="bold"
+              {/* Glow ring on hover - around sphere at branch tip */}
+              {isHovered && (
+                <mesh
+                  position={[branchTipX, branchTipY, branchTipZ]}
+                  rotation={[Math.PI / 2, 0, 0]}
                 >
-                  {milestone.year}
-                </Text>
-
-                {/* Title text */}
-                <Text
-                  position={[0, 0.15, 0.05]}
-                  fontSize={0.2}
-                  color="white"
-                  anchorX="center"
-                  anchorY="middle"
-                  maxWidth={2.8}
-                  textAlign="center"
-                  outlineWidth={0.02}
-                  outlineColor="#000000"
-                >
-                  {milestone.title}
-                </Text>
-              </group>
+                  <ringGeometry args={[0.25, 0.35, 32]} />
+                  <meshBasicMaterial color="#CEFF65" transparent opacity={0.5} />
+                </mesh>
+              )}
             </group>
+          );
+        })}
 
-            {/* Glow ring on hover - around sphere at branch tip */}
-            {isHovered && (
-              <mesh
-                position={[branchTipX, branchTipY, branchTipZ]}
-                rotation={[Math.PI / 2, 0, 0]}
-              >
-                <ringGeometry args={[0.25, 0.35, 32]} />
-                <meshBasicMaterial color="#CEFF65" transparent opacity={0.5} />
-              </mesh>
-            )}
-          </group>
-        );
-      })}
+        {/* Leaves (instanced) - globular cloud particles */}
+        <instancedMesh
+          ref={leavesRef}
+          args={[undefined, undefined, leafCount]}
+          castShadow
+        >
+          <sphereGeometry args={[0.08, 8, 8]} />
+          <meshStandardMaterial color="#22c55e" transparent opacity={0.85} />
+        </instancedMesh>
 
-      {/* Leaves (instanced) - globular cloud particles */}
-      <instancedMesh
-        ref={leavesRef}
-        args={[undefined, undefined, leafCount]}
-        castShadow
-      >
-        <sphereGeometry args={[0.08, 8, 8]} />
-        <meshStandardMaterial color="#22c55e" transparent opacity={0.85} />
-      </instancedMesh>
-
-      {/* Ground (showing roots) */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.5, 0]}
-        receiveShadow
-      >
-        <circleGeometry args={[3, 32]} />
-        <meshStandardMaterial color="#2F3B30" transparent opacity={0.8} />
-      </mesh>
+        {/* Ground (showing roots) */}
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.5, 0]}
+          receiveShadow
+        >
+          <circleGeometry args={[3, 32]} />
+          <meshStandardMaterial color="#2F3B30" transparent opacity={0.8} />
+        </mesh>
+      </group>
     </group>
   );
 }

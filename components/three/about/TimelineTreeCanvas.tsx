@@ -43,7 +43,7 @@ function Scene({
     <>
       <color attach="background" args={[backgroundColor]} />
 
-      <PerspectiveCamera makeDefault position={[0, 8, 18]} fov={50} />
+      <PerspectiveCamera makeDefault position={[0, 6, 18]} fov={50} />
 
       {/* Lighting */}
       <ambientLight intensity={0.6} />
@@ -83,20 +83,10 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
   const handleZoomIn = () => {
     setZoom(prev => Math.max(12, prev - 2)); // Min distance 12
-    handleInteraction();
   };
 
   const handleZoomOut = () => {
     setZoom(prev => Math.min(25, prev + 2)); // Max distance 25
-    handleInteraction();
-  };
-
-  const handleInteraction = () => {
-    isUserInteracting.current = true;
-    if (interactionTimeoutRef.current) {
-      clearTimeout(interactionTimeoutRef.current);
-    }
-    interactionTimeoutRef.current = setTimeout(() => { isUserInteracting.current = false; }, 2000); // Resume auto-rotate after 2 seconds
   };
 
   // Detect when section enters viewport to start animation (only once)
@@ -131,7 +121,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   // Programmatically set initial target and enable auto-rotation
   useEffect(() => {
     if (cameraControlsRef.current) {
-      cameraControlsRef.current.setTarget(0, 6, 0, false);
+      cameraControlsRef.current.setTarget(0, 4.5, 0, false);
     }
   }, []);
 
@@ -150,6 +140,16 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           isMobile={isMobile}
           isVisible={isVisible}
           isUserInteracting={isUserInteracting}
+        />
+        <CameraControls
+          ref={cameraControlsRef}
+          minDistance={12}
+          maxDistance={25}
+          minPolarAngle={Math.PI / 6}
+          maxPolarAngle={Math.PI / 2}
+          // Stop auto-rotation when user interacts
+          onStart={() => (isUserInteracting.current = true)}
+          onEnd={() => (isUserInteracting.current = false)}
         />
         <CameraControls
           ref={cameraControlsRef}
