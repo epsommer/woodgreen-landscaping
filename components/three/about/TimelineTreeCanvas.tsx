@@ -43,7 +43,7 @@ function Scene({
     <>
       <color attach="background" args={[backgroundColor]} />
 
-      <PerspectiveCamera makeDefault position={[0, 6, 18]} fov={50} />
+      <PerspectiveCamera makeDefault position={[0, 8, 18]} fov={50} />
 
       {/* Lighting */}
       <ambientLight intensity={0.6} />
@@ -131,7 +131,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   // Programmatically set initial target and enable auto-rotation
   useEffect(() => {
     if (cameraControlsRef.current) {
-      cameraControlsRef.current.setTarget(0, 4, 0, false);
+      cameraControlsRef.current.setTarget(0, 6, 0, false);
     }
   }, []);
 
