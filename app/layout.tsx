@@ -1,5 +1,6 @@
 "use client";
 
+import { Analytics } from "@vercel/analytics/next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
@@ -103,6 +104,7 @@ export default function RootLayout({
             />
           )}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
