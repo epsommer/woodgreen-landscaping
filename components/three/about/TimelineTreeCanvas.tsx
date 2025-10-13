@@ -93,7 +93,13 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   const handleMilestoneClick = (position: [number, number, number]) => {
     if (cameraControlsRef.current) {
       // Smoothly move the camera's target to the milestone's position
-      cameraControlsRef.current.setTarget(position[0], position[1], position[2], true);
+      // The tree is offset by -7 on the y-axis, so we need to adjust the target accordingly.
+      cameraControlsRef.current.setTarget(
+        position[0],
+        position[1] - 7,
+        position[2],
+        true,
+      );
       isUserInteracting.current = true; // Pause auto-rotation
     }
   };
