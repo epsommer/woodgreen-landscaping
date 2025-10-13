@@ -136,7 +136,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   }, []);
 
   return (
-    <div ref={containerRef} className={className}>
+    <div ref={containerRef} className={`${className} ${isMobile ? 'pointer-events-none' : ''}`}>
       <Canvas
         shadows={!isMobile}
         dpr={isMobile ? 1 : 2}
@@ -174,7 +174,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
       </Canvas>
 
       {/* Zoom Controls */}
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2 pointer-events-auto">
         <button
           onClick={handleZoomIn}
           disabled={zoom <= 12}
