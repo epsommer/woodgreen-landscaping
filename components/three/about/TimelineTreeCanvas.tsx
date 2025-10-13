@@ -2,10 +2,15 @@
 
 import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useRef, useState, useEffect } from "react";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import {
+  CameraControls,
+  PerspectiveCamera,
+  useDetectGPU,
+} from "@react-three/drei";
 import { TimelineTree } from "./TimelineTree";
 import { LoadingPlant } from "../LoadingPlant";
 import { useTheme } from "next-themes";
+import * as THREE from "three";
 import { ZoomIn, ZoomOut } from "lucide-react";
 
 interface TimelineTreeCanvasProps {
@@ -18,6 +23,10 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [zoom, setZoom] = useState(18); // Initial camera distance
+  const cameraControlsRef = useRef<CameraControls | null>(null);
+  const GPUTier = useDetectGPU();
+  const isMobile =
+    (GPUTier.isMobile ?? false) || (GPUTier.tier ?? 0) < 2;
 
   useEffect(() => {
     setMounted(true);
@@ -54,16 +63,11 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   // Background colors based on theme
   const backgroundColor = mounted && resolvedTheme === "dark" ? "#1C1C1C" : "#F0F4F0";
 
-  // Component to update camera based on zoom
-  function CameraController() {
-    const { camera } = useThree();
-
-    useEffect(() => {
-      camera.position.z = zoom;
-    }, [camera]);
-
-    return null;
-  }
+  useEffect(() => {
+    if (cameraControlsRef.current) {
+      cameraControlsRef.current.zoomTo(zoom, true);
+    }
+  }, [zoom]);
 
   return (
     <div ref={containerRef} className={className}>
@@ -76,7 +80,6 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
         <color attach="background" args={[backgroundColor]} />
 
         <PerspectiveCamera makeDefault position={[0, 5, zoom]} fov={50} />
-        <CameraController />
 
         {/* Lighting */}
         <ambientLight intensity={0.6} />
@@ -90,15 +93,25 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
         <pointLight position={[5, 8, 5]} intensity={0.6} color="#22c55e" />
 
         {/* OrbitControls for user interaction - rotation only */}
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={true}
+        <CameraControls
+          ref={cameraControlsRef}
+          minDistance={12}
+          maxDistance={25}
           minPolarAngle={Math.PI / 6}
           maxPolarAngle={Math.PI / 2}
           autoRotate
           autoRotateSpeed={0.5}
           target={[0, 5, 0]}
+          // Mobile-friendly touch controls
+          // 1 finger to scroll page, 2 fingers to rotate
+          mouseButtons={{
+            left: THREE.MOUSE.ROTATE,
+            wheel: THREE.MOUSE.DOLLY,
+          }}
+          touches={{
+            one: THREE.TOUCH.DOLLY_PAN, // Allows page scroll
+            two: THREE.TOUCH.ROTATE,
+          }}
         />
 
         <Suspense fallback={<LoadingPlant />}>
@@ -128,7 +141,9 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
       {/* Interaction hint */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[#2F3B30] dark:text-white text-sm opacity-70 pointer-events-none text-center">
-        Drag to rotate • Use buttons to zoom
+        {isMobile
+          ? "Use two fingers to rotate • Use buttons to zoom"
+          : "Drag to rotate • Use buttons to zoom"}
       </div>
     </div>
   );
