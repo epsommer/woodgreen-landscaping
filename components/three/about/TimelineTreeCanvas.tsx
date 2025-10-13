@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState, useEffect } from "react";
 import {
   CameraControls,
