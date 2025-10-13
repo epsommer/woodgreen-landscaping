@@ -22,16 +22,20 @@ function Scene({
   backgroundColor,
   isMobile,
   isVisible,
+  isUserInteracting,
 }: {
   cameraControlsRef: React.RefObject<CameraControls | null>;
   backgroundColor: string;
   isMobile: boolean;
   isVisible: boolean;
+  isUserInteracting: React.MutableRefObject<boolean>;
 }) {
   useFrame((state, delta) => {
     if (cameraControlsRef.current) {
-      // Apply auto-rotation
-      cameraControlsRef.current.rotate(0.1 * delta, 0, true);
+      // Apply auto-rotation only when user is not interacting
+      if (!isUserInteracting.current) {
+        cameraControlsRef.current.rotate(0.1 * delta, 0, true);
+      }
     }
   });
 
@@ -70,6 +74,8 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   const GPUTier = useDetectGPU();
   const isMobile =
     (GPUTier.isMobile ?? false) || (GPUTier.tier ?? 0) < 2;
+  const isUserInteracting = useRef(false);
+  const interactionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -77,10 +83,20 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
   const handleZoomIn = () => {
     setZoom(prev => Math.max(12, prev - 2)); // Min distance 12
+    handleInteraction();
   };
 
   const handleZoomOut = () => {
     setZoom(prev => Math.min(25, prev + 2)); // Max distance 25
+    handleInteraction();
+  };
+
+  const handleInteraction = () => {
+    isUserInteracting.current = true;
+    if (interactionTimeoutRef.current) {
+      clearTimeout(interactionTimeoutRef.current);
+    }
+    interactionTimeoutRef.current = setTimeout(() => { isUserInteracting.current = false; }, 2000); // Resume auto-rotate after 2 seconds
   };
 
   // Detect when section enters viewport to start animation (only once)
@@ -126,12 +142,14 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
         dpr={isMobile ? 1 : 2}
         className="w-full h-full"
         gl={{ antialias: true, alpha: true }}
+        style={{ touchAction: "pan-y" }}
       >
         <Scene
           cameraControlsRef={cameraControlsRef}
           backgroundColor={backgroundColor}
           isMobile={isMobile}
           isVisible={isVisible}
+          isUserInteracting={isUserInteracting}
         />
         <CameraControls
           ref={cameraControlsRef}
