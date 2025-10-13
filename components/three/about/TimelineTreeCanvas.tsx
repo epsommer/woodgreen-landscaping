@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useRef, useState, useEffect } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import {
   CameraControls,
   PerspectiveCamera,
@@ -10,6 +10,7 @@ import {
 import { TimelineTree } from "./TimelineTree";
 import { LoadingPlant } from "../LoadingPlant";
 import { useTheme } from "next-themes";
+import CameraControlsImpl from "camera-controls";
 import * as THREE from "three";
 import { ZoomIn, ZoomOut } from "lucide-react";
 
@@ -99,20 +100,18 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           maxDistance={25}
           minPolarAngle={Math.PI / 6}
           maxPolarAngle={Math.PI / 2}
-          autoRotate
-          autoRotateSpeed={0.5}
-          target={[0, 5, 0]}
           // Mobile-friendly touch controls
           // 1 finger to scroll page, 2 fingers to rotate
           mouseButtons={{
-            left: THREE.MOUSE.ROTATE,
-            wheel: THREE.MOUSE.DOLLY,
-            middle: THREE.MOUSE.NONE,
-            right: THREE.MOUSE.NONE,
+            left: CameraControlsImpl.ACTION.ROTATE,
+            wheel: CameraControlsImpl.ACTION.DOLLY,
+            middle: CameraControlsImpl.ACTION.NONE,
+            right: CameraControlsImpl.ACTION.NONE,
           }}
           touches={{
-            one: THREE.TOUCH.DOLLY_PAN, // Allows page scroll
-            two: THREE.TOUCH.ROTATE,
+            one: CameraControlsImpl.ACTION.NONE,
+            two: CameraControlsImpl.ACTION.TOUCH_ZOOM_ROTATE,
+            three: CameraControlsImpl.ACTION.NONE,
           }}
         />
 
