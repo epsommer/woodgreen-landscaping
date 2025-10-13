@@ -235,7 +235,7 @@ export function LawnCareStation({
     <group position={[-10, 0, -10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
       <mesh position={[0, 2, 0]} {...interactionHandlers}>
-        <cylinderGeometry args={[5, 5, 4, 16]} />
+        <cylinderGeometry args={[isMobile ? 4 : 5, isMobile ? 4 : 5, 4, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
 

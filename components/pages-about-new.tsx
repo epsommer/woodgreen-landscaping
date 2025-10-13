@@ -55,7 +55,7 @@ export function AboutNew() {
         <TimelineTreeCanvas className="absolute inset-0 w-full h-full" />
 
         {/* Hero text overlay */}
-        <div className="absolute top-0 left-0 right-0 pt-32 pb-20 text-center z-20 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 pt-32 pb-20 text-center md:text-left md:pl-16 lg:pl-32 z-20 pointer-events-none">
           <h1 className="text-4xl md:text-7xl font-bold mb-4 text-[#2F3B30] dark:text-white">
             Where Design Meets the Earth... Gently
           </h1>

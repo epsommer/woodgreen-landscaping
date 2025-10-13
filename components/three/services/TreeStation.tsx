@@ -183,14 +183,14 @@ export function TreeStation({
     <group position={[-10, 0, 10]}>
       {/* Invisible larger hitbox for reliable hover detection */}
       <mesh position={[0, 4, 0]} {...interactionHandlers}>
-        <cylinderGeometry args={[4, 4, 8, 9]} />
+        <cylinderGeometry args={[isMobile ? 3 : 4, isMobile ? 3 : 4, 8, 9]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
       {/* Ground */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0.01, 0]}
-        receiveShadow
+        receiveShadow={!isMobile}
       >
         <planeGeometry args={[15, 15]} />
         <meshStandardMaterial color="#8b6f47" />
@@ -199,7 +199,7 @@ export function TreeStation({
       {/* Tree group */}
       <group ref={treeRef} position={[0, 0, 0]}>
         {/* Trunk */}
-        <mesh position={[0, 2.5, 0]} castShadow>
+        <mesh position={[0, 2.5, 0]} castShadow={!isMobile}>
           <cylinderGeometry args={[0.15, 0.2, 5, 12]} />
           <meshStandardMaterial color="#654321" roughness={0.9} />
         </mesh>
@@ -208,7 +208,7 @@ export function TreeStation({
         <mesh
           position={[0.5, 4.5, 0]}
           rotation={[0, 0, Math.PI / 4]}
-          castShadow
+          castShadow={!isMobile}
         >
           <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
@@ -216,7 +216,7 @@ export function TreeStation({
         <mesh
           position={[-0.5, 4.5, 0]}
           rotation={[0, 0, -Math.PI / 4]}
-          castShadow
+          castShadow={!isMobile}
         >
           <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
@@ -224,7 +224,7 @@ export function TreeStation({
         <mesh
           position={[0, 4.5, 0.5]}
           rotation={[Math.PI / 4, 0, 0]}
-          castShadow
+          castShadow={!isMobile}
         >
           <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
@@ -232,7 +232,7 @@ export function TreeStation({
         <mesh
           position={[0, 4.5, -0.5]}
           rotation={[-Math.PI / 4, 0, 0]}
-          castShadow
+          castShadow={!isMobile}
         >
           <cylinderGeometry args={[0.06, 0.1, 1.5, 8]} />
           <meshStandardMaterial color="#654321" />
@@ -242,7 +242,7 @@ export function TreeStation({
         <instancedMesh
           ref={leavesRef}
           args={[leafGeometry, undefined, leafCount]}
-          castShadow
+          castShadow={!isMobile}
         >
           <meshStandardMaterial color="#22c55e" />
         </instancedMesh>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect, useRef, useState } from "react";
 import {
   CameraControls,
@@ -65,29 +65,43 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
   useEffect(() => {
     if (cameraControlsRef.current) {
-      cameraControlsRef.current.zoomTo(zoom, true);
+      cameraControlsRef.current.dollyTo(zoom, true);
     }
   }, [zoom]);
+
+  // Programmatically set initial target and enable auto-rotation
+  useEffect(() => {
+    if (cameraControlsRef.current) {
+      cameraControlsRef.current.setTarget(0, 6, 0, false);
+    }
+  }, []);
+
+  useFrame((state, delta) => {
+    if (cameraControlsRef.current) {
+      // Apply auto-rotation
+      cameraControlsRef.current.rotate(0.1 * delta, 0, true);
+    }
+  });
 
   return (
     <div ref={containerRef} className={className}>
       <Canvas
-        shadows
-        dpr={[1, 2]}
+        shadows={!isMobile}
+        dpr={isMobile ? 1 : 2}
         className="w-full h-full"
         gl={{ antialias: true, alpha: true }}
       >
         <color attach="background" args={[backgroundColor]} />
 
-        <PerspectiveCamera makeDefault position={[0, 5, zoom]} fov={50} />
+        <PerspectiveCamera makeDefault position={[0, 6, 18]} fov={50} />
 
         {/* Lighting */}
         <ambientLight intensity={0.6} />
         <directionalLight
           position={[5, 10, 5]}
           intensity={1.5}
-          castShadow
-          shadow-mapSize={[1024, 1024]}
+          castShadow={!isMobile}
+          shadow-mapSize={isMobile ? [512, 512] : [1024, 1024]}
         />
         <pointLight position={[-5, 5, -5]} intensity={0.8} color="#CEFF65" />
         <pointLight position={[5, 8, 5]} intensity={0.6} color="#22c55e" />
@@ -108,7 +122,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
             right: CameraControlsImpl.ACTION.NONE,
           }}
           touches={{
-            one: CameraControlsImpl.ACTION.NONE,
+            one: CameraControlsImpl.ACTION.NONE, // Allows page scroll
             two: CameraControlsImpl.ACTION.TOUCH_ZOOM_ROTATE,
             three: CameraControlsImpl.ACTION.NONE,
           }}
