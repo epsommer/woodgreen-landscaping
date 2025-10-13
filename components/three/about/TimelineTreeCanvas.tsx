@@ -11,7 +11,6 @@ import { TimelineTree } from "./TimelineTree";
 import { LoadingPlant } from "../LoadingPlant";
 import { useTheme } from "next-themes";
 import CameraControlsImpl from "camera-controls";
-import * as THREE from "three";
 import { ZoomIn, ZoomOut } from "lucide-react";
 
 interface TimelineTreeCanvasProps {
