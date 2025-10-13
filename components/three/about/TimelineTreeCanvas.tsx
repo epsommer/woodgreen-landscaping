@@ -160,13 +160,13 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           // Mobile-friendly touch controls
           // 1 finger to scroll page, 2 fingers to rotate
           mouseButtons={{
-            left: isMobile ? CameraControlsImpl.ACTION.NONE : CameraControlsImpl.ACTION.ROTATE,
+            left: CameraControlsImpl.ACTION.ROTATE,
             wheel: CameraControlsImpl.ACTION.NONE,
             middle: CameraControlsImpl.ACTION.NONE,
             right: CameraControlsImpl.ACTION.NONE,
           }}
           touches={{
-            one: isMobile ? CameraControlsImpl.ACTION.NONE : CameraControlsImpl.ACTION.TOUCH_ROTATE,
+            one: CameraControlsImpl.ACTION.NONE,
             two: CameraControlsImpl.ACTION.TOUCH_ZOOM_ROTATE,
             three: CameraControlsImpl.ACTION.NONE,
           }}
