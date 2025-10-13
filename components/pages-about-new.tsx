@@ -4,8 +4,8 @@ import { TimelineTreeCanvas } from "./three/about/TimelineTreeCanvas";
 import { CapabilitiesShowcaseCanvas } from "./three/about/CapabilitiesShowcaseCanvas";
 import { ServiceGlobeCanvas } from "./three/about/ServiceGlobeCanvas";
 import { PortalCTA } from "./about/PortalCTA";
-import { Card, CardContent } from "./ui/card";
-import { Award, Users, Leaf, CheckCircle2, Battery } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Award, Users, Leaf, CheckCircle2, Battery, ChevronDown } from "lucide-react";
 
 export function AboutNew() {
   const stats = [
@@ -51,7 +51,7 @@ export function AboutNew() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white">
       {/* Hero: 3D Timeline Tree */}
-      <section className="relative h-screen pointer-events-none">
+      <section className="relative h-[85vh]">
         <TimelineTreeCanvas className="absolute inset-0 w-full h-full" />
 
         {/* Hero text overlay */}
@@ -67,9 +67,10 @@ export function AboutNew() {
         {/* Skip button for accessibility */}
         <a
           href="#story"
-          className="absolute top-24 right-4 text-sm text-[#4A5D4C] dark:text-gray-400 hover:text-[#2F3B30] dark:hover:text-white underline z-30 pointer-events-auto"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 text-sm text-[#4A5D4C] dark:text-gray-400 hover:text-[#2F3B30] dark:hover:text-white transition-all group"
         >
-          Skip to Story
+          <span className="group-hover:underline">Skip to Story</span>
+          <ChevronDown className="w-5 h-5 animate-bounce" />
         </a>
       </section>
 

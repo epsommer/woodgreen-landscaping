@@ -131,12 +131,12 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   // Programmatically set initial target and enable auto-rotation
   useEffect(() => {
     if (cameraControlsRef.current) {
-      cameraControlsRef.current.setTarget(0, 6, 0, false);
+      cameraControlsRef.current.setTarget(0, 4, 0, false);
     }
   }, []);
 
   return (
-    <div ref={containerRef} className={`${className} ${isMobile ? 'pointer-events-none' : ''}`}>
+    <div ref={containerRef} className={className}>
       <Canvas
         shadows={!isMobile}
         dpr={isMobile ? 1 : 2}
@@ -174,7 +174,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
       </Canvas>
 
       {/* Zoom Controls */}
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2 pointer-events-auto">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">
         <button
           onClick={handleZoomIn}
           disabled={zoom <= 12}
