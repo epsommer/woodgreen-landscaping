@@ -82,9 +82,13 @@ const milestones: Milestone[] = [
 
 interface TimelineTreeProps {
   isVisible?: boolean;
+  onMilestoneClick?: (position: [number, number, number]) => void;
 }
 
-export function TimelineTree({ isVisible = false }: TimelineTreeProps) {
+export function TimelineTree({
+  isVisible = false,
+  onMilestoneClick,
+}: TimelineTreeProps) {
   const treeRef = useRef<THREE.Group>(null);
   const [hoveredMilestone, setHoveredMilestone] = useState<number | null>(null);
   const leavesRef = useRef<THREE.InstancedMesh>(null);
@@ -342,6 +346,7 @@ export function TimelineTree({ isVisible = false }: TimelineTreeProps) {
                 position={[branchTipX, branchTipY, branchTipZ]}
                 onPointerEnter={() => setHoveredMilestone(index)}
                 onPointerLeave={() => setHoveredMilestone(null)}
+              onClick={() => onMilestoneClick?.([branchTipX, branchTipY, branchTipZ])}
                 scale={isHovered ? 1.3 : 1}
               >
                 <sphereGeometry args={[0.2, 16, 16]} />

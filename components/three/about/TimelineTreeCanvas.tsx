@@ -23,12 +23,14 @@ function Scene({
   isMobile,
   isVisible,
   isUserInteracting,
+  onMilestoneClick,
 }: {
   cameraControlsRef: React.RefObject<CameraControls | null>;
   backgroundColor: string;
   isMobile: boolean;
   isVisible: boolean;
   isUserInteracting: React.MutableRefObject<boolean>;
+  onMilestoneClick: (position: [number, number, number]) => void;
 }) {
   useFrame((state, delta) => {
     if (cameraControlsRef.current) {
@@ -58,7 +60,7 @@ function Scene({
 
       {/* OrbitControls, CameraControls, and the rest of the scene are now here */}
       <Suspense fallback={<LoadingPlant />}>
-        <TimelineTree isVisible={isVisible} />
+        <TimelineTree isVisible={isVisible} onMilestoneClick={onMilestoneClick} />
       </Suspense>
     </>
   );
@@ -87,6 +89,14 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
 
   const handleZoomOut = () => {
     setZoom(prev => Math.min(25, prev + 2)); // Max distance 25
+  };
+
+  const handleMilestoneClick = (position: [number, number, number]) => {
+    if (cameraControlsRef.current) {
+      // Smoothly move the camera's target to the milestone's position
+      cameraControlsRef.current.setTarget(position[0], position[1], position[2], true);
+      isUserInteracting.current = true; // Pause auto-rotation
+    }
   };
 
   // Detect when section enters viewport to start animation (only once)
@@ -140,6 +150,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           isMobile={isMobile}
           isVisible={isVisible}
           isUserInteracting={isUserInteracting}
+          onMilestoneClick={handleMilestoneClick}
         />
         <CameraControls
           ref={cameraControlsRef}
