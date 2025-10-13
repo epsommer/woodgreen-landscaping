@@ -55,6 +55,13 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     winter: <Snowflake className="w-4 h-4" />,
   };
 
+  const activeSeasonClasses: Record<Season, string> = {
+    spring: "bg-green-400 text-green-800",
+    summer: "bg-[#CEFF65] text-[#2F3B30]",
+    fall: "bg-amber-700 text-white",
+    winter: "bg-white text-blue-900",
+  };
+
   // Log animation state after drag ends
   useEffect(() => {
     if (!isDragging && debugInfo.progress > 0) {
@@ -246,9 +253,11 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                           setSeasonProgress(index);
                         }}
                         whileTap={{ scale: 0.95 }}
-                        className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${season === s
-                            ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
-                            : "bg-white/10 text-white/60 hover:bg-white/20"}`}
+                        className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
+                          season === s
+                            ? `${activeSeasonClasses[s]} scale-110`
+                            : "bg-white/10 text-white/60 hover:bg-white/20"
+                        }`}
                         aria-label={`Set season to ${s}`}
                       >
                         {seasonIcons[s]}
