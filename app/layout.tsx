@@ -7,6 +7,7 @@ import { Providers } from "@/components/providers";
 import { MainNav } from "@/components/main-nav";
 import { Footer } from "@/components/footer";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { EstimateCalculator } from "@/components/estimate-calculator";
 import Scheduler from "@/components/scheduler";
 import { subscribeToEvent, EVENTS } from "@/lib/events";
@@ -31,6 +32,7 @@ export default function RootLayout({
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [initialService, setInitialService] = useState("");
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleOpenEstimate = () => setShowEstimateCalculator(true);
@@ -78,9 +80,10 @@ export default function RootLayout({
         />
         <Providers>
           <div className="flex flex-col min-h-screen">
-            <MainNav />
+            {pathname !== "/maintenance" && <MainNav />}
             {children}
-            <Footer />
+            {/* The maintenance page has its own footer, so we conditionally render the main one */}
+            {pathname !== "/maintenance" && <Footer />}
           </div>
 
           {showEstimateCalculator && (
