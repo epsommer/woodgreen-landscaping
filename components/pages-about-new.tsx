@@ -51,7 +51,7 @@ export function AboutNew() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white">
       {/* Hero: 3D Timeline Tree */}
-      <section className="relative h-screen">
+      <section className="relative h-screen pointer-events-none">
         <TimelineTreeCanvas className="absolute inset-0 w-full h-full" />
 
         {/* Hero text overlay */}
