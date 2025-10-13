@@ -11,7 +11,7 @@ import { TimelineTree } from "./TimelineTree";
 import { LoadingPlant } from "../LoadingPlant";
 import { useTheme } from "next-themes";
 import CameraControlsImpl from "camera-controls";
-import { ZoomIn, ZoomOut } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 interface TimelineTreeCanvasProps {
   className?: string;
@@ -90,6 +90,13 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
     setZoom(prev => Math.min(25, prev + 2)); // Max distance 25
   };
 
+  const handleResetCamera = () => {
+    if (cameraControlsRef.current) {
+      cameraControlsRef.current.reset(true);
+      setZoom(18); // Also reset the zoom state
+    }
+  };
+
   const handleMilestoneClick = (position: [number, number, number]) => {
     if (cameraControlsRef.current) {
       // Smoothly move the camera's target to the milestone's position
@@ -137,6 +144,7 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
   useEffect(() => {
     if (cameraControlsRef.current) {
       cameraControlsRef.current.setTarget(0, 4.5, 0, false);
+      cameraControlsRef.current.saveState();
     }
   }, []);
 
@@ -206,6 +214,13 @@ export function TimelineTreeCanvas({ className = "" }: TimelineTreeCanvasProps) 
           aria-label="Zoom out"
         >
           <ZoomOut className="w-5 h-5 text-[#2F3B30] dark:text-white" />
+        </button>
+        <button
+          onClick={handleResetCamera}
+          className="p-3 rounded-lg bg-white/90 dark:bg-black/60 backdrop-blur-md border border-[#2F3B30]/20 dark:border-white/10 hover:bg-white dark:hover:bg-black/80 transition-all shadow-lg"
+          aria-label="Reset camera"
+        >
+          <RotateCcw className="w-5 h-5 text-[#2F3B30] dark:text-white" />
         </button>
       </div>
 
