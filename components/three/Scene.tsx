@@ -1,6 +1,7 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
+import { MotionValue } from "framer-motion";
 import { Suspense } from "react";
 import { FrontYardScene } from "./FrontYardScene";
 import { LoadingPlant } from "./LoadingPlant";
@@ -12,9 +13,15 @@ interface SceneProps {
   season: Season;
   timeOfDay: TimeOfDay;
   seasonProgress?: number;
+  timeProgress?: MotionValue<number>; // Added this line
 }
 
-export function Scene({ season, timeOfDay, seasonProgress = 1 }: SceneProps) {
+export function Scene({
+  season,
+  timeOfDay,
+  seasonProgress = 1,
+  timeProgress,
+}: SceneProps) {
   return (
     <Canvas
       camera={{ position: [0, 6, 18], fov: 60 }}
@@ -26,6 +33,7 @@ export function Scene({ season, timeOfDay, seasonProgress = 1 }: SceneProps) {
           season={season}
           timeOfDay={timeOfDay}
           seasonProgress={seasonProgress}
+          timeProgress={timeProgress}
         />
       </Suspense>
     </Canvas>

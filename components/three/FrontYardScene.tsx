@@ -1,21 +1,24 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls, Sky } from "@react-three/drei";
 import { Color, DirectionalLight, PointLight, Mesh } from "three";
 import { Season, TimeOfDay } from "./Scene";
 import * as THREE from "three";
+import { MotionValue } from "framer-motion";
 
 interface FrontYardSceneProps {
   season: Season;
   timeOfDay: TimeOfDay;
   seasonProgress?: number;
+  timeProgress?: MotionValue<number>;
 }
 
 export function FrontYardScene({
   timeOfDay,
   seasonProgress = 1,
+  timeProgress,
 }: FrontYardSceneProps) {
   const sunRef = useRef<DirectionalLight>(null);
   const moonRef = useRef<PointLight>(null);
@@ -24,6 +27,7 @@ export function FrontYardScene({
   const bushRef = useRef<THREE.InstancedMesh>(null);
   const treeRef = useRef<Mesh>(null);
 
+  const { scene } = useThree();
   // Season-based colors
   const seasonColors = useMemo(
     () => ({
@@ -164,11 +168,20 @@ export function FrontYardScene({
       bushRef.current.instanceMatrix.needsUpdate = true;
     }
 
-    // Animate sun/moon position
-    if (sunRef.current && timeOfDay === "day") {
-      const t = state.clock.getElapsedTime() * 0.1;
-      sunRef.current.position.x = Math.cos(t) * 15;
-      sunRef.current.position.y = Math.abs(Math.sin(t)) * 10 + 5;
+    // Animate sun/moon position based on timeProgress
+    if (timeProgress) {
+      const progress = timeProgress.get(); // 0 for day, 1 for night
+      const sunMoonAngle = Math.PI * progress;
+
+      const sun = scene.getObjectByName("sun");
+      const moon = scene.getObjectByName("moon");
+
+      if (sun) {
+        sun.position.set(Math.cos(sunMoonAngle) * 20, Math.sin(sunMoonAngle) * 20, -20);
+      }
+      if (moon) {
+        moon.position.set(Math.cos(sunMoonAngle + Math.PI) * 20, Math.sin(sunMoonAngle + Math.PI) * 20, -20);
+      }
     }
   });
 
@@ -194,8 +207,21 @@ export function FrontYardScene({
         color="#B0C4DE"
       />
 
-      {/* Sky color */}
-      <color attach="background" args={[currentColors.sky]} />
+      {/* Sky and celestial bodies */}
+      <Sky
+        distance={450000}
+        sunPosition={timeOfDay === "day" ? [10, 10, 5] : [-10, -10, -5]}
+        azimuth={timeOfDay === "day" ? 0.25 : 0.75}
+        inclination={timeOfDay === "day" ? 0.6 : 0.1}
+      />
+      <mesh name="sun" position={[20, 0, -20]}>
+        <sphereGeometry args={[1, 16, 16]} />
+        <meshBasicMaterial color="yellow" />
+      </mesh>
+      <mesh name="moon" position={[-20, 0, -20]}>
+        <sphereGeometry args={[0.8, 16, 16]} />
+        <meshBasicMaterial color="white" />
+      </mesh>
       <fog attach="fog" args={[currentColors.sky, 20, 50]} />
 
       {/* Camera controls */}

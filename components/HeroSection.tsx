@@ -4,10 +4,10 @@ import { useState, useEffect, useRef, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
 import {
   motion,
-  AnimatePresence,
   useMotionValue,
+  useSpring,
   useTransform,
-} from "framer-motion";
+} from "framer-motion"; // Added useSpring
 import { Button } from "@/components/ui/button";
 import {
   Sun,
@@ -20,7 +20,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Season, TimeOfDay } from "./three/Scene";
-import { TimeOfDayToggle } from "./TimeOfDayToggle";
+import { TimeOfDayToggle } from "@/components/TimeOfDayToggle";
 
 // Dynamically import the 3D Scene to avoid SSR issues
 const Scene = dynamic(() => import("./three/Scene").then((mod) => mod.Scene), {
@@ -38,11 +38,14 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   const [seasonProgress, setSeasonProgress] = useState(1); // 0=spring, 1=summer, 2=fall, 3=winter
   const [isDragging, setIsDragging] = useState(false);
 
+  // Motion values for sliders/dials
+  const timeProgress = useSpring(0, { stiffness: 200, damping: 30 });
+
   // Ref for slider container to constrain drag
   const sliderContainerRef = useRef<HTMLDivElement>(null);
 
   // Debug state
-  const [debugInfo, setDebugInfo] = useState({
+  const [debugInfo] = useState({
     containerY: 0,
     relativeY: 0,
     clampedY: 0,
@@ -70,6 +73,11 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     fall: "bg-amber-700 text-white",
     winter: "bg-white text-blue-900",
   };
+
+  // Update timeProgress when timeOfDay changes
+  useEffect(() => {
+    timeProgress.set(timeOfDay === "day" ? 0 : 1);
+  }, [timeOfDay, timeProgress]);
 
   // Motion values for the slider
   const thumbY = useMotionValue(20 + (seasonProgress / 3) * 144);
@@ -114,6 +122,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             season={season}
             timeOfDay={timeOfDay}
             seasonProgress={seasonProgress}
+            timeProgress={timeProgress}
           />
         </Suspense>
       </div>
@@ -209,7 +218,11 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               </div>
 
               {/* Time of day toggle */}
-              <TimeOfDayToggle timeOfDay={timeOfDay} setTimeOfDay={setTimeOfDay} />
+              <TimeOfDayToggle
+                timeOfDay={timeOfDay}
+                setTimeOfDay={setTimeOfDay}
+                timeProgress={timeProgress}
+              />
         </div>
 
         {/* Toggle Button */}
