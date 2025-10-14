@@ -5,6 +5,7 @@ import {
   useTransform,
   MotionValue,
   PanInfo,
+  TapInfo,
 } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 import { useRef } from "react";
@@ -24,24 +25,32 @@ export function TimeOfDayDial({
   const dialRef = useRef<HTMLDivElement>(null);
   const rotation = useTransform(timeProgress, [0, 1], [0, 180]);
 
-  const handlePan = (
-    event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) => {
+  const updateDialFromPoint = (point: { x: number; y: number }) => {
     if (!dialRef.current) return;
 
     const { x, y, width, height } = dialRef.current.getBoundingClientRect();
-    const center = {
-      x: x + width / 2,
-      y: y + height / 2,
-    };
+    const center = { x: x + width / 2, y: y + height / 2 };
 
-    const angle = Math.atan2(info.point.y - center.y, info.point.x - center.x);
+    const angle = Math.atan2(point.y - center.y, point.x - center.x);
     const newProgress = (angle + Math.PI / 2) / Math.PI;
     const clampedProgress = Math.max(0, Math.min(1, newProgress));
 
     timeProgress.set(clampedProgress);
     setTimeOfDay(clampedProgress < 0.5 ? "day" : "night");
+  };
+
+  const handlePan = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
+    updateDialFromPoint(info.point);
+  };
+
+  const handleTap = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: TapInfo,
+  ) => {
+    updateDialFromPoint(info.point);
   };
 
   return (
@@ -50,8 +59,9 @@ export function TimeOfDayDial({
       <div className="flex justify-center">
         <motion.div
           ref={dialRef}
-          className="relative w-20 h-20 rounded-full cursor-grab active:cursor-grabbing bg-slate-700/50 border-2 border-white/10 flex items-center justify-center"
+          className="relative w-20 h-20 rounded-full cursor-pointer bg-slate-700/50 border-2 border-white/10 flex items-center justify-center"
           onPan={handlePan}
+          onTap={handleTap}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
