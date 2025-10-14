@@ -10,7 +10,7 @@ import {
   FaTiktok,
   FaTwitch,
 } from "react-icons/fa6";
-import { Phone, Mail, ArrowUp } from "lucide-react";
+import { Phone, Mail, ArrowUp, MapPin } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -130,6 +130,12 @@ export function Footer() {
                 >
                   <Mail className="h-4 w-4 mr-2" /> info@woodgreenlandscaping.com
                 </a>
+              </li>
+              <li>
+                <div className="flex items-center">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Serving Greater Toronto Area
+                </div>
               </li>
             </ul>
           </div>

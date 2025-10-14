@@ -111,7 +111,7 @@ export function ServicesNew() {
 
       {/* Simple footer note */}
       <div className="py-8 text-center text-[#4A5D4C] dark:text-gray-500 text-sm border-t border-[#2F3B30]/20 dark:border-white/10">
-        <p>Zero-emission, design-focused landscaping • Greater Toronto Area • One designer, complete dedication</p>
+        <p>Zero-emission, design-focused landscaping • Serving Greater Toronto Area • One designer, complete dedication</p>
       </div>
     </div>
   );
