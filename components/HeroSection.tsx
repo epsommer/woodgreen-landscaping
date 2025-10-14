@@ -111,7 +111,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
       {/* Collapsible Side Panel with Controls */}
       <motion.div
         animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
-        transition={{ type: "spring", stiffness: 400, damping: 40 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="absolute left-0 top-24 md:top-32 z-hero-controls"
       >
         <div className="flex items-center">
