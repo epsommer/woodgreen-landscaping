@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useRef, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Sun,
@@ -15,6 +20,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Season, TimeOfDay } from "./three/Scene";
+import { TimeOfDayToggle } from "./TimeOfDayToggle";
 
 // Dynamically import the 3D Scene to avoid SSR issues
 const Scene = dynamic(() => import("./three/Scene").then((mod) => mod.Scene), {
@@ -35,12 +41,8 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   // Ref for slider container to constrain drag
   const sliderContainerRef = useRef<HTMLDivElement>(null);
 
-  // Framer Motion value for the draggable thumb
-  const thumbY = useMotionValue(20 + (1 / 3) * 144);
-  const trackHeight = useTransform(thumbY, [20, 164], [0, 100]);
-
   // Debug state
-  const [debugInfo] = useState({
+  const [debugInfo, setDebugInfo] = useState({
     containerY: 0,
     relativeY: 0,
     clampedY: 0,
@@ -68,6 +70,14 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     fall: "bg-amber-700 text-white",
     winter: "bg-white text-blue-900",
   };
+
+  // Motion values for the slider
+  const thumbY = useMotionValue(20 + (seasonProgress / 3) * 144);
+  const trackHeight = useTransform(
+    thumbY,
+    [20, 164], // Input range in pixels
+    [0, 100], // Output range in percentage
+  );
 
   // Log animation state after drag ends
   useEffect(() => {
@@ -110,156 +120,110 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
       {/* Collapsible Side Panel with Controls */}
       <motion.div
-        className="absolute left-0 top-24 md:top-32 z-hero-controls"
+        animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel
+        transition={{ type: "spring", stiffness: 400, damping: 40 }}
+        className="absolute left-0 top-24 md:top-32 z-hero-controls flex items-center"
       >
-        <div className="flex items-center">
-          {/* Controls Panel */}
-          <motion.div
-            animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4"
-            style={{ width: 101 }} // Explicit width for panel
-          >
-            {/* Season controls - vertical slider */}
-            <div className="mb-6">
-              <p className="text-white/80 text-xs mb-3 font-medium text-center">
-                Season
-              </p>
-              <div className="flex gap-3 items-center">
-                {/* Slider track - left side */}
-                <div
-                  ref={sliderContainerRef}
-                  className="relative flex-shrink-0"
-                  style={{ width: "20px", height: "184px" }}
-                >
-                  {/* Background track */}
-                  <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
+        {/* Controls Panel */}
+        <div
+            className="backdrop-blur-md bg-slate-900/80 border border-r-0 border-white/20 rounded-l-none rounded-r-2xl p-4 overflow-hidden"
+            style={{ width: 101 }}
+        >
+              {/* Season controls - vertical slider */}
+              <div className="mb-6">
+                <p className="text-white/80 text-xs mb-3 font-medium text-center">
+                  Season
+                </p>
+                <div className="flex gap-3 items-center">
+                  {/* Slider track - left side */}
+                  <div
+                    ref={sliderContainerRef}
+                    className="relative flex-shrink-0"
+                    style={{ width: "20px", height: "184px" }}
+                  >
+                    {/* Background track */}
+                    <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
 
-                  {/* Active track fill */}
-                  <motion.div
-                    className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
-                    style={{
-                      height: useTransform(trackHeight, (v) => `${v}%`),
-                      top: 0,
-                    }}
-                  />
-
-                  {/* Draggable thumb circle */}
-                  <motion.div
-                    key={`thumb-${season}`} // Force reset when season changes via buttons
-                    className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
-                    style={{ top: 0, y: thumbY }}
-                    drag="y"
-                    dragConstraints={{ top: 20, bottom: 164 }} // Pixel constraints
-                    dragElastic={0}
-                    dragMomentum={false}
-                    whileDrag={{ scale: 1.2 }}
-                    onDragStart={() => {
-                      console.log("=== DRAG START ===");
-                      setIsDragging(true);
-                    }}
-                    onDrag={() => {
-                      const progress = (thumbY.get() - 20) / 144 * 3;
-                      setSeasonProgress(progress);
-                    }}
-                    onDragEnd={() => {
-                      console.log("=== DRAG END ===");
-
-                      // Snap to nearest season (integer value)
-                      const seasons: Season[] = [
-                        "spring",
-                        "summer",
-                        "fall",
-                        "winter",
-                      ];
-                      const index = Math.round(seasonProgress);
-
-                      console.log("Snapping from", seasonProgress, "to", index);
-
-                      // Update both season and snap progress to exact integer
-                      // The style y value will automatically update to the new position
-                      setSeason(seasons[index]);
-                      setSeasonProgress(index);
-
-                      setIsDragging(false);
-                    }}
-                  />
-                </div>
-
-                {/* Season buttons - right side */}
-                <div className="flex flex-col gap-2">
-                  {(["spring", "summer", "fall", "winter"] as Season[]).map(
-                    (s, index) => (
-                      <motion.button
-                        key={s}
-                        onClick={() => {
-                          setSeason(s);
-                          setSeasonProgress(index);
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
-                          season === s
-                            ? `${activeSeasonClasses[s]} scale-110`
-                            : "bg-white/10 text-white/60 hover:bg-white/20"
-                        }`}
-                        aria-label={`Set season to ${s}`}
-                      >
-                        {seasonIcons[s]}
-                      </motion.button>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Time of day toggle */}
-            <div>
-              <p className="text-white/80 text-xs mb-3 font-medium text-center">
-                Time
-              </p>
-              <div
-                className={`w-20 h-10 flex items-center rounded-full p-1 cursor-pointer transition-colors justify-between ${
-                  timeOfDay === "day" ? "bg-sky-500/50" : "bg-slate-700/50"
-                }`}
-                onClick={() => setTimeOfDay(timeOfDay === "day" ? "night" : "day")}
-              >
-                <motion.div
-                  className="w-8 h-8 bg-white/90 rounded-full shadow-lg flex items-center justify-center"
-                  initial={false}
-                  animate={{ x: timeOfDay === "day" ? 0 : 40 }} // 40px = 80px track width - 40px thumb width
-                  transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
+                    {/* Active track fill */}
                     <motion.div
-                      key={timeOfDay}
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 20, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {timeOfDay === "day" ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-blue-400" />}
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
-                {/* This div is just a placeholder to push the thumb */}
-                <div />
-              </div>
-            </div>
-          </motion.div>
+                      className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
+                      style={{
+                        height: useTransform(trackHeight, (v) => `${v}%`),
+                        top: 0,
+                      }}
+                    />
 
-          {/* Toggle Button */}
-          <button
-            onClick={() => setControlsOpen(!controlsOpen)}
-            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
-            aria-label={controlsOpen ? "Close controls" : "Open controls"}
-          >
-            {controlsOpen ? (
-              <ChevronLeft className="w-5 h-5 text-white/80" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-white/80" />
-            )}
-          </button>
+                    {/* Draggable thumb circle */}
+                    <motion.div
+                      key={`thumb-${season}`} // Force reset when season changes via buttons
+                      className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
+                      style={{ top: 0, y: thumbY }}
+                      drag="y"
+                      dragConstraints={{ top: 20, bottom: 164 }} // Pixel constraints
+                      dragElastic={0}
+                      dragMomentum={false}
+                      whileDrag={{ scale: 1.2 }}
+                      onDragStart={() => {
+                        setIsDragging(true);
+                      }}
+                      onDrag={() => {
+                        // No need to set state here, the motion value handles the visual update
+                      }}
+                      onDragEnd={() => {
+                        const progress = (thumbY.get() - 20) / 144 * 3;
+                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                        const index = Math.round(progress);
+                        thumbY.set(20 + (index / 3) * 144);
+                        setSeason(seasons[index]);
+                        setSeasonProgress(index);
+                        setIsDragging(false);
+                      }}
+                    />
+                  </div>
+
+                  {/* Season buttons - right side */}
+                  <div className="flex flex-col gap-2">
+                    {(["spring", "summer", "fall", "winter"] as Season[]).map(
+                      (s, index) => (
+                        <motion.button
+                          key={s}
+                          onClick={() => {
+                            setSeason(s);
+                            setSeasonProgress(index);
+                            thumbY.set(20 + (index / 3) * 144);
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
+                            season === s
+                              ? `${activeSeasonClasses[s]} scale-110`
+                              : "bg-white/10 text-white/60 hover:bg-white/20"
+                          }`}
+                          aria-label={`Set season to ${s}`}
+                        >
+                          {seasonIcons[s]}
+                        </motion.button>
+                      ),
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Time of day toggle */}
+              <TimeOfDayToggle timeOfDay={timeOfDay} setTimeOfDay={setTimeOfDay} />
         </div>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setControlsOpen(!controlsOpen)}
+          className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
+          aria-label={controlsOpen ? "Close controls" : "Open controls"}
+        >
+          {controlsOpen ? (
+            <ChevronLeft className="w-5 h-5 text-white/80" />
+          ) : (
+            <ChevronRight className="w-5 h-5 text-white/80" />
+          )}
+        </button>
       </motion.div>
 
     {/* Hero Card - raised position */}
