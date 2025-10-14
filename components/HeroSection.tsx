@@ -19,7 +19,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Season, TimeOfDay } from "./three/Scene";
-import { TimeOfDayToggle } from "@/components/TimeOfDayToggle";
+import { TimeOfDayDial } from "@/components/TimeOfDayDial";
 
 // Dynamically import the 3D Scene to avoid SSR issues
 const Scene = dynamic(() => import("./three/Scene").then((mod) => mod.Scene), {
@@ -217,7 +217,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               </div>
 
               {/* Time of day toggle */}
-              <TimeOfDayToggle
+              <TimeOfDayDial
                 timeOfDay={timeOfDay}
                 setTimeOfDay={setTimeOfDay}
                 timeProgress={timeProgress}
