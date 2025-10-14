@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Sun,
@@ -35,6 +35,10 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   // Ref for slider container to constrain drag
   const sliderContainerRef = useRef<HTMLDivElement>(null);
 
+  // Framer Motion value for the draggable thumb
+  const thumbY = useMotionValue(20 + (1 / 3) * 144);
+  const trackHeight = useTransform(thumbY, [20, 164], [0, 100]);
+
   // Debug state
   const [debugInfo, setDebugInfo] = useState({
     containerY: 0,
@@ -48,12 +52,15 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     currentVisualTop: 0,
   });
 
-  const seasonIcons = {
-    spring: <Flower2 className="w-4 h-4" />,
-    summer: <Sun className="w-4 h-4" />,
-    fall: <Leaf className="w-4 h-4" />,
-    winter: <Snowflake className="w-4 h-4" />,
-  };
+  const seasonIcons = useMemo(
+    () => ({
+      spring: <Flower2 className="w-4 h-4" />,
+      summer: <Sun className="w-4 h-4" />,
+      fall: <Leaf className="w-4 h-4" />,
+      winter: <Snowflake className="w-4 h-4" />,
+    }),
+    [],
+  );
 
   const activeSeasonClasses: Record<Season, string> = {
     spring: "bg-green-400 text-green-800",
@@ -103,7 +110,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
       {/* Collapsible Side Panel with Controls */}
       <motion.div
-        initial={{ x: 0 }}
         animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
         transition={{ type: "spring", stiffness: 400, damping: 40 }}
         className="absolute left-0 top-24 md:top-32 z-hero-controls"
@@ -129,22 +135,12 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                   {/* Background track */}
                   <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
 
-                  {/* Active segment indicator - shows current season position */}
+                  {/* Active track fill */}
                   <motion.div
                     className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
-                    animate={
-                      !isDragging
-                        ? {
-                            top: `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`, // Aligned with buttons, 75% max for segment
-                          }
-                        : undefined
-                    }
-                    transition={{ type: "spring", stiffness: 400, damping: 35 }}
                     style={{
-                      height: "25%",
-                      top: isDragging
-                        ? `${((20 + (seasonProgress / 3) * 144) / 184) * 75}%`
-                        : undefined,
+                      height: useTransform(trackHeight, (v) => `${v}%`),
+                      top: 0,
                     }}
                   />
 
@@ -152,10 +148,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                   <motion.div
                     key={`thumb-${season}`} // Force reset when season changes via buttons
                     className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
-                    style={{
-                      top: 0,
-                      y: 20 + (seasonProgress / 3) * 144, // Position in pixels from container top
-                    }}
+                    style={{ top: 0, y: thumbY }}
                     drag="y"
                     dragConstraints={{ top: 20, bottom: 164 }} // Pixel constraints
                     dragElastic={0}
@@ -165,61 +158,13 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                       console.log("=== DRAG START ===");
                       setIsDragging(true);
                     }}
-                    onDrag={(_, info) => {
-                      const minPos = 20; // 20px - aligns with first button center
-                      const maxPos = 164; // 164px - aligns with last button center
-                      const travelRange = maxPos - minPos; // 144px
-
-                      // Get the current Y position (info.point.y is global, we need offset from drag start)
-                      // info.offset gives us the drag delta from the starting position
-                      const currentY =
-                        20 + (seasonProgress / 3) * 144 + info.offset.y;
-                      const clampedY = Math.max(
-                        minPos,
-                        Math.min(maxPos, currentY),
-                      );
-
-                      // Calculate progress (0-3) from centered position
-                      const progress = ((clampedY - minPos) / travelRange) * 3;
-
-                      // Calculate where it will animate to after release
-                      const targetPx =
-                        minPos + (Math.round(progress) / 3) * travelRange;
-
-                      // Debug logging
-                      console.log("Drag Info:", {
-                        "Starting Y": (20 + (seasonProgress / 3) * 144).toFixed(
-                          2,
-                        ),
-                        "Offset Y": info.offset.y.toFixed(2),
-                        "Current Y": currentY.toFixed(2),
-                        "Clamped Y": clampedY.toFixed(2),
-                        "Min/Max": `${minPos}px - ${maxPos}px`,
-                        "Travel Range": travelRange,
-                        Progress: progress.toFixed(3),
-                        "Will Snap To": `${targetPx.toFixed(2)}px`,
-                        "Season Index": Math.round(progress),
-                      });
-
-                      setDebugInfo({
-                        containerY: 0,
-                        relativeY: currentY,
-                        clampedY: clampedY,
-                        progress: progress,
-                        thumbTop: ((clampedY - minPos) / travelRange) * 100,
-                        mouseY: info.point.y,
-                        animateTargetPercent: (targetPx / 184) * 100,
-                        animateTargetPx: targetPx,
-                        currentVisualTop: clampedY,
-                      });
-
+                    onDrag={() => {
+                      const progress = (thumbY.get() - 20) / 144 * 3;
                       setSeasonProgress(progress);
-
-                      // Don't update discrete season during drag to prevent remounting
-                      // Season will be updated in onDragEnd
                     }}
                     onDragEnd={() => {
                       console.log("=== DRAG END ===");
+                      const progress = (thumbY.get() - 20) / 144 * 3;
 
                       // Snap to nearest season (integer value)
                       const seasons: Season[] = [
@@ -273,103 +218,109 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               <p className="text-white/80 text-xs mb-3 font-medium text-center">
                 Time
               </p>
-              <div className="flex flex-col gap-2">
-                <motion.button
-                  onClick={() => setTimeOfDay("day")}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${timeOfDay === "day"
-                      ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
-                      : "bg-white/10 text-white/60 hover:bg-white/20"}`}
-                  aria-label="Set to day time"
+              <div
+                className={`w-20 h-10 flex items-center rounded-full p-1 cursor-pointer transition-colors justify-between ${
+                  timeOfDay === "day" ? "bg-sky-500/50" : "bg-slate-700/50"
+                }`}
+                onClick={() => setTimeOfDay(timeOfDay === "day" ? "night" : "day")}
+              >
+                <motion.div
+                  className="w-8 h-8 bg-white/90 rounded-full shadow-lg flex items-center justify-center"
+                  initial={false}
+                  animate={{ x: timeOfDay === "day" ? 0 : 40 }} // 40px = 80px track width - 40px thumb width
+                  transition={{ type: "spring", stiffness: 700, damping: 30 }}
                 >
-                  <Sun className="w-4 h-4" />
-                </motion.button>
-                <motion.button
-                  onClick={() => setTimeOfDay("night")}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${timeOfDay === "night"
-                      ? "bg-[#CEFF65] text-[#2F3B30] scale-110"
-                      : "bg-white/10 text-white/60 hover:bg-white/20"}`}
-                  aria-label="Set to night time"
-                >
-                  <Moon className="w-4 h-4" />
-                </motion.button>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={timeOfDay}
+                      initial={{ y: -20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 20, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {timeOfDay === "day" ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-blue-400" />}
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
+                {/* This div is just a placeholder to push the thumb */}
+                <div />
               </div>
             </div>
-          </div>
 
-          {/* Toggle Button */}
-          <button
-            onClick={() => setControlsOpen(!controlsOpen)}
-            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
-            aria-label={controlsOpen ? "Close controls" : "Open controls"}
-          >
-            {controlsOpen ? (
-              <ChevronLeft className="w-5 h-5 text-white/80" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-white/80" />
-            )}
-          </button>
-        </div>
-      </motion.div>
-
-      {/* Hero Card - raised position */}
-      <div className="absolute bottom-24 md:bottom-32 left-0 right-0 z-hero-content px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-2xl mx-auto"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="backdrop-blur-md bg-black/30 rounded-2xl p-6 md:p-8 border border-white/20 text-center"
-          >
-            <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-nature-400 to-nature-600 bg-clip-text text-transparent">
-              Transform Your Outdoor Space
-            </h1>
-            <p className="text-sm md:text-lg text-white/90 mb-4 md:mb-6">
-              Experience the beauty of nature through our expert landscaping
-              services
-            </p>
-
-            <Button
-              size="lg"
-              onClick={onGetStarted}
-              className="bg-nature-500 hover:bg-nature-600 text-white px-6 md:px-8 py-3 md:py-4 text-sm md:text-base rounded-full transition-all duration-300 hover:scale-105"
-            >
-              Get Started
-            </Button>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Scroll indicator - centered at bottom */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-hero-content"
-      >
+        {/* Toggle Button */}
         <button
-          onClick={() => {
-            const nextSection = document.querySelector("#services");
-            nextSection?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="flex flex-col items-center text-white/60 hover:text-white/90 transition-colors cursor-pointer"
-          aria-label="Scroll to services section"
+          onClick={() => setControlsOpen(!controlsOpen)}
+          className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
+          aria-label={controlsOpen ? "Close controls" : "Open controls"}
         >
-          <p className="text-xs md:text-sm mb-2">Explore</p>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
-            <TreePine className="w-5 h-5 md:w-6 md:h-6" />
-          </motion.div>
+          {controlsOpen ? (
+            <ChevronLeft className="w-5 h-5 text-white/80" />
+          ) : (
+            <ChevronRight className="w-5 h-5 text-white/80" />
+          )}
         </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+
+    {/* Hero Card - raised position */}
+    <div className="absolute bottom-24 md:bottom-32 left-0 right-0 z-hero-content px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="max-w-2xl mx-auto"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="backdrop-blur-md bg-black/30 rounded-2xl p-6 md:p-8 border border-white/20 text-center"
+        >
+          <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-nature-400 to-nature-600 bg-clip-text text-transparent">
+            Transform Your Outdoor Space
+          </h1>
+          <p className="text-sm md:text-lg text-white/90 mb-4 md:mb-6">
+            Experience the beauty of nature through our expert landscaping
+            services
+          </p>
+
+          <Button
+            size="lg"
+            onClick={onGetStarted}
+            className="bg-nature-500 hover:bg-nature-600 text-white px-6 md:px-8 py-3 md:py-4 text-sm md:text-base rounded-full transition-all duration-300 hover:scale-105"
+          >
+            Get Started
+          </Button>
+        </motion.div>
       </motion.div>
+    </div>
+
+    {/* Scroll indicator - centered at bottom */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1, duration: 0.6 }}
+      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-hero-content"
+    >
+      <button
+        onClick={() => {
+          const nextSection = document.querySelector("#services");
+          nextSection?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="flex flex-col items-center text-white/60 hover:text-white/90 transition-colors cursor-pointer"
+        aria-label="Scroll to services section"
+      >
+        <p className="text-xs md:text-sm mb-2">Explore</p>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        >
+          <TreePine className="w-5 h-5 md:w-6 md:h-6" />
+        </motion.div>
+      </button>
+    </motion.div>
     </section>
   );
 }
