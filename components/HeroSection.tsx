@@ -40,7 +40,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
   const trackHeight = useTransform(thumbY, [20, 164], [0, 100]);
 
   // Debug state
-  const [debugInfo, setDebugInfo] = useState({
+  const [debugInfo] = useState({
     containerY: 0,
     relativeY: 0,
     clampedY: 0,
@@ -164,7 +164,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                     }}
                     onDragEnd={() => {
                       console.log("=== DRAG END ===");
-                      const progress = (thumbY.get() - 20) / 144 * 3;
 
                       // Snap to nearest season (integer value)
                       const seasons: Season[] = [
