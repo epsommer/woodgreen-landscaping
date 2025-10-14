@@ -260,7 +260,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             )}
           </button>
         </div>
-    </motion.div>
+      </motion.div>
 
     {/* Hero Card - raised position */}
     <div className="absolute bottom-24 md:bottom-32 left-0 right-0 z-hero-content px-4">
