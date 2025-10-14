@@ -246,6 +246,8 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <div />
               </div>
             </div>
+          </div>
+        </div>
 
         {/* Toggle Button */}
         <button
@@ -259,8 +261,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <ChevronRight className="w-5 h-5 text-white/80" />
           )}
         </button>
-          </div>
-        </div>
       </div>
     </motion.div>
 
