@@ -110,13 +110,13 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
 
       {/* Collapsible Side Panel with Controls */}
       <motion.div
-        animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="absolute left-0 top-24 md:top-32 z-hero-controls"
       >
         <div className="flex items-center">
           {/* Controls Panel */}
-          <div
+          <motion.div
+            animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel (100px) + 1px border
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-2xl p-4"
             style={{ width: 101 }} // Explicit width for panel
           >
@@ -245,21 +245,21 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <div />
               </div>
             </div>
+          </motion.div>
 
-        {/* Toggle Button */}
-        <button
-          onClick={() => setControlsOpen(!controlsOpen)}
-          className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
-          aria-label={controlsOpen ? "Close controls" : "Open controls"}
-        >
-          {controlsOpen ? (
-            <ChevronLeft className="w-5 h-5 text-white/80" />
-          ) : (
-            <ChevronRight className="w-5 h-5 text-white/80" />
-          )}
-        </button>
+          {/* Toggle Button */}
+          <button
+            onClick={() => setControlsOpen(!controlsOpen)}
+            className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
+            aria-label={controlsOpen ? "Close controls" : "Open controls"}
+          >
+            {controlsOpen ? (
+              <ChevronLeft className="w-5 h-5 text-white/80" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-white/80" />
+            )}
+          </button>
         </div>
-      </div>
     </motion.div>
 
     {/* Hero Card - raised position */}
