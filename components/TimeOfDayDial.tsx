@@ -60,7 +60,7 @@ export function TimeOfDayDial({
       <div className="flex justify-center">
         <motion.div
           ref={dialRef}
-          className="relative w-18 h-18 rounded-full cursor-pointer bg-slate-800/70 border-2 border-white/10 flex items-center justify-center"
+          className="relative w-24 h-18 rounded-full cursor-pointer bg-slate-800/70 border-2 border-white/10 flex items-center justify-center"
           onPan={handlePan}
           onTap={handleTap}
           whileHover={{ scale: 1.05 }}
