@@ -2,6 +2,7 @@
 
 import {
   motion,
+  AnimatePresence,
   useTransform,
   MotionValue,
   PanInfo,
@@ -59,52 +60,37 @@ export function TimeOfDayDial({
       <div className="flex justify-center">
         <motion.div
           ref={dialRef}
-          className="relative w-20 h-20 rounded-full cursor-pointer bg-slate-700/50 border-2 border-white/10 flex items-center justify-center"
+          className="relative w-18 h-18 rounded-full cursor-pointer bg-slate-800/70 border-2 border-white/10 flex items-center justify-center"
           onPan={handlePan}
           onTap={handleTap}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          {/* Dial Background */}
-          <div className="absolute inset-0 rounded-full overflow-hidden">
+          {/* Sun and Moon Icons in the center */}
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
-              className="w-full h-full"
-              style={{
-                background:
-                  "linear-gradient(180deg, #87CEEB 0%, #4682B4 50%, #000080 50%, #191970 100%)",
-                rotate: rotation,
-              }}
-            />
-          </div>
-
-          {/* Sun and Moon Icons */}
-          <motion.div
-            className="absolute w-full h-full"
-            style={{ rotate: rotation }}
-          >
-            <motion.div
-              className="absolute top-1 left-1/2 -translate-x-1/2"
-              initial={false}
-              animate={timeOfDay === "day" ? { scale: 1.2 } : { scale: 0.8 }}
+              key={timeOfDay}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.25 }}
+              className="absolute"
             >
-              <Sun className="w-6 h-6 text-yellow-300" />
+              {timeOfDay === "day" ? (
+                <Sun className="w-8 h-8 text-yellow-300" />
+              ) : (
+                <Moon className="w-7 h-7 text-slate-300" />
+              )}
             </motion.div>
-            <motion.div
-              className="absolute bottom-1 left-1/2 -translate-x-1/2"
-              initial={false}
-              animate={timeOfDay === "night" ? { scale: 1.2 } : { scale: 0.8 }}
-            >
-              <Moon className="w-5 h-5 text-slate-300" />
-            </motion.div>
-          </motion.div>
+          </AnimatePresence>
 
           {/* Knob */}
           <motion.div
             className="absolute w-full h-full"
             style={{ rotate: rotation }}
           >
-            <motion.div className="absolute top-[-4px] left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full border-2 border-slate-400" />
+            <motion.div className="absolute top-[-5px] left-1/2 -translate-x-1/2 w-5 h-5 bg-white rounded-full border-2 border-slate-400" />
           </motion.div>
         </motion.div>
       </div>
