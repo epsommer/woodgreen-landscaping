@@ -66,7 +66,6 @@ export function TimeOfDayDial({
   const handleTap = (
     // The event parameter is required by the framer-motion type definition.
     _event: MouseEvent | TouchEvent | PointerEvent,
-    info: TapInfo,
   ) => {
     console.log("User tapped (onTap)");
     // A small delay to allow pan to be recognized first

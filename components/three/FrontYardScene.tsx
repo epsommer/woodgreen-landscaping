@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, addEffect } from "@react-three/fiber";
 import { OrbitControls, Sky } from "@react-three/drei";
 import { Color, DirectionalLight, PointLight, Mesh } from "three";
 import { Season, TimeOfDay } from "./Scene";
@@ -82,25 +82,6 @@ export function FrontYardScene({
     };
   }, [seasonProgress, seasonColors]);
 
-  // Time-of-day based lighting
-  const lighting = useMemo(() => {
-    if (timeOfDay === "day") {
-      return {
-        sunIntensity: 1.5,
-        moonIntensity: 0,
-        ambientIntensity: 0.6,
-        sunPosition: [10, 10, 5] as [number, number, number],
-      };
-    } else {
-      return {
-        sunIntensity: 0,
-        moonIntensity: 0.8,
-        ambientIntensity: 0.3,
-        sunPosition: [-10, -10, -5] as [number, number, number],
-      };
-    }
-  }, [timeOfDay]);
-
   // Generate grass blade positions - avoid hardscapes
   const grassPositions = useMemo(() => {
     const positions = [];
@@ -171,31 +152,42 @@ export function FrontYardScene({
     // Animate sun/moon position based on timeProgress
     if (timeProgress) {
       const progress = timeProgress.get(); // 0 for day, 1 for night
-      const sunMoonAngle = Math.PI * progress;
+      const sunMoonAngle = Math.PI * progress + Math.PI / 2;
 
       const sun = scene.getObjectByName("sun");
       const moon = scene.getObjectByName("moon");
 
-      if (sun) {
+      if (sun && sunRef.current) {
         sun.position.set(Math.cos(sunMoonAngle) * 20, Math.sin(sunMoonAngle) * 20, -20);
+        sunRef.current.position.copy(sun.position);
+        sunRef.current.intensity = Math.max(0, Math.sin(sunMoonAngle)) * 1.5;
       }
-      if (moon) {
+      if (moon && moonRef.current) {
         moon.position.set(Math.cos(sunMoonAngle + Math.PI) * 20, Math.sin(sunMoonAngle + Math.PI) * 20, -20);
+        moonRef.current.position.copy(moon.position);
+        moonRef.current.intensity = Math.max(0, Math.sin(sunMoonAngle + Math.PI)) * 0.8;
       }
     }
   });
+
+  // Smoothly interpolate ambient light intensity
+  const ambientIntensity = useMemo(() => {
+    if (!timeProgress) return 0.6;
+    const progress = timeProgress.get();
+    return 0.6 - progress * 0.3;
+  }, [timeOfDay, timeProgress]);
 
   return (
     <>
       {/* Lighting */}
       <ambientLight
-        intensity={lighting.ambientIntensity}
+        intensity={ambientIntensity}
         color={currentColors.ambient}
       />
       <directionalLight
         ref={sunRef}
-        position={lighting.sunPosition}
-        intensity={lighting.sunIntensity}
+        position={[10, 10, 5]}
+        intensity={1.5}
         castShadow
         shadow-mapSize={[2048, 2048]}
         color={timeOfDay === "day" ? "#FFF5E1" : "#1E3A5F"}
@@ -203,7 +195,7 @@ export function FrontYardScene({
       <pointLight
         ref={moonRef}
         position={[0, 15, -10]}
-        intensity={lighting.moonIntensity}
+        intensity={0}
         color="#B0C4DE"
       />
 
