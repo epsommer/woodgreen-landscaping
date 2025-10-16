@@ -88,7 +88,7 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
   "Snow Removal": {
     unit: "per clearing", defaultQty: 1, variants: {
-      'Single Driveway': { price: 40, originalPrice: 60 },
+      'Single Driveway': { price: 399, originalPrice: 599 },
       'Double Driveway': { price: 60, originalPrice: 85 },
       'Single Extended': { price: 55, originalPrice: 80 },
       'Double Extended': { price: 75, originalPrice: 105 },
