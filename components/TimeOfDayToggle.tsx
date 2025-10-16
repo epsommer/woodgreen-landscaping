@@ -17,7 +17,7 @@ export function TimeOfDayToggle({
     <div>
       <p className="text-white/80 text-xs mb-3 font-medium text-center">Time</p>
       <div
-        className={`w-20 h-10 flex items-center rounded-full p-1 cursor-pointer transition-colors justify-between ${
+        className={`w-20 h-16 flex items-center rounded-full p-1 cursor-pointer transition-colors justify-between ${
           timeOfDay === "day" ? "bg-sky-500/50" : "bg-slate-700/50"
         }`}
         onClick={() => setTimeOfDay(timeOfDay === "day" ? "night" : "day")}

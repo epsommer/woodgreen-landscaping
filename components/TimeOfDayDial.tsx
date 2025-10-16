@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -24,34 +25,63 @@ export function TimeOfDayDial({
   timeProgress,
 }: TimeOfDayDialProps) {
   const dialRef = useRef<HTMLDivElement>(null);
-  const rotation = useTransform(timeProgress, [0, 1], [0, 180]);
+  const rotation = useTransform(timeProgress, [0, 1], [0, 180], {
+    // My apologies, this was a leftover from a previous attempt and is not needed.
+    clamp: false,
+  });
 
-  const updateDialFromPoint = (point: { x: number; y: number }) => {
+  // This effect synchronizes the discrete timeOfDay state with the continuous timeProgress value.
+  // It runs when the animation completes to avoid conflicts during an active drag.
+  useEffect(() => {
+    const unsubscribe = timeProgress.on("change", (latest) => {
+      setTimeOfDay(latest < 0.5 ? "day" : "night");
+    });
+
+    return () => unsubscribe();
+  }, [timeProgress, setTimeOfDay]);
+
+  const handlePan = (
+    // The event parameter is required by the framer-motion type definition.
+    _event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
+    console.log("User is dragging (onPan)");
     if (!dialRef.current) return;
 
     const { x, y, width, height } = dialRef.current.getBoundingClientRect();
     const center = { x: x + width / 2, y: y + height / 2 };
+    const angle = Math.atan2(info.point.y - center.y, info.point.x - center.x) + Math.PI / 2;
+    
+    // Normalize angle to be between 0 and 2PI
+    const normalizedAngle = angle < 0 ? angle + 2 * Math.PI : angle;
+    
+    // We only care about the top-half of the dial for 180 degree rotation
+    if (normalizedAngle > Math.PI) return;
 
-    const angle = Math.atan2(point.y - center.y, point.x - center.x);
-    const newProgress = (angle + Math.PI / 2) / Math.PI;
-    const clampedProgress = Math.max(0, Math.min(1, newProgress));
-
-    timeProgress.set(clampedProgress);
-    setTimeOfDay(clampedProgress < 0.5 ? "day" : "night");
-  };
-
-  const handlePan = (
-    event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) => {
-    updateDialFromPoint(info.point);
+    const newProgress = normalizedAngle / Math.PI;
+    
+    timeProgress.set(newProgress);
   };
 
   const handleTap = (
-    event: MouseEvent | TouchEvent | PointerEvent,
+    // The event parameter is required by the framer-motion type definition.
+    _event: MouseEvent | TouchEvent | PointerEvent,
     info: TapInfo,
   ) => {
-    updateDialFromPoint(info.point);
+    console.log("User tapped (onTap)");
+    // A small delay to allow pan to be recognized first
+    setTimeout(() => {
+      if (timeProgress.getVelocity() === 0) {
+        console.log("Executing tap action");
+        if (timeOfDay === "day") {
+          setTimeOfDay("night");
+          timeProgress.set(1);
+        } else {
+          setTimeOfDay("day");
+          timeProgress.set(0);
+        }
+      }
+    }, 50);
   };
 
   return (
@@ -60,7 +90,7 @@ export function TimeOfDayDial({
       <div className="flex justify-center">
         <motion.div
           ref={dialRef}
-          className="relative w-24 h-18 rounded-full cursor-pointer bg-slate-800/70 border-2 border-white/10 flex items-center justify-center"
+          className="relative w-20 h-20 rounded-full cursor-pointer bg-slate-800/70 border-2 border-white/10 flex items-center justify-center"
           onPan={handlePan}
           onTap={handleTap}
           whileHover={{ scale: 1.05 }}

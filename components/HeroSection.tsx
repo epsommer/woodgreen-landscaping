@@ -73,11 +73,6 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     winter: "bg-white text-blue-900",
   };
 
-  // Update timeProgress when timeOfDay changes
-  useEffect(() => {
-    timeProgress.set(timeOfDay === "day" ? 0 : 1);
-  }, [timeOfDay, timeProgress]);
-
   // Motion values for the slider
   const thumbY = useMotionValue(20 + (seasonProgress / 3) * 144);
   const trackHeight = useTransform(
@@ -216,7 +211,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                 </div>
               </div>
 
-              {/* Time of day toggle */}
+              {/* Time of day dial */}
               <TimeOfDayDial
                 timeOfDay={timeOfDay}
                 setTimeOfDay={setTimeOfDay}

@@ -22,24 +22,79 @@ import { Printer, Download, Calendar, X, Trash2 } from "lucide-react";
 import { jsPDF } from "jspdf";
 
 type ServiceType =
-  | "Grass Cutting"
   | "Tree Trimming"
+  | "Hedge/Shrub Trimming"
+  | "Fall Cleanup"
+  | "Gutter Cleaning"
+  | "Garden Maintenance"
+  | "Landscaping Labour"
+  | "Aeration"
+  | "Dethatching"
   | "Snow Removal"
-  | "Leaf Removal"
-  | "Gutter Cleaning";
+  | "Tree Removal/Felling";
 
 type Service = {
   name: ServiceType;
   quantity: number;
   unit: string;
+  variant?: string;
+  debrisCleanup?: boolean;
 };
 
-const serviceDetails: Record<ServiceType, { price: number; unit: string }> = {
-  "Grass Cutting": { price: 0.1, unit: "sq ft" },
-  "Tree Trimming": { price: 50, unit: "per tree" },
-  "Snow Removal": { price: 100, unit: "per residence" },
-  "Leaf Removal": { price: 75, unit: "per hour" },
-  "Gutter Cleaning": { price: 2, unit: "per linear foot" },
+type ServiceDetail = {
+  price?: number;
+  originalPrice?: number;
+  unit: string;
+  defaultQty: number;
+  variants?: Record<string, { price: number; originalPrice: number }>;
+  hasDebrisCleanup?: boolean;
+  consultationOnly?: boolean;
+};
+
+const serviceDetails: Record<ServiceType, ServiceDetail> = {
+  "Tree Trimming": {
+    unit: "per tree", defaultQty: 1, hasDebrisCleanup: true, variants: {
+      '5ft': { price: 100, originalPrice: 200 },
+      '10ft': { price: 220, originalPrice: 370 },
+      '15ft': { price: 360, originalPrice: 600 },
+      '20ft': { price: 540, originalPrice: 900 },
+      '20+ feet': { price: Infinity, originalPrice: Infinity },
+    }
+  },
+  "Tree Removal/Felling": {
+    unit: "per tree", defaultQty: 1, hasDebrisCleanup: true, variants: {
+      'Up to 10ft': { price: 250, originalPrice: 400 },
+      '10ft - 15ft': { price: 450, originalPrice: 700 },
+      '15ft+': { price: Infinity, originalPrice: Infinity },
+    }
+  },
+  "Hedge/Shrub Trimming": {
+    unit: "linear foot", defaultQty: 50, variants: {
+      'Up to 4ft': { price: 0.75, originalPrice: 1.25 },
+      '4ft - 6ft': { price: 1.00, originalPrice: 1.75 },
+      '6ft - 8ft': { price: 1.50, originalPrice: 2.50 },
+      '8ft - 10ft': { price: 2.25, originalPrice: 3.50 },
+      '10ft - 12ft': { price: 3.25, originalPrice: 4.75 },
+      '12ft - 15ft': { price: 4.50, originalPrice: 6.25 },
+      '15ft - 20ft': { price: 6.00, originalPrice: 8.00 },
+      '20ft+': { price: Infinity, originalPrice: Infinity },
+    }
+  },
+  "Fall Cleanup": { price: 49, originalPrice: 79, unit: "per hour", defaultQty: 3, },
+  "Gutter Cleaning": { price: 90, originalPrice: 150, unit: "per residence", defaultQty: 1, },
+  "Garden Maintenance": { price: 48, originalPrice: 80, unit: "per hour", defaultQty: 2, },
+  "Landscaping Labour": { price: 57, originalPrice: 95, unit: "per hour", defaultQty: 4, },
+  "Aeration": { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1, },
+  "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
+  "Snow Removal": {
+    unit: "per clearing", defaultQty: 1, variants: {
+      'Single Driveway': { price: 40, originalPrice: 60 },
+      'Double Driveway': { price: 60, originalPrice: 85 },
+      'Single Extended': { price: 55, originalPrice: 80 },
+      'Double Extended': { price: 75, originalPrice: 105 },
+      'Driveway + Walkway': { price: 85, originalPrice: 120 },
+    }
+  },
 };
 
 export function EstimateCalculator({
@@ -49,21 +104,25 @@ export function EstimateCalculator({
   onClose: () => void;
   onScheduleConsultation: () => void;
 }) {
-  const [services, setServices] = useState<Service[]>([
-    { name: "Grass Cutting", quantity: 1000, unit: "sq ft" },
-  ]);
+  const [services, setServices] = useState<Service[]>([{
+    name: "Tree Trimming",
+    quantity: serviceDetails["Tree Trimming"].defaultQty,
+    unit: serviceDetails["Tree Trimming"].unit,
+    variant: '5ft',
+    debrisCleanup: true,
+  }]);
 
   const addService = () => {
     setServices([
       ...services,
-      { name: "Grass Cutting", quantity: 1, unit: "sq ft" },
+      { name: "Tree Trimming", quantity: serviceDetails["Tree Trimming"].defaultQty, unit: serviceDetails["Tree Trimming"].unit, variant: '5ft', debrisCleanup: true },
     ]);
   };
 
   const updateService = (
     index: number,
     field: keyof Service,
-    value: string | number,
+    value: string | number | boolean,
   ) => {
     const updatedServices = [...services];
     if (field === "name") {
@@ -72,6 +131,8 @@ export function EstimateCalculator({
         ...updatedServices[index],
         [field]: newName,
         unit: serviceDetails[newName].unit,
+        variant: serviceDetails[newName].variants ? Object.keys(serviceDetails[newName].variants!)[0] : undefined,
+        debrisCleanup: serviceDetails[newName].hasDebrisCleanup ? true : undefined,
       };
     } else {
       updatedServices[index] = { ...updatedServices[index], [field]: value };
@@ -84,8 +145,18 @@ export function EstimateCalculator({
   };
 
   const calculateServicePrice = (service: Service) => {
-    const { price } = serviceDetails[service.name];
-    return price * service.quantity;
+    const details = serviceDetails[service.name];
+    let basePrice = 0;
+    if (details.variants && service.variant) {
+      basePrice = (details.variants[service.variant]?.price || 0) * service.quantity;
+    } else {
+      basePrice = (details.price || 0) * service.quantity;
+    }
+
+    if (service.debrisCleanup) {
+      return basePrice * 1.20; // Add 20% for debris cleanup
+    }
+    return basePrice;
   };
 
   const calculateTotal = () => {
@@ -171,14 +242,43 @@ export function EstimateCalculator({
                     <SelectValue placeholder="Select a service" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.keys(serviceDetails).map((serviceName) => (
-                      <SelectItem key={serviceName} value={serviceName}>
-                        {serviceName}
+                    {Object.keys(serviceDetails).map(serviceName => {
+                      const details = serviceDetails[serviceName as ServiceType];
+                      return (
+                      <SelectItem key={serviceName} value={serviceName} disabled={details.consultationOnly}>
+                        {details.consultationOnly ? (
+                          <span className="line-through text-gray-500">{`${serviceName} (Consultation required)`}</span>
+                        ) : (
+                          serviceName
+                        )}
                       </SelectItem>
-                    ))}
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               </div>
+              {serviceDetails[service.name].variants && (
+                <div>
+                  <Label htmlFor={`variant-${index}`}>Options</Label>
+                  <Select
+                    value={service.variant}
+                    onValueChange={(value) =>
+                      updateService(index, "variant", value)
+                    }
+                  >
+                    <SelectTrigger id={`variant-${index}`}>
+                      <SelectValue placeholder="Select an option" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.keys(serviceDetails[service.name].variants!).map(variant => (
+                        <SelectItem key={variant} value={variant} disabled={variant.includes('+')}>
+                          {variant.includes('+') ? `${variant} (Consultation required)` : variant}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div>
                 <Label
                   htmlFor={`quantity-${index}`}
@@ -187,15 +287,48 @@ export function EstimateCalculator({
                   id={`quantity-${index}`}
                   type="number"
                   value={service.quantity}
-                  onChange={(e) =>
-                    updateService(index, "quantity", parseInt(e.target.value))
-                  }
+                  onChange={(e) => {
+                    const quantity = parseInt(e.target.value, 10) || 0;
+                    updateService(index, "quantity", quantity);
+                  }}
                 />
               </div>
+              {serviceDetails[service.name].hasDebrisCleanup && (
+                <div className="flex items-center pt-6 space-x-2">
+                  <Input
+                    type="checkbox"
+                    id={`debris-${index}`}
+                    checked={!!service.debrisCleanup}
+                    onChange={(e) =>
+                      updateService(index, "debrisCleanup", e.target.checked)
+                    }
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor={`debris-${index}`} className="text-sm font-medium">Debris Cleanup (+20%)</Label>
+                </div>
+              )}
             </div>
             <div className="flex justify-between items-center">
               <div className="text-lg font-semibold">
                 Price: ${calculateServicePrice(service).toFixed(2)}
+                {(() => {
+                  const details = serviceDetails[service.name];
+                  let originalPrice = 0;
+                  if (details.variants && service.variant) {
+                    originalPrice = details.variants[service.variant]?.originalPrice || 0;
+                  } else if (details.originalPrice) {
+                    originalPrice = details.originalPrice;
+                  }
+
+                  if (originalPrice > 0 && isFinite(originalPrice)) {
+                    return (
+                      <span className="text-sm text-gray-500 line-through ml-2">
+                        ${(originalPrice * service.quantity).toFixed(2)}
+                      </span>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
               <Button
                 variant="ghost"
@@ -243,4 +376,3 @@ export function EstimateCalculator({
     </div>
   );
 }
-
