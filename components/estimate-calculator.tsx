@@ -30,7 +30,8 @@ type ServiceType =
   | "Landscaping Labour"
   | "Aeration"
   | "Dethatching"
-  | "Snow Removal"
+  | "Snow Removal" // Keep as regular service
+  | "Salting/De-Icing" // New service
   | "Tree Removal/Felling";
 
 type Service = {
@@ -88,11 +89,21 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
   "Snow Removal": {
     unit: "per clearing", defaultQty: 1, variants: {
-      'Single Driveway': { price: 399, originalPrice: 599 },
-      'Double Driveway': { price: 60, originalPrice: 85 },
-      'Single Extended': { price: 55, originalPrice: 80 },
-      'Double Extended': { price: 75, originalPrice: 105 },
-      'Driveway + Walkway': { price: 85, originalPrice: 120 },
+      'Single Driveway': { price: 399, originalPrice: 599 }, // Seasonal rate
+      'Double Driveway': { price: 550, originalPrice: 917 }, // Seasonal rate
+      'Single Extended': { price: 450, originalPrice: 750 }, // Seasonal rate
+      'Double Extended': { price: 700, originalPrice: 1167 }, // Seasonal rate
+      'Driveway + Walkway': { price: 500, originalPrice: 833 }, // Seasonal rate
+    }
+  },
+  "Salting/De-Icing": {
+    unit: "per season", defaultQty: 1, variants: {
+      'Sodium Chloride (Driveway)': { price: 150, originalPrice: 250 },
+      'Sodium Chloride (Driveway + Walkway)': { price: 190, originalPrice: 317 },
+      'Calcium Chloride (Driveway)': { price: 250, originalPrice: 417 },
+      'Calcium Chloride (Driveway + Walkway)': { price: 290, originalPrice: 484 },
+      'Magnesium Chloride (Driveway)': { price: 250, originalPrice: 417 },
+      'Magnesium Chloride (Driveway + Walkway)': { price: 290, originalPrice: 484 },
     }
   },
 };
