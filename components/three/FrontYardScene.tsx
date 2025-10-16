@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { useFrame, useThree, addEffect } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Sky } from "@react-three/drei";
 import { Color, DirectionalLight, PointLight, Mesh } from "three";
 import { Season, TimeOfDay } from "./Scene";
@@ -175,7 +175,7 @@ export function FrontYardScene({
     if (!timeProgress) return 0.6;
     const progress = timeProgress.get();
     return 0.6 - progress * 0.3;
-  }, [timeOfDay, timeProgress]);
+  }, [timeProgress]);
 
   return (
     <>

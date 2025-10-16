@@ -7,7 +7,6 @@ import {
   useTransform,
   MotionValue,
   PanInfo,
-  TapInfo,
 } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 import { useRef } from "react";
@@ -63,10 +62,7 @@ export function TimeOfDayDial({
     timeProgress.set(newProgress);
   };
 
-  const handleTap = (
-    // The event parameter is required by the framer-motion type definition.
-    _event: MouseEvent | TouchEvent | PointerEvent,
-  ) => {
+  const handleTap = () => {
     console.log("User tapped (onTap)");
     // A small delay to allow pan to be recognized first
     setTimeout(() => {
