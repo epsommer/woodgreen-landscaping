@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense, useMemo } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
 import {
   motion,
@@ -11,15 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Sun,
+  Moon,
   Leaf,
   Snowflake,
   Flower2,
   TreePine,
-  ChevronRight,
-  ChevronLeft,
+  Settings,
 } from "lucide-react";
 import { Season, TimeOfDay } from "./three/Scene";
-import { TimeOfDayDial } from "@/components/TimeOfDayDial";
 
 // Dynamically import the 3D Scene to avoid SSR issues
 const Scene = dynamic(() => import("./three/Scene").then((mod) => mod.Scene), {
@@ -33,15 +32,17 @@ interface HeroSectionProps {
 export function HeroSection({ onGetStarted }: HeroSectionProps) {
   const [season, setSeason] = useState<Season>("summer");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("day");
-  const [controlsOpen, setControlsOpen] = useState(true);
+  const [controlsOpen, setControlsOpen] = useState(false);
   const [seasonProgress, setSeasonProgress] = useState(1); // 0=spring, 1=summer, 2=fall, 3=winter
   const [isDragging, setIsDragging] = useState(false);
 
   // Motion values for sliders/dials
   const timeProgress = useSpring(0, { stiffness: 200, damping: 30 });
 
-  // Ref for slider container to constrain drag
-  const sliderContainerRef = useRef<HTMLDivElement>(null);
+  // Horizontal slider setup
+  const sliderWidth = 280; // Total width of slider track
+  const thumbSize = 20; // Width of thumb
+  const travelDistance = sliderWidth - thumbSize; // Actual travel distance
 
   // Debug state
   const [debugInfo] = useState({
@@ -73,13 +74,14 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
     winter: "bg-white text-blue-900",
   };
 
-  // Motion values for the slider
-  const thumbY = useMotionValue(20 + (seasonProgress / 3) * 144);
-  const trackHeight = useTransform(
-    thumbY,
-    [20, 164], // Input range in pixels
+  // Motion values for horizontal slider
+  const thumbX = useMotionValue((Math.min(3, Math.max(0, seasonProgress)) / 3) * travelDistance);
+  const trackWidth = useTransform(
+    thumbX,
+    [0, travelDistance], // Input range in pixels
     [0, 100], // Output range in percentage
   );
+  const trackWidthPercent = useTransform(trackWidth, (v) => `${v}%`);
 
   // Log animation state after drag ends
   useEffect(() => {
@@ -121,85 +123,81 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
         </Suspense>
       </div>
 
-      {/* Collapsible Side Panel with Controls */}
-      <motion.div
-        animate={{ x: controlsOpen ? 0 : -101 }} // 101px is the width of the panel
-        transition={{ type: "spring", stiffness: 400, damping: 40 }}
-        className="absolute left-0 top-24 md:top-32 z-hero-controls flex items-center"
+      {/* Universal Settings Button - Top Right Corner */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.8, type: "spring", stiffness: 400, damping: 25 }}
+        onClick={() => setControlsOpen(true)}
+        className="absolute top-20 md:top-5 right-4 md:right-6 z-hero-controls w-12 h-12 md:w-14 md:h-14 bg-slate-900/80 backdrop-blur-md hover:bg-slate-900/90 rounded-full shadow-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:scale-110 active:scale-95"
+        aria-label="Open scene settings"
       >
-        {/* Controls Panel */}
-        <div
-            className="backdrop-blur-md bg-slate-900/80 border border-r-0 border-white/20 rounded-l-none rounded-r-2xl p-4 overflow-hidden"
-            style={{ width: 101 }}
-        >
-              {/* Season controls - vertical slider */}
-              <div className="mb-6">
-                <p className="text-white/80 text-xs mb-3 font-medium text-center">
-                  Season
+        <Settings className="w-5 h-5 md:w-6 md:h-6" />
+      </motion.button>
+
+      {/* Settings Panel - Bottom Sheet on Mobile, Modal on Desktop */}
+      {controlsOpen && (
+        <>
+          {/* Backdrop - minimal blur to show scene changes */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setControlsOpen(false)}
+            className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-[70]"
+          />
+
+          {/* Mobile Bottom Sheet */}
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 400, damping: 40 }}
+            className="md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-slate-900/95 backdrop-blur-xl rounded-t-3xl border-t border-white/20 shadow-2xl max-h-[80vh] overflow-y-auto"
+          >
+            {/* Handle bar */}
+            <div className="flex justify-center pt-3 pb-4">
+              <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+            </div>
+
+            {/* Content */}
+            <div className="px-6 pb-8">
+              <h3 className="text-white text-lg font-semibold mb-6 text-center">
+                Scene Settings
+              </h3>
+
+              {/* Season Selection - Horizontal Slider */}
+              <div className="mb-8">
+                <p className="text-white/80 text-sm mb-6 font-medium text-center">
+                  Choose Season
                 </p>
-                <div className="flex gap-3 items-center">
-                  {/* Slider track - left side */}
-                  <div
-                    ref={sliderContainerRef}
-                    className="relative flex-shrink-0"
-                    style={{ width: "20px", height: "184px" }}
-                  >
-                    {/* Background track */}
-                    <div className="absolute left-1/2 -translate-x-1/2 w-1 h-full bg-white/20 rounded-full" />
 
-                    {/* Active track fill */}
-                    <motion.div
-                      className="absolute left-1/2 -translate-x-1/2 w-1 bg-nature-500 rounded-full"
-                      style={{
-                        height: useTransform(trackHeight, (v) => `${v}%`),
-                        top: 0,
-                      }}
-                    />
-
-                    {/* Draggable thumb circle */}
-                    <motion.div
-                      key={`thumb-${season}`} // Force reset when season changes via buttons
-                      className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-lg border-2 border-white/50 hover:scale-110 transition-transform"
-                      style={{ top: 0, y: thumbY }}
-                      drag="y"
-                      dragConstraints={{ top: 20, bottom: 164 }} // Pixel constraints
-                      dragElastic={0}
-                      dragMomentum={false}
-                      whileDrag={{ scale: 1.2 }}
-                      onDragStart={() => {
-                        setIsDragging(true);
-                      }}
-                      onDrag={() => {
-                        // No need to set state here, the motion value handles the visual update
-                      }}
-                      onDragEnd={() => {
-                        const progress = (thumbY.get() - 20) / 144 * 3;
-                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
-                        const index = Math.round(progress);
-                        thumbY.set(20 + (index / 3) * 144);
-                        setSeason(seasons[index]);
-                        setSeasonProgress(index);
-                        setIsDragging(false);
-                      }}
-                    />
-                  </div>
-
-                  {/* Season buttons - right side */}
-                  <div className="flex flex-col gap-2">
+                {/* Horizontal Slider */}
+                <div className="relative mx-auto" style={{ width: sliderWidth, height: 76 }}>
+                  {/* Season Icons - Positioned along track */}
+                  <div className="absolute top-0 left-0 right-0 flex justify-between px-2">
                     {(["spring", "summer", "fall", "winter"] as Season[]).map(
                       (s, index) => (
                         <motion.button
                           key={s}
                           onClick={() => {
+                            const targetX = (index / 3) * travelDistance;
+                            console.log(`🌸 SEASON BUTTON CLICKED (Mobile): ${s.toUpperCase()}`, {
+                              seasonIndex: index,
+                              targetX: targetX.toFixed(2),
+                              travelDistance,
+                              calculation: `(${index} / 3) * ${travelDistance} = ${targetX}`,
+                              currentThumbX: thumbX.get().toFixed(2),
+                            });
                             setSeason(s);
                             setSeasonProgress(index);
-                            thumbY.set(20 + (index / 3) * 144);
+                            thumbX.set(targetX);
                           }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`w-10 h-10 rounded-xl transition-all duration-300 ease-in-out flex items-center justify-center ${
+                          whileTap={{ scale: 0.9 }}
+                          className={`w-10 h-10 rounded-xl transition-all duration-300 flex items-center justify-center ${
                             season === s
-                              ? `${activeSeasonClasses[s]} scale-110`
-                              : "bg-white/10 text-white/60 hover:bg-white/20"
+                              ? `${activeSeasonClasses[s]} scale-110 shadow-lg`
+                              : "bg-white/10 text-white/60"
                           }`}
                           aria-label={`Set season to ${s}`}
                         >
@@ -208,33 +206,325 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
                       ),
                     )}
                   </div>
+
+                  {/* Slider Track Container */}
+                  <div className="absolute bottom-0 left-0 right-0 h-8 flex items-center">
+                    {/* Background track */}
+                    <div className="absolute left-0 right-0 h-2 bg-white/20 rounded-full" />
+
+                    {/* Active track fill */}
+                    <motion.div
+                      className="absolute left-0 h-2 bg-nature-500 rounded-full"
+                      style={{
+                        width: trackWidthPercent,
+                      }}
+                    />
+
+                    {/* Draggable thumb */}
+                    <motion.div
+                      className="absolute w-5 h-5 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-xl border-2 border-white hover:scale-125 transition-transform z-10"
+                      style={{ x: thumbX }}
+                      drag="x"
+                      dragConstraints={{ left: 0, right: travelDistance }}
+                      dragElastic={0}
+                      dragMomentum={false}
+                      whileDrag={{ scale: 1.3 }}
+                      onDragStart={() => {
+                        console.log("🟢 DRAG START (Mobile):", {
+                          initialThumbX: thumbX.get(),
+                          travelDistance,
+                          currentSeason: season,
+                          currentSeasonProgress: seasonProgress,
+                        });
+                        setIsDragging(true);
+                      }}
+                      onDrag={() => {
+                        const currentX = thumbX.get();
+                        const progress = (currentX / travelDistance) * 3;
+                        const index = Math.round(progress);
+                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                        console.log("🔵 DRAGGING (Mobile):", {
+                          currentX: currentX.toFixed(2),
+                          progress: progress.toFixed(3),
+                          calculatedIndex: index,
+                          calculatedSeason: seasons[index],
+                          currentSeason: season,
+                        });
+                        // Update season progress continuously for smooth transitions
+                        setSeasonProgress(Math.min(3, Math.max(0, progress)));
+                        // Update discrete season state when crossing boundaries
+                        if (seasons[index] !== season) {
+                          setSeason(seasons[index]);
+                        }
+                      }}
+                      onDragEnd={() => {
+                        const currentX = thumbX.get();
+                        const progress = (currentX / travelDistance) * 3;
+                        const index = Math.round(progress);
+                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                        const snapToX = (index / 3) * travelDistance;
+                        console.log("🔴 DRAG END (Mobile):", {
+                          finalX: currentX.toFixed(2),
+                          progress: progress.toFixed(3),
+                          roundedIndex: index,
+                          snapToX: snapToX.toFixed(2),
+                          snapToSeason: seasons[index],
+                          travelDistance,
+                          calculation: `(${index} / 3) * ${travelDistance} = ${snapToX}`,
+                        });
+                        thumbX.set(snapToX);
+                        setSeason(seasons[index]);
+                        setSeasonProgress(index);
+                        setIsDragging(false);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Season Label */}
+                <p className="text-white text-center mt-4 text-sm font-semibold capitalize">
+                  {season}
+                </p>
+              </div>
+
+              {/* Time of Day Toggle - Mobile Optimized */}
+              <div className="mb-6">
+                <p className="text-white/80 text-sm mb-4 font-medium text-center">
+                  Time of Day
+                </p>
+                <div className="flex gap-3">
+                  <motion.button
+                    onClick={() => {
+                      console.log("☀️ DAY button clicked (Mobile)");
+                      setTimeOfDay("day");
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex-1 h-16 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                      timeOfDay === "day"
+                        ? "bg-[#CEFF65] text-[#2F3B30] shadow-lg scale-105"
+                        : "bg-white/10 text-white/60 hover:bg-white/20"
+                    }`}
+                    aria-label="Set time to day"
+                  >
+                    <Sun className="w-5 h-5" />
+                    <span className="font-semibold">Day</span>
+                  </motion.button>
+                  <motion.button
+                    onClick={() => setTimeOfDay("night")}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex-1 h-16 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                      timeOfDay === "night"
+                        ? "bg-slate-700 text-white shadow-lg scale-105"
+                        : "bg-white/10 text-white/60 hover:bg-white/20"
+                    }`}
+                    aria-label="Set time to night"
+                  >
+                    <Moon className="w-5 h-5" />
+                    <span className="font-semibold">Night</span>
+                  </motion.button>
                 </div>
               </div>
 
-              {/* Time of day dial */}
-              <TimeOfDayDial
-                timeOfDay={timeOfDay}
-                setTimeOfDay={setTimeOfDay}
-                timeProgress={timeProgress}
-              />
-        </div>
+              {/* Close Button */}
+              <Button
+                onClick={() => setControlsOpen(false)}
+                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 h-14 rounded-2xl text-base font-semibold"
+              >
+                Close
+              </Button>
+            </div>
+          </motion.div>
 
-        {/* Toggle Button */}
-        <button
-          onClick={() => setControlsOpen(!controlsOpen)}
-          className="backdrop-blur-md bg-slate-900/80 border border-white/20 rounded-r-xl p-2 ml-[-1px] hover:bg-slate-900/90 transition-colors"
-          aria-label={controlsOpen ? "Close controls" : "Open controls"}
-        >
-          {controlsOpen ? (
-            <ChevronLeft className="w-5 h-5 text-white/80" />
-          ) : (
-            <ChevronRight className="w-5 h-5 text-white/80" />
-          )}
-        </button>
-      </motion.div>
+          {/* Desktop Modal */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="hidden md:flex fixed inset-0 items-center justify-center z-[80] pointer-events-none"
+          >
+            <div className="bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl w-[90vw] max-w-md pointer-events-auto"
+          >
+            {/* Content */}
+            <div className="p-8">
+              <h3 className="text-white text-2xl font-semibold mb-8 text-center">
+                Scene Settings
+              </h3>
 
-    {/* Hero Card - raised position */}
-    <div className="absolute bottom-24 md:bottom-32 left-0 right-0 z-hero-content px-4">
+              {/* Season Selection - Horizontal Slider */}
+              <div className="mb-8">
+                <p className="text-white/80 text-sm mb-6 font-medium text-center">
+                  Choose Season
+                </p>
+
+                {/* Horizontal Slider */}
+                <div className="relative mx-auto" style={{ width: sliderWidth, height: 80 }}>
+                  {/* Season Icons - Positioned along track */}
+                  <div className="absolute top-0 left-0 right-0 flex justify-between px-2">
+                    {(["spring", "summer", "fall", "winter"] as Season[]).map(
+                      (s, index) => (
+                        <motion.button
+                          key={s}
+                          onClick={() => {
+                            const targetX = (index / 3) * travelDistance;
+                            console.log(`🌸 SEASON BUTTON CLICKED (Desktop): ${s.toUpperCase()}`, {
+                              seasonIndex: index,
+                              targetX: targetX.toFixed(2),
+                              travelDistance,
+                              calculation: `(${index} / 3) * ${travelDistance} = ${targetX}`,
+                              currentThumbX: thumbX.get().toFixed(2),
+                            });
+                            setSeason(s);
+                            setSeasonProgress(index);
+                            thumbX.set(targetX);
+                          }}
+                          whileTap={{ scale: 0.9 }}
+                          whileHover={{ scale: 1.05 }}
+                          className={`w-12 h-12 rounded-xl transition-all duration-300 flex items-center justify-center ${
+                            season === s
+                              ? `${activeSeasonClasses[s]} scale-110 shadow-lg`
+                              : "bg-white/10 text-white/60 hover:bg-white/20"
+                          }`}
+                          aria-label={`Set season to ${s}`}
+                        >
+                          <div className="scale-125">{seasonIcons[s]}</div>
+                        </motion.button>
+                      ),
+                    )}
+                  </div>
+
+                  {/* Slider Track Container */}
+                  <div className="absolute bottom-0 left-0 right-0 h-8 flex items-center">
+                    {/* Background track */}
+                    <div className="absolute left-0 right-0 h-2 bg-white/20 rounded-full" />
+
+                    {/* Active track fill */}
+                    <motion.div
+                      className="absolute left-0 h-2 bg-nature-500 rounded-full"
+                      style={{
+                        width: trackWidthPercent,
+                      }}
+                    />
+
+                    {/* Draggable thumb */}
+                    <motion.div
+                      className="absolute w-5 h-5 bg-nature-500 rounded-full cursor-grab active:cursor-grabbing shadow-xl border-2 border-white hover:scale-125 transition-transform z-10"
+                      style={{ x: thumbX }}
+                      drag="x"
+                      dragConstraints={{ left: 0, right: travelDistance }}
+                      dragElastic={0}
+                      dragMomentum={false}
+                      whileDrag={{ scale: 1.3 }}
+                      onDragStart={() => {
+                        console.log("🟢 DRAG START (Desktop):", {
+                          initialThumbX: thumbX.get(),
+                          travelDistance,
+                          currentSeason: season,
+                          currentSeasonProgress: seasonProgress,
+                        });
+                        setIsDragging(true);
+                      }}
+                      onDrag={() => {
+                        const currentX = thumbX.get();
+                        const progress = (currentX / travelDistance) * 3;
+                        const index = Math.round(progress);
+                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                        console.log("🔵 DRAGGING (Desktop):", {
+                          currentX: currentX.toFixed(2),
+                          progress: progress.toFixed(3),
+                          calculatedIndex: index,
+                          calculatedSeason: seasons[index],
+                          currentSeason: season,
+                        });
+                        // Update season progress continuously for smooth transitions
+                        setSeasonProgress(Math.min(3, Math.max(0, progress)));
+                        // Update discrete season state when crossing boundaries
+                        if (seasons[index] !== season) {
+                          setSeason(seasons[index]);
+                        }
+                      }}
+                      onDragEnd={() => {
+                        const currentX = thumbX.get();
+                        const progress = (currentX / travelDistance) * 3;
+                        const index = Math.round(progress);
+                        const seasons: Season[] = ["spring", "summer", "fall", "winter"];
+                        const snapToX = (index / 3) * travelDistance;
+                        console.log("🔴 DRAG END (Desktop):", {
+                          finalX: currentX.toFixed(2),
+                          progress: progress.toFixed(3),
+                          roundedIndex: index,
+                          snapToX: snapToX.toFixed(2),
+                          snapToSeason: seasons[index],
+                          travelDistance,
+                          calculation: `(${index} / 3) * ${travelDistance} = ${snapToX}`,
+                        });
+                        thumbX.set(snapToX);
+                        setSeason(seasons[index]);
+                        setSeasonProgress(index);
+                        setIsDragging(false);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Season Label */}
+                <p className="text-white text-center mt-4 text-base font-semibold capitalize">
+                  {season}
+                </p>
+              </div>
+
+              {/* Time of Day Toggle - Desktop Optimized */}
+              <div className="mb-8">
+                <p className="text-white/80 text-sm mb-5 font-medium text-center">
+                  Time of Day
+                </p>
+                <div className="flex gap-4">
+                  <motion.button
+                    onClick={() => setTimeOfDay("day")}
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.05 }}
+                    className={`flex-1 h-20 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                      timeOfDay === "day"
+                        ? "bg-[#CEFF65] text-[#2F3B30] shadow-xl"
+                        : "bg-white/10 text-white/60 hover:bg-white/20"
+                    }`}
+                    aria-label="Set time to day"
+                  >
+                    <Sun className="w-6 h-6" />
+                    <span className="text-lg font-semibold">Day</span>
+                  </motion.button>
+                  <motion.button
+                    onClick={() => setTimeOfDay("night")}
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.05 }}
+                    className={`flex-1 h-20 rounded-2xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                      timeOfDay === "night"
+                        ? "bg-slate-700 text-white shadow-xl"
+                        : "bg-white/10 text-white/60 hover:bg-white/20"
+                    }`}
+                    aria-label="Set time to night"
+                  >
+                    <Moon className="w-6 h-6" />
+                    <span className="text-lg font-semibold">Night</span>
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Close Button */}
+              <Button
+                onClick={() => setControlsOpen(false)}
+                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20 h-16 rounded-2xl text-lg font-semibold"
+              >
+                Close
+              </Button>
+            </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+
+    {/* Hero Card - raised position with mobile-first design */}
+    <div className="absolute bottom-20 md:bottom-32 left-0 right-0 z-hero-content px-4 md:px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -245,23 +535,46 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="backdrop-blur-md bg-black/30 rounded-2xl p-6 md:p-8 border border-white/20 text-center"
+          className="backdrop-blur-md bg-black/30 rounded-2xl p-6 md:p-8 border border-white/20"
         >
-          <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-nature-400 to-nature-600 bg-clip-text text-transparent">
+          {/* Mobile-optimized heading - larger, bolder */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-5 bg-gradient-to-r from-nature-400 to-nature-600 bg-clip-text text-transparent text-center leading-tight">
             Transform Your Outdoor Space
           </h1>
-          <p className="text-sm md:text-lg text-white/90 mb-4 md:mb-6">
-            Experience the beauty of nature through our expert landscaping
-            services
+
+          {/* Mobile-optimized subtext - increased readability */}
+          <p className="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-7 text-center leading-relaxed">
+            Professional landscaping & snow removal services for the Greater Toronto Area
           </p>
 
-          <Button
-            size="lg"
-            onClick={onGetStarted}
-            className="bg-nature-500 hover:bg-nature-600 text-white px-6 md:px-8 py-3 md:py-4 text-sm md:text-base rounded-full transition-all duration-300 hover:scale-105"
-          >
-            Get Started
-          </Button>
+          {/* Mobile-first CTA buttons - full width on mobile, thumb-friendly positioning */}
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+            {/* Primary CTA - full width on mobile for maximum tap area */}
+            <Button
+              size="lg"
+              onClick={onGetStarted}
+              className="w-full sm:flex-1 bg-nature-500 hover:bg-nature-600 text-white px-6 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl min-h-[56px] md:min-h-[60px]"
+            >
+              Get Free Quote
+            </Button>
+
+            {/* Secondary CTA - click-to-call for mobile */}
+            <Button
+              size="lg"
+              asChild
+              className="w-full sm:flex-1 bg-white/90 hover:bg-white text-nature-700 px-6 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl min-h-[56px] md:min-h-[60px]"
+            >
+              <a href="tel:+16135551234" className="flex items-center justify-center gap-2">
+                <span className="text-xl">📞</span>
+                <span>Call Now</span>
+              </a>
+            </Button>
+          </div>
+
+          {/* Trust indicator - subtle on mobile */}
+          <p className="text-xs md:text-sm text-white/60 text-center mt-4 md:mt-5">
+            Serving the Greater Toronto Area Since 2023
+          </p>
         </motion.div>
       </motion.div>
     </div>
