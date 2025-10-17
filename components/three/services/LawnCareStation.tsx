@@ -21,7 +21,7 @@ export function LawnCareStation({
   const particlesRef = useRef<THREE.Points>(null);
   const groundRef = useRef<THREE.Mesh>(null);
 
-  const healthyState = useRef(0); // 0 = unhealthy, 1 = healthy
+  const healthyState = useRef(0); // 0 = rich green, 1 = yellow lime green
   const mowerProgress = useRef(0);
   const windTime = useRef(0);
   const cutGrass = useRef<Set<number>>(new Set()); // Track which grass blades are cut
@@ -128,8 +128,8 @@ export function LawnCareStation({
       grassRef.current.instanceMatrix.needsUpdate = true;
 
       // Lerp grass color based on health
-      const unhealthyColor = new THREE.Color(0x854d0e); // Brown
-      const healthyColor = new THREE.Color(0x22c55e); // Vibrant green
+      const unhealthyColor = new THREE.Color(0x22c55e); // Rich lush green
+      const healthyColor = new THREE.Color(0xd4ff00); // Yellow lime green
       const currentColor = unhealthyColor
         .clone()
         .lerp(healthyColor, healthyState.current);
@@ -181,23 +181,24 @@ export function LawnCareStation({
         // Stay at the end position (top or bottom)
         mowerRef.current.position.z = isGoingDown ? 3 : -3;
 
-        // Rotate 180° in alternating directions with same easing
-        // Even passes: clockwise (+180°), Odd passes: counter-clockwise (-180°)
-        mowerRef.current.rotation.y =
-          easedProgress * Math.PI * rotationDirection;
+        // Rotate 180° from current orientation in alternating directions
+        // Start from the orientation we ended the last pass, rotate to the next
+        const startRotation = isGoingDown ? 0 : Math.PI;
+        const rotationDelta = Math.PI * rotationDirection;
+        mowerRef.current.rotation.y = startRotation + rotationDelta * easedProgress;
       } else {
         // Smooth easing for straight passes too
         const easedProgress = (1 - Math.cos(segmentPercent * Math.PI)) / 2;
 
-        // Straight pass up or down - no rotation (face forward)
+        // Straight pass up or down - face direction of travel
         const zStart = isGoingDown ? -3 : 3;
         const zEnd = isGoingDown ? 3 : -3;
 
         mowerRef.current.position.x = currentX;
         mowerRef.current.position.z = zStart + (zEnd - zStart) * easedProgress;
 
-        // Reset to neutral position after completing turn
-        mowerRef.current.rotation.y = 0;
+        // Face the direction of travel (0 for down, 180° for up)
+        mowerRef.current.rotation.y = isGoingDown ? 0 : Math.PI;
       }
     }
 
@@ -262,17 +263,65 @@ export function LawnCareStation({
 
       {/* Lawn mower */}
       <group ref={mowerRef} position={[0, 0.3, -3]}>
+        {/* Mower body */}
         <mesh castShadow>
           <boxGeometry args={[0.6, 0.4, 0.8]} />
-          <meshStandardMaterial color="#cc0000" />
+          <meshStandardMaterial color="#ffde00" />
         </mesh>
+        {/* Front left wheel */}
         <mesh
-          position={[0, -0.15, 0.3]}
+          position={[-0.3, -0.15, 0.3]}
           rotation={[0, 0, Math.PI / 2]}
           castShadow
         >
-          <cylinderGeometry args={[0.15, 0.15, 0.7, 16]} />
+          <cylinderGeometry args={[0.15, 0.15, 0.08, 16]} />
           <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Front right wheel */}
+        <mesh
+          position={[0.3, -0.15, 0.3]}
+          rotation={[0, 0, Math.PI / 2]}
+          castShadow
+        >
+          <cylinderGeometry args={[0.15, 0.15, 0.08, 16]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Back left wheel */}
+        <mesh
+          position={[-0.3, -0.15, -0.3]}
+          rotation={[0, 0, Math.PI / 2]}
+          castShadow
+        >
+          <cylinderGeometry args={[0.15, 0.15, 0.08, 16]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Back right wheel */}
+        <mesh
+          position={[0.3, -0.15, -0.3]}
+          rotation={[0, 0, Math.PI / 2]}
+          castShadow
+        >
+          <cylinderGeometry args={[0.15, 0.15, 0.08, 16]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Handle bars - left side */}
+        <mesh position={[-0.2, 0.2, -0.3]} castShadow>
+          <cylinderGeometry args={[0.03, 0.03, 0.8, 8]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Handle bars - right side */}
+        <mesh position={[0.2, 0.2, -0.3]} castShadow>
+          <cylinderGeometry args={[0.03, 0.03, 0.8, 8]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        {/* Handle grip - horizontal bar */}
+        <mesh
+          position={[0, 0.6, -0.3]}
+          rotation={[0, 0, Math.PI / 2]}
+          castShadow
+        >
+          <cylinderGeometry args={[0.04, 0.04, 0.5, 8]} />
+          <meshStandardMaterial color="#222222" />
         </mesh>
       </group>
 
