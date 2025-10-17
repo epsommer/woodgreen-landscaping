@@ -564,7 +564,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
               asChild
               className="w-full sm:flex-1 bg-white/90 hover:bg-white text-nature-700 px-6 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl min-h-[56px] md:min-h-[60px]"
             >
-              <a href="tel:+16135551234" className="flex items-center justify-center gap-2">
+              <a href="tel:+16473278401" className="flex items-center justify-center gap-2">
                 <span className="text-xl">📞</span>
                 <span>Call Now</span>
               </a>
