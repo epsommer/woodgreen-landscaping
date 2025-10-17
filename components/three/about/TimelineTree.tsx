@@ -15,7 +15,7 @@ interface Milestone {
 
 const milestones: Milestone[] = [
   {
-    year: 2010,
+    year: 2016,
     title: "Woodgreen Apprenticeship",
     description:
       "Apprenticing in Woodgreen, Ontario—learning from my father's 20+ years of landscaping mastery",
@@ -23,7 +23,7 @@ const milestones: Milestone[] = [
     branchAngle: 0,
   },
   {
-    year: 2016,
+    year: 2018,
     title: "Expanding Horizons",
     description:
       "Working with multiple landscaping companies, mastering diverse techniques and approaches",
@@ -31,7 +31,7 @@ const milestones: Milestone[] = [
     branchAngle: Math.PI / 3,
   },
   {
-    year: 2019,
+    year: 2020,
     title: "Design Meets Earth",
     description:
       "Discovering the fusion of graphic design and landscape architecture",
@@ -39,7 +39,7 @@ const milestones: Milestone[] = [
     branchAngle: -Math.PI / 4,
   },
   {
-    year: 2020,
+    year: 2021,
     title: "Toronto Bound",
     description:
       "Relocated to Toronto to be closer to family and pursue a dream",
