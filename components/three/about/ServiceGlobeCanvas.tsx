@@ -43,8 +43,7 @@ export function ServiceGlobeCanvas({ className = "" }: ServiceGlobeCanvasProps) 
           enablePan={false}
           minDistance={4}
           maxDistance={10}
-          autoRotate
-          autoRotateSpeed={0.3}
+          autoRotate={false}
         />
 
         <Suspense fallback={<LoadingPlant />}>

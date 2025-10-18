@@ -92,7 +92,7 @@ export function ServiceGlobe() {
   }, []);
 
   useFrame((state, delta) => {
-    // Gentle globe rotation
+    // Rotate globe on Y-axis to keep Toronto in view while spinning
     if (globeRef.current) {
       globeRef.current.rotation.y += delta * 0.1;
     }
