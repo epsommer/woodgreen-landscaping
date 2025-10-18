@@ -33,7 +33,7 @@ export function AboutNew() {
         "Graphic design background brings artistic precision to landscape planning",
       color: "#CEFF65",
       detailedContent:
-        "My professional background in graphic design means I approach every landscape with an artist's perspective. I see composition, balance, color theory, and visual flow in ways others might miss. Before a single plant goes in the ground, I sketch, visualize, and refine the design until it's perfect. Your landscape isn't just functional. It's a living work of art.",
+        "My professional background in graphic design means I approach every landscape with an artist's perspective. I see composition, balance, colour theory, and visual flow in ways others might miss. Before a single plant goes in the ground, I sketch, visualise, and refine the design until it's perfect. Your landscape isn't just functional. It's a living work of art.",
     },
     {
       icon: <Battery className="w-8 h-8" />,
@@ -144,15 +144,15 @@ export function AboutNew() {
               </p>
 
               <p>
-                In 2022, I started working with local neighbors in Toronto,
+                In 2022, I started working with local neighbours in Toronto,
                 helping them transform their outdoor spaces one project at a
-                time. What began as word-of-mouth work quickly grew as neighbors
+                time. What began as word-of-mouth work quickly grew as neighbours
                 told friends, and those friends told others. I named the
                 business{" "}
                 <span className="text-nature-600 dark:text-nature-400 font-semibold">
                   Woodgreen Landscaping
                 </span>{" "}
-                to honor where my journey began, where the artistic precision of
+                to honour where my journey began, where the artistic precision of
                 graphic design meets the organic craft I learned in those
                 Ontario fields. From the first sketch on paper to the final
                 plant in the ground, every project is both art and earth.
@@ -166,7 +166,7 @@ export function AboutNew() {
                 </span>
                 . My professional DeWalt 60V Flexvolt lineup delivers the same
                 power as gas equipment, but with zero emissions and quiet
-                operation your neighbors will appreciate. And I&apos;m expanding
+                operation your neighbours will appreciate. And I&apos;m expanding
                 to even higher-end Stihl battery equipment, because
                 sustainability and professionalism go hand-in-hand.
               </p>
