@@ -30,6 +30,16 @@ export function ServiceGlobe() {
   const markerRef = useRef<THREE.Group>(null);
   const coverageRef = useRef<THREE.Mesh>(null);
 
+  // Calculate initial rotation to face Toronto
+  const initialRotation = useMemo(() => {
+    // Rotate globe so Toronto faces forward (negative Z direction)
+    // Longitude rotation: rotate on Y axis
+    const lonRotation = (TORONTO_LON + 90) * (Math.PI / 180);
+    // Latitude rotation: rotate on X axis to center vertically
+    const latRotation = -(TORONTO_LAT - 20) * (Math.PI / 180);
+    return { x: latRotation, y: lonRotation };
+  }, []);
+
   const torontoPosition = useMemo(
     () => latLonToVector3(TORONTO_LAT, TORONTO_LON, 2),
     [],
@@ -103,7 +113,7 @@ export function ServiceGlobe() {
   return (
     <group>
       {/* Main globe */}
-      <mesh ref={globeRef}>
+      <mesh ref={globeRef} rotation={[initialRotation.x, initialRotation.y, 0]}>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial color="#0f2f1f" roughness={0.8} metalness={0.2} />
       </mesh>
@@ -125,10 +135,10 @@ export function ServiceGlobe() {
       />
 
       {/* Grid lines (latitude/longitude) */}
-      {/* Latitude lines */}
-      {[-60, -30, 0, 30, 60].map((lat) => {
+      {/* Latitude lines - horizontal circles around the globe */}
+      {[-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75].map((lat) => {
         const points: THREE.Vector3[] = [];
-        for (let lon = -180; lon <= 180; lon += 10) {
+        for (let lon = -180; lon <= 180; lon += 5) {
           points.push(latLonToVector3(lat, lon, 2.02));
         }
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -150,8 +160,8 @@ export function ServiceGlobe() {
         );
       })}
 
-      {/* Longitude lines */}
-      {[-120, -90, -60, -30, 0, 30, 60, 90, 120].map((lon) => {
+      {/* Longitude lines - vertical lines from pole to pole */}
+      {Array.from({ length: 24 }, (_, i) => -180 + i * 15).map((lon) => {
         const points: THREE.Vector3[] = [];
         for (let lat = -90; lat <= 90; lat += 5) {
           points.push(latLonToVector3(lat, lon, 2.02));
