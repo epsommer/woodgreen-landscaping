@@ -129,7 +129,7 @@ export function LawnCareStation({
 
       // Lerp grass color based on health
       const unhealthyColor = new THREE.Color(0x22c55e); // Rich lush green
-      const healthyColor = new THREE.Color(0xd4ff00); // Yellow lime green
+      const healthyColor = new THREE.Color(0x86efac); // Light fresh green
       const currentColor = unhealthyColor
         .clone()
         .lerp(healthyColor, healthyState.current);

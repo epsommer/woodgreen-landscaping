@@ -22,6 +22,7 @@ import { Printer, Download, Calendar, X, Trash2 } from "lucide-react";
 import { jsPDF } from "jspdf";
 
 type ServiceType =
+  | ""
   | "Tree Trimming"
   | "Hedge/Shrub Trimming"
   | "Fall Cleanup"
@@ -53,6 +54,7 @@ type ServiceDetail = {
 };
 
 const serviceDetails: Record<ServiceType, ServiceDetail> = {
+  "": { unit: "", defaultQty: 1 },
   "Tree Trimming": {
     unit: "per tree", defaultQty: 1, hasDebrisCleanup: true, variants: {
       '5ft': { price: 100, originalPrice: 200 },
@@ -116,17 +118,15 @@ export function EstimateCalculator({
   onScheduleConsultation: () => void;
 }) {
   const [services, setServices] = useState<Service[]>([{
-    name: "Tree Trimming",
-    quantity: serviceDetails["Tree Trimming"].defaultQty,
-    unit: serviceDetails["Tree Trimming"].unit,
-    variant: '5ft',
-    debrisCleanup: true,
+    name: "",
+    quantity: 1,
+    unit: "",
   }]);
 
   const addService = () => {
     setServices([
       ...services,
-      { name: "Tree Trimming", quantity: serviceDetails["Tree Trimming"].defaultQty, unit: serviceDetails["Tree Trimming"].unit, variant: '5ft', debrisCleanup: true },
+      { name: "", quantity: 1, unit: "" },
     ]);
   };
 
@@ -138,13 +138,18 @@ export function EstimateCalculator({
     const updatedServices = [...services];
     if (field === "name") {
       const newName = value as ServiceType;
-      updatedServices[index] = {
-        ...updatedServices[index],
-        [field]: newName,
-        unit: serviceDetails[newName].unit,
-        variant: serviceDetails[newName].variants ? Object.keys(serviceDetails[newName].variants!)[0] : undefined,
-        debrisCleanup: serviceDetails[newName].hasDebrisCleanup ? true : undefined,
-      };
+      if (newName && serviceDetails[newName]) {
+        updatedServices[index] = {
+          ...updatedServices[index],
+          [field]: newName,
+          unit: serviceDetails[newName].unit,
+          quantity: serviceDetails[newName].defaultQty,
+          variant: serviceDetails[newName].variants ? Object.keys(serviceDetails[newName].variants!)[0] : undefined,
+          debrisCleanup: serviceDetails[newName].hasDebrisCleanup ? true : undefined,
+        };
+      } else {
+        updatedServices[index] = { ...updatedServices[index], [field]: newName };
+      }
     } else {
       updatedServices[index] = { ...updatedServices[index], [field]: value };
     }
@@ -156,6 +161,10 @@ export function EstimateCalculator({
   };
 
   const calculateServicePrice = (service: Service) => {
+    if (!service.name || !serviceDetails[service.name]) {
+      return 0;
+    }
+
     const details = serviceDetails[service.name];
     let basePrice = 0;
     if (details.variants && service.variant) {
@@ -250,10 +259,10 @@ export function EstimateCalculator({
                   onValueChange={(value) => updateService(index, "name", value)}
                 >
                   <SelectTrigger id={`service-${index}`}>
-                    <SelectValue placeholder="Select a service" />
+                    <SelectValue placeholder="Please select a service" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.keys(serviceDetails).map(serviceName => {
+                    {Object.keys(serviceDetails).filter(key => key !== "").map(serviceName => {
                       const details = serviceDetails[serviceName as ServiceType];
                       return (
                       <SelectItem key={serviceName} value={serviceName} disabled={details.consultationOnly}>
@@ -268,7 +277,7 @@ export function EstimateCalculator({
                   </SelectContent>
                 </Select>
               </div>
-              {serviceDetails[service.name].variants && (
+              {service.name && serviceDetails[service.name]?.variants && (
                 <div>
                   <Label htmlFor={`variant-${index}`}>Options</Label>
                   <Select
@@ -290,21 +299,23 @@ export function EstimateCalculator({
                   </Select>
                 </div>
               )}
-              <div>
-                <Label
-                  htmlFor={`quantity-${index}`}
-                >{`Quantity (${service.unit})`}</Label>
-                <Input
-                  id={`quantity-${index}`}
-                  type="number"
-                  value={service.quantity}
-                  onChange={(e) => {
-                    const quantity = parseInt(e.target.value, 10) || 0;
-                    updateService(index, "quantity", quantity);
-                  }}
-                />
-              </div>
-              {serviceDetails[service.name].hasDebrisCleanup && (
+              {service.name && (
+                <div>
+                  <Label
+                    htmlFor={`quantity-${index}`}
+                  >{`Quantity (${service.unit})`}</Label>
+                  <Input
+                    id={`quantity-${index}`}
+                    type="number"
+                    value={service.quantity}
+                    onChange={(e) => {
+                      const quantity = parseInt(e.target.value, 10) || 0;
+                      updateService(index, "quantity", quantity);
+                    }}
+                  />
+                </div>
+              )}
+              {service.name && serviceDetails[service.name]?.hasDebrisCleanup && (
                 <div className="flex items-center pt-6 space-x-2">
                   <Input
                     type="checkbox"
@@ -323,6 +334,10 @@ export function EstimateCalculator({
               <div className="text-lg font-semibold">
                 Price: ${calculateServicePrice(service).toFixed(2)}
                 {(() => {
+                  if (!service.name || !serviceDetails[service.name]) {
+                    return null;
+                  }
+
                   const details = serviceDetails[service.name];
                   let originalPrice = 0;
                   if (details.variants && service.variant) {
