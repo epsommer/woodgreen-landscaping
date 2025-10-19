@@ -33,6 +33,9 @@ export default function RootLayout({
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [initialService, setInitialService] = useState("");
+  const [bookingType, setBookingType] = useState<"service" | "consultation">("consultation");
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
+  const [estimatedHours, setEstimatedHours] = useState<number>(0);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -90,8 +93,18 @@ export default function RootLayout({
           {showEstimateCalculator && (
             <EstimateCalculator
               onClose={() => setShowEstimateCalculator(false)}
+              onBookService={(services, hours) => {
+                setShowEstimateCalculator(false);
+                setSelectedServices(services);
+                setEstimatedHours(hours);
+                setBookingType("service");
+                setShowScheduler(true);
+              }}
               onScheduleConsultation={() => {
                 setShowEstimateCalculator(false);
+                setSelectedServices([]);
+                setEstimatedHours(0);
+                setBookingType("consultation");
                 setShowScheduler(true);
               }}
             />
@@ -101,6 +114,9 @@ export default function RootLayout({
             <Scheduler
               onClose={() => setShowScheduler(false)}
               initialService={initialService}
+              bookingType={bookingType}
+              selectedServices={selectedServices}
+              estimatedHours={estimatedHours}
             />
           )}
         </Providers>

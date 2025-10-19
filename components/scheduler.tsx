@@ -22,6 +22,9 @@ interface SchedulerProps {
   initialService?: string;
   selectedService?: string;
   onScheduleConsultation?: () => void;
+  bookingType?: "service" | "consultation";
+  selectedServices?: any[];
+  estimatedHours?: number;
 }
 
 interface AvailableSlot {
@@ -38,6 +41,9 @@ export function Scheduler({
   initialService,
   selectedService,
   onScheduleConsultation,
+  bookingType = "consultation",
+  selectedServices = [],
+  estimatedHours = 0,
 }: SchedulerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
@@ -115,6 +121,36 @@ export function Scheduler({
     return dayOfWeek === 0 || dayOfWeek === 6;
   };
 
+  // Get consecutive time slots for multi-hour bookings
+  const getConsecutiveTimeSlots = (startTime: string, hoursNeeded: number): AvailableSlot[] => {
+    if (!selectedDate || hoursNeeded <= 1) return [];
+
+    const availableSlots = getAvailableTimeSlotsForDate();
+    const startIndex = availableSlots.findIndex(slot => slot.time === startTime);
+
+    if (startIndex === -1) return [];
+
+    // Get the requested number of consecutive slots
+    const consecutiveSlots: AvailableSlot[] = [];
+    for (let i = 0; i < hoursNeeded && startIndex + i < availableSlots.length; i++) {
+      consecutiveSlots.push(availableSlots[startIndex + i]);
+    }
+
+    // Verify they are actually consecutive (1 hour apart)
+    for (let i = 1; i < consecutiveSlots.length; i++) {
+      const prevTime = new Date(consecutiveSlots[i - 1].datetime);
+      const currTime = new Date(consecutiveSlots[i].datetime);
+      const hourDiff = (currTime.getTime() - prevTime.getTime()) / (1000 * 60 * 60);
+
+      if (hourDiff !== 1) {
+        // Not consecutive, return only what we have so far
+        return consecutiveSlots.slice(0, i);
+      }
+    }
+
+    return consecutiveSlots;
+  };
+
   const handleClose = () => {
     setIsOpen(false);
     onClose();
@@ -143,19 +179,43 @@ export function Scheduler({
         throw new Error("Selected time slot is no longer available");
       }
 
+      // For service bookings with estimated hours > 1, book consecutive slots
+      let bookingData: any = {
+        service: bookingType === "service" ? "Service Booking" : service,
+        datetime: selectedSlot.datetime.toISOString(),
+        name,
+        email,
+        phone,
+        message,
+      };
+
+      // Add service details and duration for service bookings
+      if (bookingType === "service" && estimatedHours > 0) {
+        const hoursNeeded = Math.ceil(estimatedHours);
+        const consecutiveSlots = getConsecutiveTimeSlots(selectedTime, hoursNeeded);
+
+        // Check if we have enough consecutive slots
+        if (consecutiveSlots.length < hoursNeeded) {
+          throw new Error(
+            `Not enough consecutive time slots available. Need ${hoursNeeded} hour${hoursNeeded > 1 ? 's' : ''}, but only ${consecutiveSlots.length} consecutive slot${consecutiveSlots.length > 1 ? 's' : ''} available.`
+          );
+        }
+
+        bookingData = {
+          ...bookingData,
+          bookingType: "service",
+          services: selectedServices,
+          estimatedHours: hoursNeeded,
+          consecutiveSlots: consecutiveSlots.map(slot => slot.datetime.toISOString()),
+        };
+      }
+
       const response = await fetch("/api/calendar/book", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          service,
-          datetime: selectedSlot.datetime.toISOString(),
-          name,
-          email,
-          phone,
-          message,
-        }),
+        body: JSON.stringify(bookingData),
       });
 
       const data = await response.json();
@@ -196,25 +256,61 @@ export function Scheduler({
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10">
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Schedule a Consultation</h2>
+            <h2 className="text-2xl font-bold">
+              {bookingType === "service" ? "Book Your Service" : "Schedule a Consultation"}
+            </h2>
             <Button variant="ghost" size="icon" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="service">Select Service</Label>
-              <Select value={service} onValueChange={setService}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select service" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="landscaping">Landscaping</SelectItem>
-                  <SelectItem value="consultation">Consultation</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                </SelectContent>
-              </Select>
+
+          {/* Service Summary for booking type "service" */}
+          {bookingType === "service" && selectedServices.length > 0 && (
+            <div className="mb-4 p-4 bg-nature-50 dark:bg-nature-900/20 border border-nature-200 dark:border-nature-800 rounded-lg">
+              <h3 className="font-semibold text-lg mb-2">Selected Services</h3>
+              <ul className="space-y-1 text-sm">
+                {selectedServices.map((svc, idx) => (
+                  <li key={idx} className="flex justify-between">
+                    <span>
+                      {svc.name}
+                      {svc.variant && ` (${svc.variant})`}
+                      {svc.debrisCleanup && " + Debris Cleanup"}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {svc.quantity} {svc.unit}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 pt-3 border-t border-nature-200 dark:border-nature-700">
+                <p className="font-semibold flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Estimated Duration: {Math.ceil(estimatedHours)} hour{Math.ceil(estimatedHours) !== 1 ? 's' : ''}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  We'll book {Math.ceil(estimatedHours)} consecutive time slot{Math.ceil(estimatedHours) !== 1 ? 's' : ''} for your service
+                </p>
+              </div>
             </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Only show service selection for consultation bookings */}
+            {bookingType !== "service" && (
+              <div className="space-y-2">
+                <Label htmlFor="service">Select Service</Label>
+                <Select value={service} onValueChange={setService}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="landscaping">Landscaping</SelectItem>
+                    <SelectItem value="consultation">Consultation</SelectItem>
+                    <SelectItem value="maintenance">Maintenance</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             {/* Success Message */}
             {submitSuccess && (
               <div className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200">
@@ -309,12 +405,38 @@ export function Scheduler({
                 )}
 
                 {selectedDate && selectedTime && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    <CalendarDays className="inline-block mr-1 h-4 w-4" />
-                    {format(selectedDate, "MMMM d, yyyy")}
-                    <Clock className="inline-block ml-2 mr-1 h-4 w-4" />
-                    {selectedTime}
-                  </p>
+                  <div className="text-sm mt-2">
+                    <p className="text-muted-foreground">
+                      <CalendarDays className="inline-block mr-1 h-4 w-4" />
+                      {format(selectedDate, "MMMM d, yyyy")}
+                    </p>
+                    <p className="text-muted-foreground">
+                      <Clock className="inline-block mr-1 h-4 w-4" />
+                      {selectedTime}
+                      {bookingType === "service" && estimatedHours > 1 && (() => {
+                        const hoursNeeded = Math.ceil(estimatedHours);
+                        const consecutiveSlots = getConsecutiveTimeSlots(selectedTime, hoursNeeded);
+                        if (consecutiveSlots.length > 0) {
+                          const endSlot = consecutiveSlots[consecutiveSlots.length - 1];
+                          const endTime = new Date(endSlot.datetime);
+                          endTime.setHours(endTime.getHours() + 1); // Add 1 hour to get the end time
+                          const endTimeString = endTime.toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          });
+                          return (
+                            <span className="font-semibold text-nature-600 dark:text-nature-400">
+                              {' '}→ {endTimeString}
+                              <span className="text-xs ml-1">
+                                ({hoursNeeded} hour{hoursNeeded > 1 ? 's' : ''})
+                              </span>
+                            </span>
+                          );
+                        }
+                      })()}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

@@ -35,7 +35,7 @@ type ServiceType =
   | "Salting/De-Icing" // New service
   | "Tree Removal/Felling";
 
-type Service = {
+export type Service = {
   name: ServiceType;
   quantity: number;
   unit: string;
@@ -110,11 +110,80 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   },
 };
 
+// Calculate estimated hours for a service
+export const calculateEstimatedHours = (service: Service): number => {
+  if (!service.name || !serviceDetails[service.name]) {
+    return 0;
+  }
+
+  const details = serviceDetails[service.name];
+
+  // Services already measured in hours
+  if (details.unit === "per hour") {
+    return service.quantity;
+  }
+
+  // Estimate hours for other services
+  switch (service.name) {
+    case "Tree Trimming":
+      // Estimate based on tree size and quantity
+      if (service.variant) {
+        if (service.variant === '5ft') return service.quantity * 0.5;
+        if (service.variant === '10ft') return service.quantity * 1;
+        if (service.variant === '15ft') return service.quantity * 2;
+        if (service.variant === '20ft') return service.quantity * 3;
+      }
+      return service.quantity * 1.5; // default estimate
+
+    case "Tree Removal/Felling":
+      if (service.variant) {
+        if (service.variant === 'Up to 10ft') return service.quantity * 2;
+        if (service.variant === '10ft - 15ft') return service.quantity * 4;
+      }
+      return service.quantity * 3; // default estimate
+
+    case "Hedge/Shrub Trimming":
+      // Estimate based on linear feet (roughly 20-30 feet per hour depending on height)
+      const feetPerHour = service.variant?.includes('10ft') || service.variant?.includes('12ft') ||
+                          service.variant?.includes('15ft') || service.variant?.includes('20ft')
+                          ? 15 : 25;
+      return Math.max(1, Math.ceil(service.quantity / feetPerHour));
+
+    case "Gutter Cleaning":
+      return 1.5 * service.quantity;
+
+    case "Aeration":
+      return 1.5 * service.quantity;
+
+    case "Dethatching":
+      return 2 * service.quantity;
+
+    case "Snow Removal":
+    case "Salting/De-Icing":
+      // These are seasonal/on-demand services, not appointment-based
+      return 0;
+
+    default:
+      return 1; // default 1 hour for unknown services
+  }
+};
+
+// Calculate total estimated hours for all services
+export const calculateTotalEstimatedHours = (services: Service[]): number => {
+  return services.reduce((total, service) => {
+    const hours = calculateEstimatedHours(service);
+    // Add 20% more time if debris cleanup is requested
+    return total + (service.debrisCleanup ? hours * 1.2 : hours);
+  }, 0);
+};
+
 export function EstimateCalculator({
   onClose,
+  onBookService,
   onScheduleConsultation,
 }: {
   onClose: () => void;
+  onBookService: (services: Service[], estimatedHours: number) => void;
   onScheduleConsultation: () => void;
 }) {
   const [services, setServices] = useState<Service[]>([{
@@ -381,7 +450,11 @@ export function EstimateCalculator({
         {/* Primary Actions */}
         <div className="flex flex-col sm:flex-row gap-2">
           <Button
-            onClick={onScheduleConsultation}
+            onClick={() => {
+              const validServices = services.filter((s): s is Service & { name: Exclude<ServiceType, ""> } => s.name !== "");
+              const estimatedHours = calculateTotalEstimatedHours(validServices);
+              onBookService(validServices, estimatedHours);
+            }}
             variant="default"
             className="flex-1 bg-nature-500 hover:bg-nature-600 text-white"
           >

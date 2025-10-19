@@ -91,7 +91,9 @@ export async function createGoogleCalendarEvent(event: {
           dateTime: event.end.toISOString(),
           timeZone: "America/Toronto",
         },
-        attendees: event.attendees?.map((email) => ({ email })),
+        // Note: Service accounts require Domain-Wide Delegation to invite attendees
+        // Attendees are commented out to avoid 403 errors
+        // attendees: event.attendees?.map((email) => ({ email })),
         reminders: {
           useDefault: false,
           overrides: [

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createGoogleCalendarEvent } from "@/lib/calendar/gmail";
 import { createNotionCalendarEvent } from "@/lib/calendar/notion";
+import { findOrCreateContact } from "@/lib/calendar/crm";
 import { format } from "date-fns";
 
 /**
@@ -67,6 +68,14 @@ Phone: ${phone}
 ${message ? `\nAdditional Information:\n${message}` : ""}
     `.trim();
 
+    // Find or create contact in CRM
+    const crmContactId = await findOrCreateContact({
+      name,
+      email,
+      phone,
+      source: "Woodgreen Website",
+    });
+
     // Create events in both calendars
     const results = await Promise.allSettled([
       createGoogleCalendarEvent({
@@ -84,6 +93,8 @@ ${message ? `\nAdditional Information:\n${message}` : ""}
         clientName: name,
         clientEmail: email,
         clientPhone: phone,
+        serviceType: service,
+        crmContactId: crmContactId || undefined, // Link to CRM contact if found/created
       }),
     ]);
 
