@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, CalendarDays, Clock } from "lucide-react";
+import { X, CalendarDays, Clock, Loader2, Phone, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -24,15 +24,14 @@ interface SchedulerProps {
   onScheduleConsultation?: () => void;
 }
 
-const timeSlots = [
-  "09:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "01:00 PM",
-  "02:00 PM",
-  "03:00 PM",
-  "04:00 PM",
-];
+interface AvailableSlot {
+  time: string;
+  datetime: Date;
+}
+
+interface AvailabilityData {
+  [date: string]: AvailableSlot[];
+}
 
 export function Scheduler({
   onClose,
@@ -50,6 +49,11 @@ export function Scheduler({
   const [message, setMessage] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const [service, setService] = useState<string | undefined>(selectedService);
+  const [availability, setAvailability] = useState<AvailabilityData>({});
+  const [isLoadingAvailability, setIsLoadingAvailability] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     if (!service && initialService) {
@@ -57,28 +61,127 @@ export function Scheduler({
     }
   }, [initialService, service]);
 
+  // Fetch availability when component mounts
+  useEffect(() => {
+    fetchAvailability();
+  }, []);
+
+  const fetchAvailability = async () => {
+    setIsLoadingAvailability(true);
+    try {
+      const response = await fetch("/api/calendar/availability?daysAhead=14");
+      if (!response.ok) {
+        throw new Error("Failed to fetch availability");
+      }
+      const data = await response.json();
+
+      // Convert datetime strings back to Date objects
+      const parsedAvailability: AvailabilityData = {};
+      for (const [date, slots] of Object.entries(data.availability as AvailabilityData)) {
+        parsedAvailability[date] = (slots as any[]).map((slot: any) => ({
+          time: slot.time,
+          datetime: new Date(slot.datetime),
+        }));
+      }
+
+      setAvailability(parsedAvailability);
+    } catch (error) {
+      console.error("Error fetching availability:", error);
+      // Set empty availability on error
+      setAvailability({});
+    } finally {
+      setIsLoadingAvailability(false);
+    }
+  };
+
+  // Get available time slots for selected date
+  const getAvailableTimeSlotsForDate = (): AvailableSlot[] => {
+    if (!selectedDate) return [];
+
+    const dateKey = selectedDate.toISOString().split("T")[0];
+    const dayOfWeek = selectedDate.getDay();
+
+    // Check if it's a weekend (Saturday=6, Sunday=0)
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return [];
+    }
+
+    return availability[dateKey] || [];
+  };
+
+  const isWeekend = (date: Date | undefined): boolean => {
+    if (!date) return false;
+    const dayOfWeek = date.getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6;
+  };
+
   const handleClose = () => {
     setIsOpen(false);
     onClose();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    setSelectedTime(undefined); // Reset time when date changes
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      service,
-      date: selectedDate,
-      time: selectedTime,
-      name,
-      email,
-      phone,
-      message,
-    });
-    if (onScheduleConsultation) {
-      onScheduleConsultation();
-    } else {
-      console.log("Default action");
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      if (!selectedDate || !selectedTime) {
+        throw new Error("Please select both date and time");
+      }
+
+      // Find the full datetime for the selected time
+      const availableSlots = getAvailableTimeSlotsForDate();
+      const selectedSlot = availableSlots.find((slot) => slot.time === selectedTime);
+
+      if (!selectedSlot) {
+        throw new Error("Selected time slot is no longer available");
+      }
+
+      const response = await fetch("/api/calendar/book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          service,
+          datetime: selectedSlot.datetime.toISOString(),
+          name,
+          email,
+          phone,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to book appointment");
+      }
+
+      setSubmitSuccess(true);
+
+      // Call the callback if provided
+      if (onScheduleConsultation) {
+        onScheduleConsultation();
+      }
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : "Failed to book appointment"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-    handleClose();
   };
 
   if (!isOpen) return null;
@@ -112,13 +215,31 @@ export function Scheduler({
                 </SelectContent>
               </Select>
             </div>
+            {/* Success Message */}
+            {submitSuccess && (
+              <div className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200">
+                <CalendarDays className="w-5 h-5 flex-shrink-0" />
+                <p className="text-sm font-medium">
+                  Appointment booked successfully! We&apos;ll send you a confirmation email shortly.
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {submitError && (
+              <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <p className="text-sm font-medium">{submitError}</p>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="date">Select Date</Label>
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={setSelectedDate}
+                  onSelect={handleDateSelect}
                   className="rounded-md border"
                   disabled={(date) =>
                     date < new Date() ||
@@ -126,21 +247,67 @@ export function Scheduler({
                       new Date(new Date().setMonth(new Date().getMonth() + 2))
                   }
                 />
+                {isLoadingAvailability && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Loading availability...
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="time">Select Time</Label>
-                <Select value={selectedTime} onValueChange={setSelectedTime}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timeSlots.map((time) => (
-                      <SelectItem key={time} value={time}>
-                        {time}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+
+                {/* Weekend Message */}
+                {selectedDate && isWeekend(selectedDate) && (
+                  <div className="flex items-start gap-2 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-800 dark:text-blue-200">
+                    <Phone className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium">Weekend Service</p>
+                      <p className="text-sm mt-1">
+                        For weekend appointments, please call us directly to discuss availability and scheduling.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Time Slot Selection */}
+                {selectedDate && !isWeekend(selectedDate) && (
+                  <>
+                    <Select
+                      value={selectedTime}
+                      onValueChange={setSelectedTime}
+                      disabled={getAvailableTimeSlotsForDate().length === 0}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={
+                          getAvailableTimeSlotsForDate().length === 0
+                            ? "No available times"
+                            : "Select time"
+                        } />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getAvailableTimeSlotsForDate().map((slot) => (
+                          <SelectItem key={slot.time} value={slot.time}>
+                            {slot.time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {getAvailableTimeSlotsForDate().length === 0 && (
+                      <p className="text-sm text-muted-foreground">
+                        No available time slots for this date. Please try another day.
+                      </p>
+                    )}
+                  </>
+                )}
+
+                {!selectedDate && (
+                  <p className="text-sm text-muted-foreground">
+                    Please select a date first
+                  </p>
+                )}
+
                 {selectedDate && selectedTime && (
                   <p className="text-sm text-muted-foreground mt-2">
                     <CalendarDays className="inline-block mr-1 h-4 w-4" />
@@ -193,8 +360,21 @@ export function Scheduler({
                 rows={4}
               />
             </div>
-            <Button type="submit" className="w-full">
-              Schedule Consultation
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || submitSuccess || !selectedDate || !selectedTime || isWeekend(selectedDate)}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Booking...
+                </span>
+              ) : submitSuccess ? (
+                "Booked Successfully!"
+              ) : (
+                "Schedule Consultation"
+              )}
             </Button>
           </form>
         </CardContent>

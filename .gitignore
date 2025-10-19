@@ -27,6 +27,26 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+.env.development
+.env.production
+
+# sensitive configuration and setup files
+SCHEDULING_SETUP.md
+**/SETUP.md
+**/SECRETS.md
+**/*_SETUP.md
+**/*_SECRETS.md
+
+# Google Cloud service account credentials
+**/google-credentials.json
+**/service-account*.json
+**/*-firebase-adminsdk-*.json
+
+# API keys and credentials
+**/credentials.json
+**/api-keys.json
+**/secrets.json
 
 # vercel
 .vercel
