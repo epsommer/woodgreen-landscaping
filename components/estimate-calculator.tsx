@@ -91,7 +91,7 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "Landscaping Labour": { price: 57, originalPrice: 95, unit: "per hour", defaultQty: 4, },
   "Aeration": { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1, },
   "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
-  "Grass Cutting": { price: 35, originalPrice: 55, unit: "per cut", defaultQty: 1, },
+  "Grass Cutting": { price: 49, originalPrice: 55, unit: "per cut", defaultQty: 1, },
   "Snow Removal": {
     unit: "per clearing", defaultQty: 1, comingSoon: true, variants: {
       'Single Driveway': { price: 399, originalPrice: 599 }, // Seasonal rate
