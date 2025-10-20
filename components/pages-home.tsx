@@ -41,7 +41,8 @@ export function Home() {
     {
       icon: <TreePine className="h-8 w-8 mb-2" />,
       title: "Landscape Design",
-      description: "Transform your outdoor space with our expert design services.",
+      description:
+        "Transform your outdoor space with our expert design services.",
       subheading: "Personalized Solutions for Every Property",
       features: [
         "Custom 3D landscape visualization",
@@ -50,13 +51,15 @@ export function Home() {
         "Sustainable water management solutions",
         "Seasonal color planning",
       ],
-      benefits: "Create a stunning outdoor environment that enhances your property value and provides year-round enjoyment.",
+      benefits:
+        "Create a stunning outdoor environment that enhances your property value and provides year-round enjoyment.",
       link: "/design",
     },
     {
       icon: <Sun className="h-8 w-8 mb-2" />,
       title: "Lawn Care",
-      description: "Professional lawn maintenance for a pristine, healthy yard.",
+      description:
+        "Professional lawn maintenance for a pristine, healthy yard.",
       subheading: "Complete Lawn Health Management",
       features: [
         "Regular mowing & edging services",
@@ -65,7 +68,8 @@ export function Home() {
         "Soil testing & pH balancing",
         "Pest & disease management",
       ],
-      benefits: "Enjoy a lush, green lawn that's the envy of the neighborhood with our science-backed care approach.",
+      benefits:
+        "Enjoy a lush, green lawn that's the envy of the neighborhood with our science-backed care approach.",
       link: "/maintenance",
     },
     {
@@ -80,14 +84,17 @@ export function Home() {
         "Irrigation system maintenance",
         "Organic pest control options",
       ],
-      benefits: "Maintain beautiful, healthy gardens with minimal effort through our comprehensive care programs.",
+      benefits:
+        "Maintain beautiful, healthy gardens with minimal effort through our comprehensive care programs.",
       link: "/maintenance",
     },
   ];
 
   const endOfSummerSpecials = [
     {
-      icon: <Sun className="h-8 w-8 text-[#CEFF65] group-hover:animate-sun-glow [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Sun className="h-8 w-8 text-[#CEFF65] group-hover:animate-sun-glow [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Grass Cutting",
       subtitle: "Final Cut Service",
       description: "Professional lawn mowing and edging to prepare for fall.",
@@ -96,16 +103,21 @@ export function Home() {
       service: "Grass Cutting",
     },
     {
-      icon: <Leaf className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Leaf className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Aeration",
       subtitle: "Soil Health",
-      description: "Improve lawn health with core aeration for better nutrient absorption.",
+      description:
+        "Improve lawn health with core aeration for better nutrient absorption.",
       price: "$45",
       oldPrice: "$75",
       service: "Aeration",
     },
     {
-      icon: <Sparkles className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Sparkles className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Dethatching",
       subtitle: "Lawn Revitalization",
       description: "Remove dead grass buildup to promote healthy fall growth.",
@@ -114,10 +126,13 @@ export function Home() {
       service: "Dethatching",
     },
     {
-      icon: <Shovel className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Shovel className="h-8 w-8 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Garden Maintenance",
       subtitle: "Seasonal Care",
-      description: "Complete garden care including pruning, weeding, and bed preparation.",
+      description:
+        "Complete garden care including pruning, weeding, and bed preparation.",
       price: "$48/hr",
       oldPrice: "$80/hr",
       service: "Garden Maintenance",
@@ -126,7 +141,9 @@ export function Home() {
 
   const fallPromotions = [
     {
-      icon: <Wind className="h-12 w-12 mb-4 text-[#CEFF65] group-hover:animate-wind-blow [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Wind className="h-12 w-12 mb-4 text-[#CEFF65] group-hover:animate-wind-blow [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Fall Cleanup Special",
       subtitle: "Complete Property Preparation",
       description:
@@ -146,7 +163,9 @@ export function Home() {
       guarantee: "100% satisfaction guaranteed or we'll make it right",
     },
     {
-      icon: <Scissors className="h-12 w-12 mb-4 text-[#CEFF65] group-hover:animate-snip [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Scissors className="h-12 w-12 mb-4 text-[#CEFF65] group-hover:animate-snip [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Fall Hedge & Shrub Care",
       subtitle: "Professional Winter Preparation",
       description:
@@ -222,24 +241,36 @@ export function Home() {
 
   const whyChooseUs = [
     {
-      icon: <Award className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Award className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "15+ Years Experience",
-      description: "Trusted expertise in landscape design and maintenance across the GTA",
+      description:
+        "Trusted expertise in landscape design and maintenance across the GTA",
     },
     {
-      icon: <Shield className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Shield className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Licensed & Insured",
-      description: "Full liability coverage and WSIB compliance for your peace of mind",
+      description:
+        "Full liability coverage and WSIB compliance for your peace of mind",
     },
     {
-      icon: <Users className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Users className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Dedicated Teams",
-      description: "Skilled professionals who take pride in delivering exceptional results",
+      description:
+        "Skilled professionals who take pride in delivering exceptional results",
     },
     {
-      icon: <Leaf className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />,
+      icon: (
+        <Leaf className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
       title: "Eco-Friendly Practices",
-      description: "Sustainable solutions that are better for your landscape and the environment",
+      description:
+        "Sustainable solutions that are better for your landscape and the environment",
     },
   ];
 
@@ -248,7 +279,8 @@ export function Home() {
       number: "1",
       title: "Free Consultation",
       description: "We visit your property to understand your vision and needs",
-      details: "Our landscape experts will meet with you on-site to discuss your goals, assess your property's unique characteristics, and explore design possibilities.",
+      details:
+        "Our landscape experts will meet with you on-site to discuss your goals, assess your property's unique characteristics, and explore design possibilities.",
       features: [
         "Complimentary on-site property assessment",
         "Discussion of your landscaping goals and budget",
@@ -260,8 +292,10 @@ export function Home() {
     {
       number: "2",
       title: "Custom Proposal",
-      description: "Receive a detailed plan with transparent pricing and timelines",
-      details: "We'll create a comprehensive proposal tailored to your specific needs, including detailed scope of work, materials list, and project timeline.",
+      description:
+        "Receive a detailed plan with transparent pricing and timelines",
+      details:
+        "We'll create a comprehensive proposal tailored to your specific needs, including detailed scope of work, materials list, and project timeline.",
       features: [
         "Detailed breakdown of all services and materials",
         "Transparent, itemized pricing with no hidden fees",
@@ -273,8 +307,10 @@ export function Home() {
     {
       number: "3",
       title: "Expert Execution",
-      description: "Our skilled team brings your landscape to life with precision",
-      details: "Our experienced crews will execute your project with meticulous attention to detail, keeping you informed throughout the process.",
+      description:
+        "Our skilled team brings your landscape to life with precision",
+      details:
+        "Our experienced crews will execute your project with meticulous attention to detail, keeping you informed throughout the process.",
       features: [
         "Professional, uniformed crews with proper equipment",
         "Regular progress updates and communication",
@@ -286,8 +322,10 @@ export function Home() {
     {
       number: "4",
       title: "Ongoing Support",
-      description: "Enjoy continued maintenance and care to keep your landscape thriving",
-      details: "We stand behind our work and offer comprehensive maintenance services to ensure your landscape remains beautiful year after year.",
+      description:
+        "Enjoy continued maintenance and care to keep your landscape thriving",
+      details:
+        "We stand behind our work and offer comprehensive maintenance services to ensure your landscape remains beautiful year after year.",
       features: [
         "Warranty on all workmanship and materials",
         "Seasonal maintenance programs available",
@@ -302,7 +340,9 @@ export function Home() {
     <div className="flex flex-col min-h-screen bg-[#F0F4F0] dark:bg-[#1C1C1C] text-[#2F3B30] dark:text-white transition-colors duration-300 overflow-x-hidden">
       <main className="flex-grow overflow-x-hidden">
         {/* Hero Section with 3D Scene */}
-        <HeroSection onGetStarted={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)} />
+        <HeroSection
+          onGetStarted={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
+        />
 
         <section id="services" className="py-20 bg-white dark:bg-[#2F3B30]">
           <div className="container mx-auto px-4">
@@ -311,7 +351,8 @@ export function Home() {
                 Why Choose Woodgreen Landscaping?
               </h2>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Experience the difference that comes from working with true landscaping professionals
+                Experience the difference that comes from working with true
+                landscaping professionals
               </p>
             </div>
 
@@ -343,7 +384,8 @@ export function Home() {
                 Our Featured Services
               </h3>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Comprehensive landscaping solutions tailored to your property&apos;s unique needs
+                Comprehensive landscaping solutions tailored to your
+                property&apos;s unique needs
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -352,10 +394,14 @@ export function Home() {
                   <Card
                     className={`bg-[#F0F4F0] dark:bg-[#4A5D4C] border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
                       expandedService === index
-                        ? 'border-[#CEFF65] shadow-xl'
-                        : 'border-transparent'
+                        ? "border-[#CEFF65] shadow-xl"
+                        : "border-transparent"
                     }`}
-                    onClick={() => setExpandedService(expandedService === index ? null : index)}
+                    onClick={() =>
+                      setExpandedService(
+                        expandedService === index ? null : index,
+                      )
+                    }
                   >
                     <CardHeader>
                       <CardTitle className="flex flex-col items-center text-center">
@@ -377,8 +423,8 @@ export function Home() {
                         size="sm"
                         className={`transition-all duration-300 ${
                           expandedService === index
-                            ? 'bg-[#CEFF65] text-[#2F3B30] border-[#CEFF65] hover:bg-[#CEFF65]/90'
-                            : 'bg-[#2F3B30] text-white border-[#2F3B30] hover:bg-[#3A4A3A]'
+                            ? "bg-[#CEFF65] text-[#2F3B30] border-[#CEFF65] hover:bg-[#CEFF65]/90"
+                            : "bg-[#2F3B30] text-white border-[#2F3B30] hover:bg-[#3A4A3A]"
                         }`}
                       >
                         {expandedService === index ? (
@@ -387,7 +433,8 @@ export function Home() {
                           </>
                         ) : (
                           <>
-                            View Details <ChevronDown className="ml-2 h-4 w-4" />
+                            View Details{" "}
+                            <ChevronDown className="ml-2 h-4 w-4" />
                           </>
                         )}
                       </Button>
@@ -411,13 +458,18 @@ export function Home() {
                           <div>
                             <h4 className="font-bold text-lg mb-4 text-[#2F3B30] dark:text-[#CEFF65] flex items-center gap-2">
                               <CheckCircle2 className="h-5 w-5" />
-                              What's Included
+                              What&apos;s Included
                             </h4>
                             <ul className="space-y-3">
                               {service.features.map((feature, featureIndex) => (
-                                <li key={featureIndex} className="flex items-start gap-3">
+                                <li
+                                  key={featureIndex}
+                                  className="flex items-start gap-3"
+                                >
                                   <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
-                                  <span className="text-[#4A5D4C] dark:text-gray-300">{feature}</span>
+                                  <span className="text-[#4A5D4C] dark:text-gray-300">
+                                    {feature}
+                                  </span>
                                 </li>
                               ))}
                             </ul>
@@ -474,15 +526,22 @@ export function Home() {
                       <div>
                         <h4 className="font-bold text-lg mb-4 text-[#2F3B30] dark:text-[#CEFF65] flex items-center gap-2">
                           <CheckCircle2 className="h-5 w-5" />
-                          What's Included
+                          What&apos;s Included
                         </h4>
                         <ul className="space-y-3">
-                          {featuredServices[expandedService].features.map((feature, featureIndex) => (
-                            <li key={featureIndex} className="flex items-start gap-3">
-                              <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
-                              <span className="text-[#4A5D4C] dark:text-gray-300">{feature}</span>
-                            </li>
-                          ))}
+                          {featuredServices[expandedService].features.map(
+                            (feature, featureIndex) => (
+                              <li
+                                key={featureIndex}
+                                className="flex items-start gap-3"
+                              >
+                                <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
+                                <span className="text-[#4A5D4C] dark:text-gray-300">
+                                  {feature}
+                                </span>
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
 
@@ -502,7 +561,8 @@ export function Home() {
                             size="lg"
                             className="w-full mt-6 bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
                           >
-                            Learn More About {featuredServices[expandedService].title}
+                            Learn More About{" "}
+                            {featuredServices[expandedService].title}
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
                         </Link>
@@ -532,7 +592,8 @@ export function Home() {
                 Our Simple 4-Step Process
               </h3>
               <p className="text-center text-[#4A5D4C] dark:text-gray-300 mb-12 max-w-2xl mx-auto">
-                From initial consultation to ongoing maintenance, we make creating your dream landscape easy
+                From initial consultation to ongoing maintenance, we make
+                creating your dream landscape easy
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {processSteps.map((step, index) => (
@@ -542,10 +603,14 @@ export function Home() {
                         <div
                           className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mb-4 transition-all duration-300 cursor-pointer ${
                             expandedStep === index
-                              ? 'bg-[#CEFF65] text-[#2F3B30] scale-110 shadow-lg'
-                              : 'bg-[#2F3B30] dark:bg-[#4A5D4C] text-white group-hover:scale-110 group-hover:bg-[#3A4A3A]'
+                              ? "bg-[#CEFF65] text-[#2F3B30] scale-110 shadow-lg"
+                              : "bg-[#2F3B30] dark:bg-[#4A5D4C] text-white group-hover:scale-110 group-hover:bg-[#3A4A3A]"
                           }`}
-                          onClick={() => setExpandedStep(expandedStep === index ? null : index)}
+                          onClick={() =>
+                            setExpandedStep(
+                              expandedStep === index ? null : index,
+                            )
+                          }
                         >
                           {step.number}
                         </div>
@@ -558,20 +623,26 @@ export function Home() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setExpandedStep(expandedStep === index ? null : index)}
+                          onClick={() =>
+                            setExpandedStep(
+                              expandedStep === index ? null : index,
+                            )
+                          }
                           className={`text-xs transition-all duration-300 ${
                             expandedStep === index
-                              ? 'text-[#CEFF65] hover:text-[#CEFF65]/90'
-                              : 'text-[#2F3B30] dark:text-[#CEFF65] hover:underline'
+                              ? "text-[#CEFF65] hover:text-[#CEFF65]/90"
+                              : "text-[#2F3B30] dark:text-[#CEFF65] hover:underline"
                           }`}
                         >
                           {expandedStep === index ? (
                             <>
-                              Hide Details <ChevronUp className="ml-1 h-3 w-3" />
+                              Hide Details{" "}
+                              <ChevronUp className="ml-1 h-3 w-3" />
                             </>
                           ) : (
                             <>
-                              View Details <ChevronDown className="ml-1 h-3 w-3" />
+                              View Details{" "}
+                              <ChevronDown className="ml-1 h-3 w-3" />
                             </>
                           )}
                         </Button>
@@ -603,9 +674,14 @@ export function Home() {
                             </h4>
                             <ul className="space-y-3">
                               {step.features.map((feature, featureIndex) => (
-                                <li key={featureIndex} className="flex items-start gap-3">
+                                <li
+                                  key={featureIndex}
+                                  className="flex items-start gap-3"
+                                >
                                   <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
-                                  <span className="text-[#4A5D4C] dark:text-gray-300">{feature}</span>
+                                  <span className="text-[#4A5D4C] dark:text-gray-300">
+                                    {feature}
+                                  </span>
                                 </li>
                               ))}
                             </ul>
@@ -626,7 +702,8 @@ export function Home() {
                         <div className="w-12 h-12 rounded-full bg-[#CEFF65] text-[#2F3B30] flex items-center justify-center text-xl font-bold">
                           {processSteps[expandedStep].number}
                         </div>
-                        Step {processSteps[expandedStep].number}: {processSteps[expandedStep].title}
+                        Step {processSteps[expandedStep].number}:{" "}
+                        {processSteps[expandedStep].title}
                       </CardTitle>
                       <CardDescription className="text-base">
                         {processSteps[expandedStep].details}
@@ -638,12 +715,19 @@ export function Home() {
                         What to Expect
                       </h4>
                       <div className="grid md:grid-cols-2 gap-4">
-                        {processSteps[expandedStep].features.map((feature, featureIndex) => (
-                          <div key={featureIndex} className="flex items-start gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
-                            <span className="text-[#4A5D4C] dark:text-gray-300">{feature}</span>
-                          </div>
-                        ))}
+                        {processSteps[expandedStep].features.map(
+                          (feature, featureIndex) => (
+                            <div
+                              key={featureIndex}
+                              className="flex items-start gap-3"
+                            >
+                              <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
+                              <span className="text-[#4A5D4C] dark:text-gray-300">
+                                {feature}
+                              </span>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -662,7 +746,8 @@ export function Home() {
                 End-of-Summer Specials
               </h2>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Get your lawn ready for fall with these individual service specials
+                Get your lawn ready for fall with these individual service
+                specials
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -672,7 +757,16 @@ export function Home() {
                   className="bg-white dark:bg-[#2F3B30] border-0 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group overflow-hidden relative"
                 >
                   <div className="absolute top-3 right-3 bg-[#CEFF65] text-[#2F3B30] px-2 py-1 font-bold text-xs rounded-full shadow-md z-10">
-                    SAVE {Math.round((1 - parseFloat(special.price.replace(/[^0-9.]/g, '')) / parseFloat(special.oldPrice.replace(/[^0-9.]/g, ''))) * 100)}%
+                    SAVE{" "}
+                    {Math.round(
+                      (1 -
+                        parseFloat(special.price.replace(/[^0-9.]/g, "")) /
+                          parseFloat(
+                            special.oldPrice.replace(/[^0-9.]/g, ""),
+                          )) *
+                        100,
+                    )}
+                    %
                   </div>
                   <CardHeader className="text-center pb-4">
                     <div className="flex justify-center items-center mb-3">
@@ -700,7 +794,11 @@ export function Home() {
                     </div>
 
                     <Button
-                      onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL, { service: special.service })}
+                      onClick={() =>
+                        emitEvent(EVENTS.OPEN_ESTIMATE_MODAL, {
+                          service: special.service,
+                        })
+                      }
                       size="sm"
                       className="w-full bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A] transition-all duration-300 hover:scale-105"
                     >
@@ -728,7 +826,14 @@ export function Home() {
                   className="bg-white dark:bg-[#2F3B30] border-0 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group relative"
                 >
                   <div className="absolute top-4 right-4 bg-[#CEFF65] text-[#2F3B30] px-3 py-1.5 font-bold text-xs rounded-full shadow-md z-10">
-                    SAVE {((parseFloat(promo.oldPrice?.replace('$', '') || '0') - parseFloat(promo.price.replace(/Starting at \$/, ''))) / parseFloat(promo.oldPrice?.replace('$', '') || '1') * 100).toFixed(0)}%
+                    SAVE{" "}
+                    {(
+                      ((parseFloat(promo.oldPrice?.replace("$", "") || "0") -
+                        parseFloat(promo.price.replace(/Starting at \$/, ""))) /
+                        parseFloat(promo.oldPrice?.replace("$", "") || "1")) *
+                      100
+                    ).toFixed(0)}
+                    %
                   </div>
                   <CardHeader className="text-center overflow-hidden">
                     <div className="flex justify-center items-center">
@@ -753,7 +858,10 @@ export function Home() {
                       </h4>
                       <ul className="space-y-2">
                         {promo.included.map((item, itemIndex) => (
-                          <li key={itemIndex} className="flex items-start gap-2 text-sm text-[#4A5D4C] dark:text-gray-300">
+                          <li
+                            key={itemIndex}
+                            className="flex items-start gap-2 text-sm text-[#4A5D4C] dark:text-gray-300"
+                          >
                             <CheckCircle2 className="h-4 w-4 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
                             <span>{item}</span>
                           </li>
@@ -780,7 +888,11 @@ export function Home() {
                     </div>
 
                     <Button
-                      onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL, { service: promo.service })}
+                      onClick={() =>
+                        emitEvent(EVENTS.OPEN_ESTIMATE_MODAL, {
+                          service: promo.service,
+                        })
+                      }
                       size="lg"
                       className="w-full bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A] transition-all duration-300 hover:scale-105"
                     >
@@ -802,7 +914,8 @@ export function Home() {
                 Coming Soon
               </h2>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Exciting new services in development - stay tuned for winter coverage!
+                Exciting new services in development - stay tuned for winter
+                coverage!
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -837,7 +950,10 @@ export function Home() {
                       </h4>
                       <ul className="space-y-2">
                         {service.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start gap-2 text-sm text-gray-500 dark:text-gray-400">
+                          <li
+                            key={featureIndex}
+                            className="flex items-start gap-2 text-sm text-gray-500 dark:text-gray-400"
+                          >
                             <CheckCircle2 className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                             <span>{feature}</span>
                           </li>
@@ -867,7 +983,8 @@ export function Home() {
                 What Our Clients Say
               </h2>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Don&apos;t just take our word for it - hear from homeowners who have transformed their properties
+                Don&apos;t just take our word for it - hear from homeowners who
+                have transformed their properties
               </p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
