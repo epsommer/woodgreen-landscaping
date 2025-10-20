@@ -26,6 +26,10 @@ import {
   Scissors,
   Droplets,
   Clock,
+  User,
+  Eye,
+  Hammer,
+  Heart,
 } from "lucide-react";
 import Link from "next/link";
 import { HeroSection } from "@/components/HeroSection";
@@ -38,54 +42,80 @@ export function Home() {
 
   const featuredServices = [
     {
-      icon: <TreePine className="h-8 w-8 mb-2" />,
-      title: "Landscape Design",
+      icon: (
+        <Heart className="h-8 w-8 mb-2 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
+      title: "Boutique Service",
       description:
-        "Transform your outdoor space with our expert design services.",
-      subheading: "Personalized Solutions for Every Property",
+        "High-touch, artisanal approach to landscaping that treats every project as a masterpiece.",
+      subheading: "Quality Over Quantity",
       features: [
-        "Custom 3D landscape visualization",
-        "Native plant selection & placement",
-        "Hardscape design (patios, walkways, retaining walls)",
-        "Sustainable water management solutions",
-        "Seasonal color planning",
+        "Limited client roster ensures focused attention",
+        "Handcrafted solutions, never cookie-cutter designs",
+        "Meticulous craftsmanship in every aspect",
+        "Direct owner involvement from start to finish",
+        "Commitment to excellence in every detail",
       ],
       benefits:
-        "Create a stunning outdoor environment that enhances your property value and provides year-round enjoyment.",
+        "Experience the rare combination of small-scale attention with large-scale expertise, where your project isn't just another job—it's a craft.",
+      link: "/services",
+    },
+    {
+      icon: (
+        <User className="h-8 w-8 mb-2 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
+      title: "Personalized Service",
+      description:
+        "Tailored landscaping solutions designed specifically for your property and vision.",
+      subheading: "Your Unique Outdoor Space, Your Way",
+      features: [
+        "One-on-one consultation to understand your goals",
+        "Customized maintenance schedules that fit your lifestyle",
+        "Direct communication with me throughout the project",
+        "Flexible service options based on your budget",
+        "Personal attention to every detail of your property",
+      ],
+      benefits:
+        "Experience the difference of working directly with a dedicated professional who treats your property as if it were their own.",
+      link: "/services",
+    },
+    {
+      icon: (
+        <Eye className="h-8 w-8 mb-2 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
+      title: "Designer's Eye",
+      description:
+        "Creative vision and expertise to bring out the best in your landscape.",
+      subheading: "Artistry Meets Functionality",
+      features: [
+        "Professional design sense honed over 30+ years",
+        "Strategic plant placement for year-round beauty",
+        "Color coordination and seasonal interest planning",
+        "Practical layouts that enhance usability and flow",
+        "Solutions that complement your home's architecture",
+      ],
+      benefits:
+        "Transform your outdoor space with thoughtful design that balances aesthetics with practicality, creating a landscape you'll love for years to come.",
       link: "/design",
     },
     {
-      icon: <Sun className="h-8 w-8 mb-2" />,
-      title: "Lawn Care",
+      icon: (
+        <Hammer className="h-8 w-8 mb-2 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
+      ),
+      title: "Construction Expertise",
       description:
-        "Professional lawn maintenance for a pristine, healthy yard.",
-      subheading: "Complete Lawn Health Management",
+        "Comprehensive construction services including concrete, framing, and roofing.",
+      subheading: "Building Beyond Landscaping",
       features: [
-        "Regular mowing & edging services",
-        "Fertilization & weed control programs",
-        "Aeration & overseeding",
-        "Soil testing & pH balancing",
-        "Pest & disease management",
+        "Concrete work: patios, walkways, driveways, and foundations",
+        "Wood and metal framing for structures and pergolas",
+        "Roofing installation and repair for sheds and outdoor structures",
+        "Retaining walls and hardscape construction",
+        "Complete project management from design to completion",
       ],
       benefits:
-        "Enjoy a lush, green lawn that's the envy of the neighborhood with our science-backed care approach.",
-      link: "/maintenance",
-    },
-    {
-      icon: <Shovel className="h-8 w-8 mb-2" />,
-      title: "Garden Maintenance",
-      description: "Expert care to keep your gardens thriving all season long.",
-      subheading: "Year-Round Garden Excellence",
-      features: [
-        "Seasonal pruning & trimming",
-        "Mulching & bed preparation",
-        "Perennial & annual planting",
-        "Irrigation system maintenance",
-        "Organic pest control options",
-      ],
-      benefits:
-        "Maintain beautiful, healthy gardens with minimal effort through our comprehensive care programs.",
-      link: "/maintenance",
+        "Leverage decades of construction experience to handle all aspects of your outdoor projects, from groundwork to finishing touches.",
+      link: "/services",
     },
   ];
 
@@ -97,7 +127,7 @@ export function Home() {
       title: "Grass Cutting",
       subtitle: "Final Cut Service",
       description: "Professional lawn mowing and edging to prepare for fall.",
-      price: "$35",
+      price: "$49",
       oldPrice: "$55",
       service: "Grass Cutting",
     },
@@ -368,9 +398,7 @@ export function Home() {
                         : "border-transparent"
                     }`}
                     onClick={() =>
-                      setExpandedReason(
-                        expandedReason === index ? null : index,
-                      )
+                      setExpandedReason(expandedReason === index ? null : index)
                     }
                   >
                     <CardContent className="pt-8 pb-6">
@@ -386,10 +414,10 @@ export function Home() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className={`transition-all duration-300 ${
+                        className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
                           expandedReason === index
-                            ? "bg-[#CEFF65] text-[#2F3B30] border-[#CEFF65] hover:bg-[#CEFF65]/90"
-                            : "bg-[#2F3B30] text-white border-[#2F3B30] hover:bg-[#3A4A3A]"
+                            ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
+                            : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
                         }`}
                       >
                         {expandedReason === index ? (
@@ -398,8 +426,7 @@ export function Home() {
                           </>
                         ) : (
                           <>
-                            Learn More{" "}
-                            <ChevronDown className="ml-2 h-4 w-4" />
+                            Learn More <ChevronDown className="ml-2 h-4 w-4" />
                           </>
                         )}
                       </Button>
@@ -488,14 +515,14 @@ export function Home() {
             {/* Featured Services */}
             <div className="text-center mb-12 mt-20">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                Our Featured Services
+                What Sets Me Apart
               </h3>
               <p className="text-lg text-[#4A5D4C] dark:text-gray-300 max-w-2xl mx-auto">
-                Comprehensive landscaping solutions tailored to your
-                property&apos;s unique needs
+                Three decades of expertise combined with personalized service
+                and comprehensive construction capabilities
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredServices.map((service, index) => (
                 <div key={index} className="contents md:block">
                   <Card
@@ -528,10 +555,10 @@ export function Home() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className={`transition-all duration-300 ${
+                        className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
                           expandedService === index
-                            ? "bg-[#CEFF65] text-[#2F3B30] border-[#CEFF65] hover:bg-[#CEFF65]/90"
-                            : "bg-[#2F3B30] text-white border-[#2F3B30] hover:bg-[#3A4A3A]"
+                            ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
+                            : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
                         }`}
                       >
                         {expandedService === index ? (
@@ -596,7 +623,7 @@ export function Home() {
                             <Link href={service.link}>
                               <Button
                                 size="lg"
-                                className="w-full mt-6 bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                                className="w-full mt-6 bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
                               >
                                 Learn More About {service.title}
                                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -666,7 +693,7 @@ export function Home() {
                         <Link href={featuredServices[expandedService].link}>
                           <Button
                             size="lg"
-                            className="w-full mt-6 bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                            className="w-full mt-6 bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
                           >
                             Learn More About{" "}
                             {featuredServices[expandedService].title}
@@ -685,7 +712,7 @@ export function Home() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                  className="bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
                 >
                   View All Services
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -735,10 +762,10 @@ export function Home() {
                               expandedStep === index ? null : index,
                             )
                           }
-                          className={`text-xs transition-all duration-300 ${
+                          className={`text-xs transition-all duration-200 ease-in-out focus:outline-none ${
                             expandedStep === index
-                              ? "text-[#CEFF65] hover:text-[#CEFF65]/90"
-                              : "text-[#2F3B30] dark:text-[#CEFF65] hover:underline"
+                              ? "text-[#CEFF65] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] [text-shadow:1px_1px_2px_rgba(186,190,204,0.8)] dark:shadow-none dark:[text-shadow:none] dark:text-[#CEFF65]"
+                              : "text-[#2F3B30] font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] [text-shadow:1px_1px_0_rgba(255,255,255,1)] dark:shadow-none dark:[text-shadow:none] dark:text-[#CEFF65]"
                           }`}
                         >
                           {expandedStep === index ? (
@@ -907,7 +934,7 @@ export function Home() {
                         })
                       }
                       size="sm"
-                      className="w-full bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A] transition-all duration-300 hover:scale-105"
+                      className="w-full bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] hover:scale-105 active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
                     >
                       Book Now
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -1001,7 +1028,7 @@ export function Home() {
                         })
                       }
                       size="lg"
-                      className="w-full bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A] transition-all duration-300 hover:scale-105"
+                      className="w-full bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] hover:scale-105 active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
                     >
                       {promo.cta}
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -1071,7 +1098,7 @@ export function Home() {
                     <Button
                       disabled
                       size="lg"
-                      className="w-full bg-gray-400 text-white border-0 cursor-not-allowed opacity-60"
+                      className="w-full bg-gray-400 text-white border-0 cursor-not-allowed opacity-60 font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.3)] dark:shadow-none"
                     >
                       Coming Soon
                     </Button>
@@ -1144,7 +1171,7 @@ export function Home() {
               <Button
                 size="lg"
                 onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
-                className="bg-[#2F3B30] hover:bg-[#3A4A3A] text-white border-0 dark:bg-[#4A5D4C] dark:hover:bg-[#3A4A3A]"
+                className="bg-[#2F3B30] text-white border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C]"
               >
                 Get Your Free Estimate
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -1164,7 +1191,7 @@ export function Home() {
             <Button
               size="lg"
               variant="outline"
-              className="bg-[#CEFF65] hover:bg-[#CEFF65]/90 text-[#2F3B30] border-0 dark:bg-[#4A5D4C] dark:text-white dark:hover:bg-[#3A4A3A]"
+              className="bg-[#CEFF65] text-[#2F3B30] border-0 font-semibold transition-all duration-200 ease-in-out shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#4A5D4C] dark:text-white"
               onClick={() => emitEvent(EVENTS.OPEN_ESTIMATE_MODAL)}
             >
               Get Started
