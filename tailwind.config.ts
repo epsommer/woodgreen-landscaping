@@ -77,6 +77,10 @@ const config: Config = {
         "float": "float 3s ease-in-out infinite",
         "sway": "sway 4s ease-in-out infinite",
         "grow": "grow 0.3s ease-out",
+        "wind-blow": "windBlow 2s ease-in-out 3",
+        "snow-fall": "snowFall 3s ease-in-out 2",
+        "sun-glow": "sunGlow 2.5s ease-in-out 3",
+        "snip": "snip 1.5s ease-in-out 4",
       },
       keyframes: {
         float: {
@@ -90,6 +94,27 @@ const config: Config = {
         grow: {
           "0%": { transform: "scale(0)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        windBlow: {
+          "0%": { transform: "translateX(-15px)", opacity: "0.3" },
+          "50%": { transform: "translateX(15px)", opacity: "1" },
+          "100%": { transform: "translateX(-15px)", opacity: "0.3" },
+        },
+        snowFall: {
+          "0%": { transform: "translateY(-20px) rotate(0deg)", opacity: "0" },
+          "50%": { transform: "translateY(10px) rotate(180deg)", opacity: "1" },
+          "100%": { transform: "translateY(-20px) rotate(-180deg)", opacity: "0" },
+        },
+        sunGlow: {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.2)", opacity: "0.7" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        snip: {
+          "0%, 100%": { transform: "rotate(0deg)" },
+          "25%": { transform: "rotate(-15deg)" },
+          "50%": { transform: "rotate(0deg)" },
+          "75%": { transform: "rotate(15deg)" },
         },
       },
     },

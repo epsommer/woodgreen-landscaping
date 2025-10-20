@@ -31,6 +31,7 @@ type ServiceType =
   | "Landscaping Labour"
   | "Aeration"
   | "Dethatching"
+  | "Grass Cutting"
   | "Snow Removal" // Keep as regular service
   | "Salting/De-Icing" // New service
   | "Tree Removal/Felling";
@@ -90,6 +91,7 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "Landscaping Labour": { price: 57, originalPrice: 95, unit: "per hour", defaultQty: 4, },
   "Aeration": { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1, },
   "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
+  "Grass Cutting": { price: 35, originalPrice: 55, unit: "per cut", defaultQty: 1, },
   "Snow Removal": {
     unit: "per clearing", defaultQty: 1, comingSoon: true, variants: {
       'Single Driveway': { price: 399, originalPrice: 599 }, // Seasonal rate
@@ -159,6 +161,9 @@ export const calculateEstimatedHours = (service: Service): number => {
     case "Dethatching":
       return 2 * service.quantity;
 
+    case "Grass Cutting":
+      return 1 * service.quantity;
+
     case "Snow Removal":
     case "Salting/De-Icing":
       // These are seasonal/on-demand services, not appointment-based
@@ -182,16 +187,30 @@ export function EstimateCalculator({
   onClose,
   onBookService,
   onScheduleConsultation,
+  initialService,
 }: {
   onClose: () => void;
   onBookService: (services: Service[], estimatedHours: number) => void;
   onScheduleConsultation: () => void;
+  initialService?: string;
 }) {
-  const [services, setServices] = useState<Service[]>([{
-    name: "",
-    quantity: 1,
-    unit: "",
-  }]);
+  const [services, setServices] = useState<Service[]>(() => {
+    if (initialService && serviceDetails[initialService as ServiceType]) {
+      const details = serviceDetails[initialService as ServiceType];
+      return [{
+        name: initialService as ServiceType,
+        quantity: details.defaultQty,
+        unit: details.unit,
+        variant: details.variants ? Object.keys(details.variants)[0] : undefined,
+        debrisCleanup: details.hasDebrisCleanup ? true : undefined,
+      }];
+    }
+    return [{
+      name: "",
+      quantity: 1,
+      unit: "",
+    }];
+  });
 
   const addService = () => {
     setServices([

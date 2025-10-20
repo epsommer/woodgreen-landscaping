@@ -12,6 +12,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
   const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [initialService, setInitialService] = useState("");
+  const [estimateInitialService, setEstimateInitialService] = useState("");
   const [bookingType, setBookingType] = useState<"service" | "consultation">("consultation");
   const [selectedServices, setSelectedServices] = useState<Array<{
     name: string;
@@ -24,7 +25,10 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleOpenEstimate = () => setShowEstimateCalculator(true);
+    const handleOpenEstimate = (e: CustomEvent) => {
+      setEstimateInitialService(e.detail?.service || "");
+      setShowEstimateCalculator(true);
+    };
     const handleOpenScheduler = (e: CustomEvent) => {
       setInitialService(e.detail?.service || "");
       setShowScheduler(true);
@@ -55,9 +59,13 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
 
       {showEstimateCalculator && (
         <EstimateCalculator
-          onClose={() => setShowEstimateCalculator(false)}
+          onClose={() => {
+            setShowEstimateCalculator(false);
+            setEstimateInitialService("");
+          }}
           onBookService={(services, hours) => {
             setShowEstimateCalculator(false);
+            setEstimateInitialService("");
             setSelectedServices(services);
             setEstimatedHours(hours);
             setBookingType("service");
@@ -65,11 +73,13 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
           }}
           onScheduleConsultation={() => {
             setShowEstimateCalculator(false);
+            setEstimateInitialService("");
             setSelectedServices([]);
             setEstimatedHours(0);
             setBookingType("consultation");
             setShowScheduler(true);
           }}
+          initialService={estimateInitialService}
         />
       )}
 
