@@ -36,6 +36,7 @@ import { useState } from "react";
 export function Home() {
   const [expandedService, setExpandedService] = useState<number | null>(null);
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const [expandedReason, setExpandedReason] = useState<number | null>(null);
 
   const featuredServices = [
     {
@@ -244,25 +245,18 @@ export function Home() {
       icon: (
         <Award className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
       ),
-      title: "15+ Years Experience",
+      title: "30+ Years Legacy Experience",
       description:
-        "Trusted expertise in landscape design and maintenance across the GTA",
-    },
-    {
-      icon: (
-        <Shield className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
-      ),
-      title: "Licensed & Insured",
-      description:
-        "Full liability coverage and WSIB compliance for your peace of mind",
-    },
-    {
-      icon: (
-        <Users className="h-10 w-10 text-[#CEFF65] [filter:drop-shadow(0_1px_1px_rgba(0,0,0,0.15))_drop-shadow(0_2px_3px_rgba(0,0,0,0.1))_drop-shadow(0_3px_6px_rgba(0,0,0,0.08))] dark:[filter:none]" />
-      ),
-      title: "Dedicated Teams",
-      description:
-        "Skilled professionals who take pride in delivering exceptional results",
+        "Three decades of expertise in landscape design and maintenance across the GTA",
+      details:
+        "With over 30 years of hands-on experience, I've mastered the art and science of landscape care. My legacy of quality work spans generations of satisfied clients across the Greater Toronto Area.",
+      features: [
+        "Proven track record with thousands of completed projects",
+        "Deep understanding of GTA soil conditions and climate",
+        "Expertise in native plant species and sustainable practices",
+        "Legacy of excellence built over three decades",
+        "Trusted by residential and commercial clients",
+      ],
     },
     {
       icon: (
@@ -271,6 +265,15 @@ export function Home() {
       title: "Eco-Friendly Practices",
       description:
         "Sustainable solutions that are better for your landscape and the environment",
+      details:
+        "I'm committed to environmental stewardship. My practices prioritize sustainability without sacrificing results, helping you create a beautiful landscape that's kind to the planet.",
+      features: [
+        "Native plant selection to support local ecosystems",
+        "Organic fertilizers and natural pest control options",
+        "Water-efficient irrigation design and rainwater harvesting",
+        "Composting and mulching to reduce waste",
+        "Electric and low-emission equipment whenever possible",
+      ],
     },
   ];
 
@@ -357,26 +360,132 @@ export function Home() {
             </div>
 
             {/* Why Choose Us Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
               {whyChooseUs.map((reason, index) => (
-                <Card
-                  key={index}
-                  className="bg-[#F0F4F0] dark:bg-[#4A5D4C] border-0 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group overflow-hidden"
-                >
-                  <CardContent className="pt-8 pb-6">
-                    <div className="flex justify-center items-center mb-4 transition-transform duration-300 group-hover:scale-110">
-                      {reason.icon}
+                <div key={index} className="contents md:block">
+                  <Card
+                    className={`bg-[#F0F4F0] dark:bg-[#4A5D4C] border-2 text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
+                      expandedReason === index
+                        ? "border-[#CEFF65] shadow-xl"
+                        : "border-transparent"
+                    }`}
+                    onClick={() =>
+                      setExpandedReason(
+                        expandedReason === index ? null : index,
+                      )
+                    }
+                  >
+                    <CardContent className="pt-8 pb-6">
+                      <div className="flex justify-center items-center mb-4 transition-transform duration-300 group-hover:scale-110">
+                        {reason.icon}
+                      </div>
+                      <h3 className="font-bold text-lg mb-3 text-[#2F3B30] dark:text-white">
+                        {reason.title}
+                      </h3>
+                      <p className="text-sm text-[#4A5D4C] dark:text-gray-300 mb-4">
+                        {reason.description}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`transition-all duration-300 ${
+                          expandedReason === index
+                            ? "bg-[#CEFF65] text-[#2F3B30] border-[#CEFF65] hover:bg-[#CEFF65]/90"
+                            : "bg-[#2F3B30] text-white border-[#2F3B30] hover:bg-[#3A4A3A]"
+                        }`}
+                      >
+                        {expandedReason === index ? (
+                          <>
+                            Hide Details <ChevronUp className="ml-2 h-4 w-4" />
+                          </>
+                        ) : (
+                          <>
+                            Learn More{" "}
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Reason Details Section - Mobile Only (appears directly below card) */}
+                  {expandedReason === index && (
+                    <div className="md:hidden mt-6 animate-in fade-in-50 slide-in-from-top-5 duration-500">
+                      <Card className="bg-white dark:bg-[#2F3B30] border-2 border-[#CEFF65]">
+                        <CardHeader>
+                          <CardTitle className="text-xl mb-2 flex items-center gap-3">
+                            {reason.icon}
+                            {reason.title}
+                          </CardTitle>
+                          <CardDescription className="text-base">
+                            {reason.details}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div>
+                            <h4 className="font-bold text-lg mb-4 text-[#2F3B30] dark:text-[#CEFF65] flex items-center gap-2">
+                              <CheckCircle2 className="h-5 w-5" />
+                              What Sets Us Apart
+                            </h4>
+                            <ul className="space-y-3">
+                              {reason.features.map((feature, featureIndex) => (
+                                <li
+                                  key={featureIndex}
+                                  className="flex items-start gap-3"
+                                >
+                                  <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
+                                  <span className="text-[#4A5D4C] dark:text-gray-300">
+                                    {feature}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
-                    <h3 className="font-bold text-lg mb-3 text-[#2F3B30] dark:text-white">
-                      {reason.title}
-                    </h3>
-                    <p className="text-sm text-[#4A5D4C] dark:text-gray-300">
-                      {reason.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                  )}
+                </div>
               ))}
             </div>
+
+            {/* Reason Details Section - Desktop Only (appears below all cards) */}
+            {expandedReason !== null && (
+              <div className="hidden md:block mb-16 animate-in fade-in-50 slide-in-from-top-5 duration-500">
+                <Card className="bg-white dark:bg-[#2F3B30] border-2 border-[#CEFF65]">
+                  <CardHeader>
+                    <CardTitle className="text-2xl mb-2 flex items-center gap-3">
+                      {whyChooseUs[expandedReason].icon}
+                      {whyChooseUs[expandedReason].title}
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                      {whyChooseUs[expandedReason].details}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <h4 className="font-bold text-lg mb-6 text-[#2F3B30] dark:text-[#CEFF65] flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5" />
+                      What Sets Us Apart
+                    </h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {whyChooseUs[expandedReason].features.map(
+                        (feature, featureIndex) => (
+                          <div
+                            key={featureIndex}
+                            className="flex items-start gap-3"
+                          >
+                            <CheckCircle2 className="h-5 w-5 text-[#CEFF65] mt-0.5 flex-shrink-0 [filter:drop-shadow(0_1px_2px_rgba(206,255,101,0.4))_drop-shadow(0_2px_4px_rgba(206,255,101,0.2))] dark:[filter:none]" />
+                            <span className="text-[#4A5D4C] dark:text-gray-300">
+                              {feature}
+                            </span>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             {/* Featured Services */}
             <div className="text-center mb-12 mt-20">
