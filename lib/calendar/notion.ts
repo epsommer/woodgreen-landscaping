@@ -43,7 +43,6 @@ export async function getNotionBusyTimes(
 
     // Query the Notion database for events in the date range
     // Using dataSources.query (Notion SDK v5.0.0+)
-    // @ts-ignore - Notion SDK types may vary by version
     const response = await notion.dataSources.query({
       data_source_id: databaseId,
       filter: {
@@ -64,8 +63,9 @@ export async function getNotionBusyTimes(
       },
     });
 
-    const busyTimes = response.results.map((page: any) => {
-      const dateProperty = page.properties?.Date;
+    const busyTimes = response.results.map((page) => {
+      const pageData = page as { properties?: { Date?: { date?: { start?: string; end?: string } } } };
+      const dateProperty = pageData.properties?.Date;
       const start = dateProperty?.date?.start
         ? new Date(dateProperty.date.start)
         : new Date();
@@ -108,7 +108,8 @@ export async function createNotionCalendarEvent(event: {
     }
 
     // Build properties object
-    const properties: any = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const properties: Record<string, any> = {
       Name: {
         title: [
           {

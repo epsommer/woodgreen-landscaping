@@ -1,17 +1,10 @@
-"use client";
-
 import { Analytics } from "@vercel/analytics/next";
+import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { MainNav } from "@/components/main-nav";
-import { Footer } from "@/components/footer";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { EstimateCalculator } from "@/components/estimate-calculator";
-import Scheduler from "@/components/scheduler";
-import { subscribeToEvent, EVENTS } from "@/lib/events";
+import { LayoutClient } from "@/components/layout-client";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,49 +18,20 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+export const metadata: Metadata = {
+  title: "Woodgreen Landscaping",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [showEstimateCalculator, setShowEstimateCalculator] = useState(false);
-  const [showScheduler, setShowScheduler] = useState(false);
-  const [initialService, setInitialService] = useState("");
-  const [bookingType, setBookingType] = useState<"service" | "consultation">("consultation");
-  const [selectedServices, setSelectedServices] = useState<any[]>([]);
-  const [estimatedHours, setEstimatedHours] = useState<number>(0);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const handleOpenEstimate = () => setShowEstimateCalculator(true);
-    const handleOpenScheduler = (e: CustomEvent) => {
-      setInitialService(e.detail?.service || "");
-      setShowScheduler(true);
-    };
-
-    const unsubscribeEstimate = subscribeToEvent(
-      EVENTS.OPEN_ESTIMATE_MODAL,
-      handleOpenEstimate,
-    );
-    const unsubscribeScheduler = subscribeToEvent(
-      EVENTS.OPEN_SCHEDULER_MODAL,
-      handleOpenScheduler,
-    );
-
-    return () => {
-      unsubscribeEstimate();
-      unsubscribeScheduler();
-    };
-  }, []);
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://use.typekit.net" />
-        <link rel="icon" href="/favicon.ico" />
-        <title>Woodgreen Landscaping</title>
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -83,42 +47,7 @@ export default function RootLayout({
           }}
         />
         <Providers>
-          <div className="flex flex-col min-h-screen">
-            {pathname !== "/maintenance" && <MainNav />}
-            {children}
-            {/* The maintenance page has its own footer, so we conditionally render the main one */}
-            {pathname !== "/maintenance" && <Footer />}
-          </div>
-
-          {showEstimateCalculator && (
-            <EstimateCalculator
-              onClose={() => setShowEstimateCalculator(false)}
-              onBookService={(services, hours) => {
-                setShowEstimateCalculator(false);
-                setSelectedServices(services);
-                setEstimatedHours(hours);
-                setBookingType("service");
-                setShowScheduler(true);
-              }}
-              onScheduleConsultation={() => {
-                setShowEstimateCalculator(false);
-                setSelectedServices([]);
-                setEstimatedHours(0);
-                setBookingType("consultation");
-                setShowScheduler(true);
-              }}
-            />
-          )}
-
-          {showScheduler && (
-            <Scheduler
-              onClose={() => setShowScheduler(false)}
-              initialService={initialService}
-              bookingType={bookingType}
-              selectedServices={selectedServices}
-              estimatedHours={estimatedHours}
-            />
-          )}
+          <LayoutClient>{children}</LayoutClient>
         </Providers>
         <Analytics />
       </body>

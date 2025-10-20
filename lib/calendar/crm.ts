@@ -32,7 +32,6 @@ export async function findContactByEmail(
   try {
     const notion = getNotionClient();
 
-    // @ts-ignore - Notion SDK types may vary by version
     const response = await notion.dataSources.query({
       data_source_id: CRM_DATA_SOURCE_ID,
       filter: {

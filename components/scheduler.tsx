@@ -17,13 +17,21 @@ import { X, CalendarDays, Clock, Loader2, Phone, AlertCircle } from "lucide-reac
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 
+interface SelectedService {
+  name: string;
+  quantity: number;
+  unit: string;
+  variant?: string;
+  debrisCleanup?: boolean;
+}
+
 interface SchedulerProps {
   onClose: () => void;
   initialService?: string;
   selectedService?: string;
   onScheduleConsultation?: () => void;
   bookingType?: "service" | "consultation";
-  selectedServices?: any[];
+  selectedServices?: SelectedService[];
   estimatedHours?: number;
 }
 
@@ -79,12 +87,12 @@ export function Scheduler({
       if (!response.ok) {
         throw new Error("Failed to fetch availability");
       }
-      const data = await response.json();
+      const data = await response.json() as { availability: Record<string, Array<{ time: string; datetime: string }>> };
 
       // Convert datetime strings back to Date objects
       const parsedAvailability: AvailabilityData = {};
-      for (const [date, slots] of Object.entries(data.availability as AvailabilityData)) {
-        parsedAvailability[date] = (slots as any[]).map((slot: any) => ({
+      for (const [date, slots] of Object.entries(data.availability)) {
+        parsedAvailability[date] = slots.map((slot) => ({
           time: slot.time,
           datetime: new Date(slot.datetime),
         }));
@@ -180,7 +188,20 @@ export function Scheduler({
       }
 
       // For service bookings with estimated hours > 1, book consecutive slots
-      let bookingData: any = {
+      let bookingData: {
+        service: string | undefined;
+        datetime: string;
+        name: string;
+        email: string;
+        phone: string;
+        message: string;
+        serviceDetails?: string;
+        duration?: number;
+        bookingType?: string;
+        services?: SelectedService[];
+        estimatedHours?: number;
+        consecutiveSlots?: string[];
+      } = {
         service: bookingType === "service" ? "Service Booking" : service,
         datetime: selectedSlot.datetime.toISOString(),
         name,
@@ -244,10 +265,22 @@ export function Scheduler({
     }
   };
 
+  // Disable body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-[140]">
       <div
         className="absolute inset-0"
         onClick={handleClose}
@@ -288,7 +321,7 @@ export function Scheduler({
                   Estimated Duration: {Math.ceil(estimatedHours)} hour{Math.ceil(estimatedHours) !== 1 ? 's' : ''}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  We'll book {Math.ceil(estimatedHours)} consecutive time slot{Math.ceil(estimatedHours) !== 1 ? 's' : ''} for your service
+                  We&apos;ll book {Math.ceil(estimatedHours)} consecutive time slot{Math.ceil(estimatedHours) !== 1 ? 's' : ''} for your service
                 </p>
               </div>
             </div>
@@ -304,9 +337,18 @@ export function Scheduler({
                     <SelectValue placeholder="Select service" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="landscaping">Landscaping</SelectItem>
-                    <SelectItem value="consultation">Consultation</SelectItem>
-                    <SelectItem value="maintenance">Maintenance</SelectItem>
+                    <SelectItem value="Tree Trimming">Tree Trimming</SelectItem>
+                    <SelectItem value="Tree Removal/Felling">Tree Removal/Felling</SelectItem>
+                    <SelectItem value="Hedge/Shrub Trimming">Hedge/Shrub Trimming</SelectItem>
+                    <SelectItem value="Fall Cleanup">Fall Cleanup</SelectItem>
+                    <SelectItem value="Gutter Cleaning">Gutter Cleaning</SelectItem>
+                    <SelectItem value="Garden Maintenance">Garden Maintenance</SelectItem>
+                    <SelectItem value="Landscaping Labour">Landscaping Labour</SelectItem>
+                    <SelectItem value="Aeration">Aeration</SelectItem>
+                    <SelectItem value="Dethatching">Dethatching</SelectItem>
+                    <SelectItem value="Snow Removal" disabled>Snow Removal (Coming Soon)</SelectItem>
+                    <SelectItem value="Salting/De-Icing" disabled>Salting/De-Icing (Coming Soon)</SelectItem>
+                    <SelectItem value="General Consultation">General Consultation</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -343,12 +385,6 @@ export function Scheduler({
                       new Date(new Date().setMonth(new Date().getMonth() + 2))
                   }
                 />
-                {isLoadingAvailability && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Loading availability...
-                  </div>
-                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="time">Select Time</Label>
@@ -368,15 +404,17 @@ export function Scheduler({
 
                 {/* Time Slot Selection */}
                 {selectedDate && !isWeekend(selectedDate) && (
-                  <>
+                  <div className="relative">
                     <Select
                       value={selectedTime}
                       onValueChange={setSelectedTime}
-                      disabled={getAvailableTimeSlotsForDate().length === 0}
+                      disabled={isLoadingAvailability || getAvailableTimeSlotsForDate().length === 0}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder={
-                          getAvailableTimeSlotsForDate().length === 0
+                          isLoadingAvailability
+                            ? "Loading times..."
+                            : getAvailableTimeSlotsForDate().length === 0
                             ? "No available times"
                             : "Select time"
                         } />
@@ -390,12 +428,22 @@ export function Scheduler({
                       </SelectContent>
                     </Select>
 
-                    {getAvailableTimeSlotsForDate().length === 0 && (
-                      <p className="text-sm text-muted-foreground">
+                    {/* Loading Indicator Overlay */}
+                    {isLoadingAvailability && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-md pointer-events-none">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Loading availability...</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {!isLoadingAvailability && getAvailableTimeSlotsForDate().length === 0 && (
+                      <p className="text-sm text-muted-foreground mt-2">
                         No available time slots for this date. Please try another day.
                       </p>
                     )}
-                  </>
+                  </div>
                 )}
 
                 {!selectedDate && (

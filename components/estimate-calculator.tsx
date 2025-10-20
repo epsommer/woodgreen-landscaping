@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -51,6 +51,7 @@ type ServiceDetail = {
   variants?: Record<string, { price: number; originalPrice: number }>;
   hasDebrisCleanup?: boolean;
   consultationOnly?: boolean;
+  comingSoon?: boolean;
 };
 
 const serviceDetails: Record<ServiceType, ServiceDetail> = {
@@ -90,7 +91,7 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "Aeration": { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1, },
   "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
   "Snow Removal": {
-    unit: "per clearing", defaultQty: 1, variants: {
+    unit: "per clearing", defaultQty: 1, comingSoon: true, variants: {
       'Single Driveway': { price: 399, originalPrice: 599 }, // Seasonal rate
       'Double Driveway': { price: 550, originalPrice: 917 }, // Seasonal rate
       'Single Extended': { price: 450, originalPrice: 750 }, // Seasonal rate
@@ -99,7 +100,7 @@ const serviceDetails: Record<ServiceType, ServiceDetail> = {
     }
   },
   "Salting/De-Icing": {
-    unit: "per season", defaultQty: 1, variants: {
+    unit: "per season", defaultQty: 1, comingSoon: true, variants: {
       'Sodium Chloride (Driveway)': { price: 150, originalPrice: 250 },
       'Sodium Chloride (Driveway + Walkway)': { price: 190, originalPrice: 317 },
       'Calcium Chloride (Driveway)': { price: 250, originalPrice: 417 },
@@ -285,8 +286,16 @@ export function EstimateCalculator({
     doc.save("estimate.pdf");
   };
 
+  // Disable body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div
         className="absolute inset-0"
         onClick={onClose}
@@ -334,9 +343,11 @@ export function EstimateCalculator({
                     {Object.keys(serviceDetails).filter(key => key !== "").map(serviceName => {
                       const details = serviceDetails[serviceName as ServiceType];
                       return (
-                      <SelectItem key={serviceName} value={serviceName} disabled={details.consultationOnly}>
+                      <SelectItem key={serviceName} value={serviceName} disabled={details.consultationOnly || details.comingSoon}>
                         {details.consultationOnly ? (
                           <span className="line-through text-gray-500">{`${serviceName} (Consultation required)`}</span>
+                        ) : details.comingSoon ? (
+                          <span className="text-gray-500">{`${serviceName} (Coming Soon)`}</span>
                         ) : (
                           serviceName
                         )}
