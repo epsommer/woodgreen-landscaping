@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { emitEvent, EVENTS } from "@/lib/events";
 import {
@@ -32,7 +33,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { HeroSection } from "@/components/HeroSection";
-import { useState } from "react";
 
 export function Home() {
   const [expandedService, setExpandedService] = useState<number | null>(null);
@@ -103,17 +103,17 @@ export function Home() {
       ),
       title: "Construction Expertise",
       description:
-        "Comprehensive construction services including concrete, framing, and roofing.",
+        "Comprehensive hardscape construction including patios, decks, fences, and outdoor structures.",
       subheading: "Building Beyond Landscaping",
       features: [
-        "Concrete work: patios, walkways, driveways, and foundations",
-        "Wood and metal framing for structures and pergolas",
-        "Roofing installation and repair for sheds and outdoor structures",
-        "Retaining walls and hardscape construction",
-        "Complete project management from design to completion",
+        "Hardscape installation: patios, walkways, and driveways (pavers, stone, concrete)",
+        "Custom deck construction with wood and composite materials",
+        "Fence installation: wood, vinyl, and decorative options",
+        "Retaining walls and raised garden beds",
+        "Pergolas, arbors, and outdoor living structures",
       ],
       benefits:
-        "Leverage decades of construction experience to handle all aspects of your outdoor projects, from groundwork to finishing touches.",
+        "Leverage decades of construction experience to handle all aspects of your outdoor hardscape projects, from foundation work to finishing details.",
       link: "/services",
     },
   ];
@@ -521,9 +521,9 @@ export function Home() {
                 and comprehensive construction capabilities
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {featuredServices.map((service, index) => (
-                <div key={index} className="contents md:block">
+                <React.Fragment key={index}>
                   <Card
                     className={`bg-[#F0F4F0] dark:bg-[#4A5D4C] border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
                       expandedService === index
@@ -536,47 +536,40 @@ export function Home() {
                       )
                     }
                   >
-                    <CardHeader>
-                      <CardTitle className="flex flex-col items-center text-center">
-                        <div className="flex justify-center items-center transition-transform duration-300 group-hover:scale-110">
-                          {service.icon}
-                        </div>
+                    <CardContent className="pt-8 pb-6">
+                      <div className="flex justify-center items-center mb-4 transition-transform duration-300 group-hover:scale-110">
+                        {service.icon}
+                      </div>
+                      <h3 className="font-bold text-lg mb-4 text-[#2F3B30] dark:text-white text-center">
                         {service.title}
-                      </CardTitle>
-                      <CardDescription className="text-center text-[#4A5D4C] dark:text-gray-300 font-medium">
-                        {service.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <h4 className="font-semibold text-sm text-[#2F3B30] dark:text-[#CEFF65] mb-4">
-                        {service.subheading}
-                      </h4>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
-                          expandedService === index
-                            ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
-                            : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
-                        }`}
-                      >
-                        {expandedService === index ? (
-                          <>
-                            Hide Details <ChevronUp className="ml-2 h-4 w-4" />
-                          </>
-                        ) : (
-                          <>
-                            View Details{" "}
-                            <ChevronDown className="ml-2 h-4 w-4" />
-                          </>
-                        )}
-                      </Button>
+                      </h3>
+                      <div className="flex justify-center">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
+                            expandedService === index
+                              ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
+                              : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
+                          }`}
+                        >
+                          {expandedService === index ? (
+                            <>
+                              Hide Details <ChevronUp className="ml-2 h-4 w-4" />
+                            </>
+                          ) : (
+                            <>
+                              Learn More <ChevronDown className="ml-2 h-4 w-4" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
 
                   {/* Service Details Section - Mobile Only (appears directly below card) */}
                   {expandedService === index && (
-                    <div className="md:hidden mt-6 animate-in fade-in-50 slide-in-from-top-5 duration-500">
+                    <div className="col-span-2 lg:hidden mt-6 animate-in fade-in-50 slide-in-from-top-5 duration-500">
                       <Card className="bg-white dark:bg-[#2F3B30] border-2 border-[#CEFF65]">
                         <CardHeader>
                           <CardTitle className="text-xl mb-2 flex items-center gap-3">
@@ -633,13 +626,13 @@ export function Home() {
                       </Card>
                     </div>
                   )}
-                </div>
+                </React.Fragment>
               ))}
             </div>
 
             {/* Service Details Section - Desktop Only (appears below all cards) */}
             {expandedService !== null && (
-              <div className="hidden md:block mt-12 animate-in fade-in-50 slide-in-from-top-5 duration-500">
+              <div className="hidden lg:block mt-12 animate-in fade-in-50 slide-in-from-top-5 duration-500">
                 <Card className="bg-white dark:bg-[#2F3B30] border-2 border-[#CEFF65]">
                   <CardHeader>
                     <div className="flex items-center justify-between">
