@@ -18,9 +18,7 @@ import {
   ArrowRight,
   Star,
   CheckCircle2,
-  Shield,
   Award,
-  Users,
   Leaf,
   Sparkles,
   ChevronDown,
@@ -980,7 +978,7 @@ export function Home() {
 
                     <div className="bg-[#2F3B30] dark:bg-[#4A5D4C] p-3 rounded-lg">
                       <p className="text-xs text-white dark:text-gray-200 text-center flex items-center justify-center gap-2">
-                        <Shield className="h-4 w-4" />
+                        <CheckCircle2 className="h-4 w-4" />
                         {promo.guarantee}
                       </p>
                     </div>
