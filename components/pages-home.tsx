@@ -12,7 +12,6 @@ import {
 import {
   Shovel,
   Sun,
-  TreePine,
   Wind,
   Snowflake,
   ArrowRight,
