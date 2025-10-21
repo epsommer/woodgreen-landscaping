@@ -4,6 +4,12 @@ import { createNotionCalendarEvent } from "@/lib/calendar/notion";
 import { findOrCreateContact } from "@/lib/calendar/crm";
 import { format } from "date-fns";
 import { rateLimit, getResetTimeSeconds } from "@/lib/rate-limit";
+import {
+  bookingSchema,
+  sanitizeInput,
+  sanitizeEmail,
+  sanitizePhone,
+} from "@/lib/validation";
 
 /**
  * API Route: POST /api/calendar/book
@@ -42,15 +48,28 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate required fields
-    const { service, datetime, name, email, phone, message } = body;
+    // Validate input with Zod schema
+    const validation = bookingSchema.safeParse(body);
 
-    if (!service || !datetime || !name || !email || !phone) {
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        {
+          error: "Invalid input data",
+          details: validation.error.issues.map((issue) => ({
+            field: issue.path.join("."),
+            message: issue.message,
+          })),
+        },
         { status: 400 },
       );
     }
+
+    // Extract and sanitize validated data
+    const { service, datetime, message } = validation.data;
+    const name = sanitizeInput(validation.data.name);
+    const email = sanitizeEmail(validation.data.email);
+    const phone = sanitizePhone(validation.data.phone);
+    const sanitizedMessage = message ? sanitizeInput(message) : undefined;
 
     // Parse and validate datetime
     const appointmentStart = new Date(datetime);
@@ -85,7 +104,7 @@ Service: ${service}
 Client: ${name}
 Email: ${email}
 Phone: ${phone}
-${message ? `\nAdditional Information:\n${message}` : ""}
+${sanitizedMessage ? `\nAdditional Information:\n${sanitizedMessage}` : ""}
     `.trim();
 
     // Find or create contact in CRM
@@ -107,7 +126,7 @@ ${message ? `\nAdditional Information:\n${message}` : ""}
       }),
       createNotionCalendarEvent({
         title: eventTitle,
-        description: eventDescription,
+        description: sanitizedMessage || eventDescription,
         start: appointmentStart,
         end: appointmentEnd,
         clientName: name,
@@ -155,7 +174,7 @@ Name: ${name}
 Email: ${email}
 Phone: ${phone}
 
-${message ? `Additional Information:\n${message}` : ""}
+${sanitizedMessage ? `Additional Information:\n${sanitizedMessage}` : ""}
 
 Google Calendar: ${googleSuccess ? "✓ Added" : "✗ Failed"}
 Notion Calendar: ${notionSuccess ? "✓ Added" : "✗ Failed"}
