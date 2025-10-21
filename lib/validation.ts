@@ -20,7 +20,7 @@ const SERVICE_TYPES = [
  */
 export const bookingSchema = z.object({
   service: z.enum(SERVICE_TYPES, {
-    errorMap: () => ({ message: "Please select a valid service type" }),
+    message: "Please select a valid service type",
   }),
   datetime: z
     .string()
