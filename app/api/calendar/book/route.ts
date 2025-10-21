@@ -186,22 +186,29 @@ Notion Calendar: ${notionSuccess ? "✓ Added" : "✗ Failed"}
       // Don't fail the booking if email fails
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Appointment booked successfully",
-      appointment: {
-        service,
-        datetime: appointmentStart.toISOString(),
-        duration: appointmentDuration,
-        name,
-        email,
-        phone,
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Appointment booked successfully",
+        appointment: {
+          service,
+          datetime: appointmentStart.toISOString(),
+          duration: appointmentDuration,
+          name,
+          email,
+          phone,
+        },
+        calendars: {
+          google: googleSuccess,
+          notion: notionSuccess,
+        },
       },
-      calendars: {
-        google: googleSuccess,
-        notion: notionSuccess,
+      {
+        headers: {
+          "X-RateLimit-Remaining": String(remaining),
+        },
       },
-    });
+    );
   } catch (error) {
     // Log error internally for debugging
     console.error("Error booking appointment:", error);

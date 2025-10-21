@@ -57,12 +57,19 @@ export async function GET(request: NextRequest) {
     // Fetch available slots
     const availability = await getAvailableSlotsForRange(startDate, daysAhead);
 
-    return NextResponse.json({
-      success: true,
-      availability,
-      startDate: startDate.toISOString(),
-      daysAhead,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        availability,
+        startDate: startDate.toISOString(),
+        daysAhead,
+      },
+      {
+        headers: {
+          "X-RateLimit-Remaining": String(remaining),
+        },
+      },
+    );
   } catch (error) {
     // Log error internally for debugging
     console.error("Error fetching availability:", error);
