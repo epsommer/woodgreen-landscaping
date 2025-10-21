@@ -50,6 +50,7 @@ SCHEDULING_SETUP.md
 
 # vercel
 .vercel
+.env.vercel
 
 # typescript
 *.tsbuildinfo
