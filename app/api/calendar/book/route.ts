@@ -3,6 +3,7 @@ import { createGoogleCalendarEvent } from "@/lib/calendar/gmail";
 import { createNotionCalendarEvent } from "@/lib/calendar/notion";
 import { findOrCreateContact } from "@/lib/calendar/crm";
 import { format } from "date-fns";
+import { rateLimit, getResetTimeSeconds } from "@/lib/rate-limit";
 
 /**
  * API Route: POST /api/calendar/book
@@ -20,6 +21,25 @@ import { format } from "date-fns";
  */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: 5 booking attempts per 5 minutes per IP
+    const { allowed, remaining, resetTime } = rateLimit(request, 5, 300000);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many booking attempts. Please try again later.",
+          retryAfter: getResetTimeSeconds(resetTime!),
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(getResetTimeSeconds(resetTime!)),
+            "X-RateLimit-Remaining": "0",
+          },
+        },
+      );
+    }
+
     const body = await request.json();
 
     // Validate required fields

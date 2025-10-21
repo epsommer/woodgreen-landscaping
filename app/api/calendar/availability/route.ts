@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAvailableSlotsForRange } from "@/lib/calendar/availability";
+import { rateLimit, getResetTimeSeconds } from "@/lib/rate-limit";
 
 /**
  * API Route: GET /api/calendar/availability
@@ -11,6 +12,25 @@ import { getAvailableSlotsForRange } from "@/lib/calendar/availability";
  */
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting: 20 availability checks per minute per IP
+    const { allowed, remaining, resetTime } = rateLimit(request, 20, 60000);
+
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many requests. Please try again later.",
+          retryAfter: getResetTimeSeconds(resetTime!),
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(getResetTimeSeconds(resetTime!)),
+            "X-RateLimit-Remaining": "0",
+          },
+        },
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const startDateParam = searchParams.get("startDate");
     const daysAheadParam = searchParams.get("daysAhead");
