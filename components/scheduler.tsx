@@ -542,6 +542,8 @@ export function Scheduler({
                 </span>
               ) : submitSuccess ? (
                 "Booked Successfully!"
+              ) : bookingType === "service" ? (
+                "Book Service"
               ) : (
                 "Schedule Consultation"
               )}
