@@ -18,7 +18,44 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL("/maintenance", request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Security Headers
+  // Prevent clickjacking attacks
+  response.headers.set("X-Frame-Options", "DENY");
+
+  // Prevent MIME type sniffing
+  response.headers.set("X-Content-Type-Options", "nosniff");
+
+  // Control referrer information
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
+  // Enable XSS protection (legacy browsers)
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+
+  // Content Security Policy
+  response.headers.set(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://api.web3forms.com https://va.vercel-scripts.com",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
+  );
+
+  // Permissions Policy (formerly Feature Policy)
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  );
+
+  return response;
 }
 
 export const config = {

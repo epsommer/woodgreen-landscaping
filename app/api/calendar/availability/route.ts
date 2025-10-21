@@ -64,11 +64,18 @@ export async function GET(request: NextRequest) {
       daysAhead,
     });
   } catch (error) {
+    // Log error internally for debugging
     console.error("Error fetching availability:", error);
+
+    // Return sanitized error message to client
     return NextResponse.json(
       {
-        error: "Failed to fetch availability",
-        details: error instanceof Error ? error.message : "Unknown error",
+        error:
+          "Failed to fetch availability. Please try again or contact support.",
+        // Only include details in development mode
+        ...(process.env.NODE_ENV === "development" && {
+          details: error instanceof Error ? error.message : "Unknown error",
+        }),
       },
       { status: 500 },
     );
