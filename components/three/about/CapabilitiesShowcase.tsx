@@ -91,11 +91,11 @@ function CapabilityIsland({
   // Lower card: slide up on select (positioned to touch upper card with bottom at ~0.6)
   const lowerCardTargetY = isSelected ? 1.1 : -0.5;
 
-  const handlePointerDown = (e: React.PointerEvent) => {
+  const handlePointerDown = (e: any) => {
     pointerDownPos.current = { x: e.clientX, y: e.clientY };
   };
 
-  const handleClick = (e: React.PointerEvent) => {
+  const handleClick = (e: any) => {
     // Only trigger click if pointer hasn't moved much (not a drag)
     const dx = e.clientX - pointerDownPos.current.x;
     const dy = e.clientY - pointerDownPos.current.y;
