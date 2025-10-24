@@ -122,11 +122,18 @@ export async function getAvailableSlots(date: Date): Promise<AvailableSlot[]> {
   const endOfDay = new Date(date);
   endOfDay.setHours(23, 59, 59, 999);
 
-  // Fetch busy times from both calendars
-  const [googleBusyTimes, notionBusyTimes] = await Promise.all([
-    getGoogleBusyTimes(startOfDay, endOfDay),
-    getNotionBusyTimes(startOfDay, endOfDay),
-  ]);
+  // Fetch busy times from both calendars (with error handling)
+  let googleBusyTimes: Array<{ start: Date; end: Date }> = [];
+  let notionBusyTimes: Array<{ start: Date; end: Date }> = [];
+
+  try {
+    [googleBusyTimes, notionBusyTimes] = await Promise.all([
+      getGoogleBusyTimes(startOfDay, endOfDay).catch(() => []),
+      getNotionBusyTimes(startOfDay, endOfDay).catch(() => []),
+    ]);
+  } catch (error) {
+    console.warn("Error fetching busy times, showing all slots as available:", error);
+  }
 
   // Combine busy times from both calendars
   const allBusyTimes = [...googleBusyTimes, ...notionBusyTimes];
@@ -141,9 +148,9 @@ export async function getAvailableSlots(date: Date): Promise<AvailableSlot[]> {
     const slotEnd = new Date(slotStart);
     slotEnd.setMinutes(slotEnd.getMinutes() + config.appointmentDuration);
 
-    // Only show slots in the future (at least 2 hours from now)
+    // Only show slots in the future (at least 1 hour from now)
     const now = new Date();
-    const minBookingTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+    const minBookingTime = new Date(now.getTime() + 1 * 60 * 60 * 1000);
 
     if (slotStart < minBookingTime) {
       continue;
