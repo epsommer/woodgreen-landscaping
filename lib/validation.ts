@@ -4,13 +4,35 @@ import { z } from "zod";
  * Allowed service types for booking
  */
 const SERVICE_TYPES = [
+  // Service bookings
+  "Service Booking",
+  // Consultation types
+  "General Consultation",
   "Landscaping Consultation",
-  "Lawn Maintenance",
-  "Spring Cleanup",
+  // Tree services
+  "Tree Trimming",
+  "Tree Removal/Felling",
+  // Shrub and hedge services
+  "Hedge/Shrub Trimming",
+  // Cleanup services
   "Fall Cleanup",
+  "Spring Cleanup",
+  "Gutter Cleaning",
+  // Maintenance services
+  "Garden Maintenance",
+  "Lawn Maintenance",
+  "Landscaping Labour",
+  // Lawn care
+  "Aeration",
+  "Dethatching",
+  "Grass Cutting",
+  // Winter services
   "Snow Removal",
+  "Salting/De-Icing",
+  // Design and construction
   "Garden Design",
   "Hardscaping",
+  // Catch-all
   "Other",
 ] as const;
 

@@ -38,10 +38,10 @@ export function middleware(request: NextRequest) {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com",
-      "style-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://use.typekit.net",
+      "style-src 'self' 'unsafe-inline' https://use.typekit.net",
       "img-src 'self' data: https: blob:",
-      "font-src 'self' data:",
+      "font-src 'self' data: https://use.typekit.net",
       "connect-src 'self' https://api.web3forms.com https://va.vercel-scripts.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
