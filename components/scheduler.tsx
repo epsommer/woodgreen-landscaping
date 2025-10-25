@@ -68,6 +68,13 @@ export function Scheduler({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [bookingData, setBookingData] = useState<{
+    service: string;
+    datetime: string;
+    duration: number;
+    name: string;
+    email: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!service && initialService) {
@@ -245,6 +252,8 @@ export function Scheduler({
         throw new Error(data.error || "Failed to book appointment");
       }
 
+      // Store booking data for calendar download
+      setBookingData(data.appointment);
       setSubmitSuccess(true);
 
       // Call the callback if provided
@@ -252,10 +261,7 @@ export function Scheduler({
         onScheduleConsultation();
       }
 
-      // Close modal after 2 seconds
-      setTimeout(() => {
-        handleClose();
-      }, 2000);
+      // Don't auto-close - let user download calendar file and close manually
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Failed to book appointment"
@@ -354,12 +360,39 @@ export function Scheduler({
               </div>
             )}
             {/* Success Message */}
-            {submitSuccess && (
-              <div className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-800 dark:text-green-200">
-                <CalendarDays className="w-5 h-5 flex-shrink-0" />
-                <p className="text-sm font-medium">
-                  Appointment booked successfully! We&apos;ll send you a confirmation email shortly.
-                </p>
+            {submitSuccess && bookingData && (
+              <div className="space-y-4 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
+                  <CalendarDays className="w-6 h-6 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-lg">Appointment Booked Successfully!</p>
+                    <p className="text-sm opacity-90 mt-1">
+                      Confirmation email sent to {bookingData.email}
+                    </p>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-green-200 dark:border-green-700">
+                  <Button
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        service: bookingData.service,
+                        datetime: bookingData.datetime,
+                        duration: bookingData.duration.toString(),
+                        name: bookingData.name,
+                        email: bookingData.email,
+                      });
+                      window.location.href = `/api/calendar/ics?${params.toString()}`;
+                    }}
+                    variant="outline"
+                    className="w-full bg-white dark:bg-gray-800"
+                  >
+                    <CalendarDays className="w-4 h-4 mr-2" />
+                    Add to Calendar
+                  </Button>
+                  <p className="text-xs text-center text-green-700 dark:text-green-300 mt-2">
+                    Download .ics file for Google Calendar, Outlook, Apple Calendar, etc.
+                  </p>
+                </div>
               </div>
             )}
 

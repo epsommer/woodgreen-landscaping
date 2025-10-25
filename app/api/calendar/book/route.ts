@@ -150,8 +150,9 @@ ${sanitizedMessage ? `\nAdditional Information:\n${sanitizedMessage}` : ""}
       throw new Error("Failed to create event in both calendars");
     }
 
-    // Send email notification using Web3Forms
+    // Send email notifications using Web3Forms
     try {
+      // Admin notification
       await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -178,6 +179,39 @@ ${sanitizedMessage ? `Additional Information:\n${sanitizedMessage}` : ""}
 
 Google Calendar: ${googleSuccess ? "✓ Added" : "✗ Failed"}
 Notion Calendar: ${notionSuccess ? "✓ Added" : "✗ Failed"}
+          `.trim(),
+        }),
+      });
+
+      // Customer confirmation email
+      await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+          subject: `Appointment Confirmed - ${service}`,
+          from_name: "Woodgreen Landscaping",
+          email: email, // Send to customer
+          message: `
+Hi ${name},
+
+Thank you for booking with Woodgreen Landscaping!
+
+Your appointment has been confirmed:
+
+Service: ${service}
+Date & Time: ${format(appointmentStart, "MMMM d, yyyy 'at' h:mm a")}
+Duration: ${appointmentDuration} minutes
+
+We look forward to serving you. If you need to reschedule or have any questions, please contact us.
+
+You can add this appointment to your calendar using the link provided on the confirmation screen.
+
+Best regards,
+Woodgreen Landscaping
           `.trim(),
         }),
       });
