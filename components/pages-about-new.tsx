@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { TimelineTreeCanvas } from "./three/about/TimelineTreeCanvas";
-import { CapabilitiesShowcaseCanvas } from "./three/about/CapabilitiesShowcaseCanvas";
-import { ServiceGlobeCanvas } from "./three/about/ServiceGlobeCanvas";
+import dynamic from "next/dynamic";
 import { PortalCTA } from "./about/PortalCTA";
+
+// Dynamically import Canvas components to avoid SSR issues with useTheme
+const TimelineTreeCanvas = dynamic(
+  () => import("./three/about/TimelineTreeCanvas").then((mod) => mod.TimelineTreeCanvas),
+  { ssr: false }
+);
+const CapabilitiesShowcaseCanvas = dynamic(
+  () => import("./three/about/CapabilitiesShowcaseCanvas").then((mod) => mod.CapabilitiesShowcaseCanvas),
+  { ssr: false }
+);
+const ServiceGlobeCanvas = dynamic(
+  () => import("./three/about/ServiceGlobeCanvas").then((mod) => mod.ServiceGlobeCanvas),
+  { ssr: false }
+);
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Award,

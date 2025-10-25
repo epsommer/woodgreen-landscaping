@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ServiceStationsCanvas } from "./three/services/ServiceStationsCanvas";
+import dynamic from "next/dynamic";
 import { ServiceType } from "./three/services/ServiceStationsScene";
+
+// Dynamically import Canvas component to avoid SSR issues with useTheme
+const ServiceStationsCanvas = dynamic(
+  () => import("./three/services/ServiceStationsCanvas").then((mod) => mod.ServiceStationsCanvas),
+  { ssr: false }
+);
 import { ServiceNav } from "./services/ServiceNav";
 import { ServiceDetailPanel } from "./services/ServiceDetailPanel";
 import { SeasonalDemo } from "./services/SeasonalDemo";
