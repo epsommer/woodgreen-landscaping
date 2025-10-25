@@ -7,6 +7,7 @@ import { CapabilitiesShowcase } from "./CapabilitiesShowcase";
 import { LoadingPlant } from "../LoadingPlant";
 import { useTheme } from "next-themes";
 import ThreeErrorBoundary from "../ErrorBoundary";
+import { preloadTroika } from "@/lib/troika-preload";
 
 interface CapabilitiesShowcaseCanvasProps {
   className?: string;
@@ -15,12 +16,20 @@ interface CapabilitiesShowcaseCanvasProps {
 export function CapabilitiesShowcaseCanvas({ className = "" }: CapabilitiesShowcaseCanvasProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [troikaReady, setTroikaReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Preload troika workers to prevent initialization errors
+    preloadTroika().then(() => setTroikaReady(true));
   }, []);
 
   const backgroundColor = mounted && resolvedTheme === "dark" ? "#1C1C1C" : "#F0F4F0";
+
+  // Wait for troika to be ready
+  if (!troikaReady) {
+    return <div className={className} style={{ backgroundColor }} />;
+  }
 
   return (
     <div className={className}>

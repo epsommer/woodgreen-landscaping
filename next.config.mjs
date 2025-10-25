@@ -20,7 +20,7 @@ const nextConfig = {
     ]
   },
   // Transpile troika packages to fix worker module issues
-  transpilePackages: ['troika-three-text', 'troika-worker-utils', 'troika-three-utils'],
+  transpilePackages: ['troika-three-text', 'troika-worker-utils', 'troika-three-utils', 'bidi-js', 'opentype.js'],
   webpack: (config, { isServer }) => {
     // Fix for troika-three-text worker module loading issues
     if (!isServer) {
@@ -28,6 +28,13 @@ const nextConfig = {
         ...config.resolve.fallback,
         fs: false,
         path: false,
+        module: false,
+      };
+
+      // Add aliases to prevent worker issues
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'troika-worker-utils': 'troika-worker-utils/dist/troika-worker-utils.esm.js',
       };
     }
 

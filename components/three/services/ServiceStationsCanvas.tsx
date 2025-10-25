@@ -6,6 +6,7 @@ import { ServiceStationsScene, ServiceType } from "./ServiceStationsScene";
 import { LoadingPlant } from "../LoadingPlant";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useTheme } from "next-themes";
+import { preloadTroika } from "@/lib/troika-preload";
 
 interface ServiceStationsCanvasProps {
   activeStation: ServiceType;
@@ -16,9 +17,12 @@ export function ServiceStationsCanvas({ activeStation, className = "" }: Service
   const isMobile = useIsMobile();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [troikaReady, setTroikaReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Preload troika workers to prevent initialization errors
+    preloadTroika().then(() => setTroikaReady(true));
   }, []);
 
   // Adjust settings based on device
@@ -29,6 +33,11 @@ export function ServiceStationsCanvas({ activeStation, className = "" }: Service
   }), [isMobile]);
 
   const backgroundColor = mounted && resolvedTheme === "dark" ? "#1C1C1C" : "#F0F4F0";
+
+  // Don't render canvas until troika is ready
+  if (!troikaReady) {
+    return <div className={className} style={{ backgroundColor }} />;
+  }
 
   return (
     <Canvas
