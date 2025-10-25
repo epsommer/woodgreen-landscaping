@@ -71,11 +71,11 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
             setBookingType("service");
             setShowScheduler(true);
           }}
-          onScheduleConsultation={() => {
+          onScheduleConsultation={(services, hours) => {
             setShowEstimateCalculator(false);
             setEstimateInitialService("");
-            setSelectedServices([]);
-            setEstimatedHours(0);
+            setSelectedServices(services);
+            setEstimatedHours(hours);
             setBookingType("consultation");
             setShowScheduler(true);
           }}
@@ -87,7 +87,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         <Scheduler
           onClose={() => setShowScheduler(false)}
           onBack={
-            bookingType === "service"
+            bookingType === "service" || selectedServices.length > 0
               ? () => {
                   setShowScheduler(false);
                   setShowEstimateCalculator(true);

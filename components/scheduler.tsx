@@ -346,10 +346,12 @@ export function Scheduler({
             </Button>
           </div>
 
-          {/* Service Summary for booking type "service" */}
-          {bookingType === "service" && selectedServices.length > 0 && (
+          {/* Service Summary for all bookings with services */}
+          {selectedServices.length > 0 && (
             <div className="mb-4 p-4 bg-nature-50 dark:bg-nature-900/20 border border-nature-200 dark:border-nature-800 rounded-lg">
-              <h3 className="font-semibold text-lg mb-2">Selected Services</h3>
+              <h3 className="font-semibold text-lg mb-2">
+                {bookingType === "service" ? "Selected Services" : "Services for Consultation"}
+              </h3>
               <ul className="space-y-1 text-sm">
                 {selectedServices.map((svc, idx) => (
                   <li key={idx} className="flex justify-between">
@@ -364,21 +366,23 @@ export function Scheduler({
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 pt-3 border-t border-nature-200 dark:border-nature-700">
-                <p className="font-semibold flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Estimated Duration: {Math.ceil(estimatedHours)} hour{Math.ceil(estimatedHours) !== 1 ? 's' : ''}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  We&apos;ll book {Math.ceil(estimatedHours)} consecutive time slot{Math.ceil(estimatedHours) !== 1 ? 's' : ''} for your service
-                </p>
-              </div>
+              {bookingType === "service" && estimatedHours > 0 && (
+                <div className="mt-3 pt-3 border-t border-nature-200 dark:border-nature-700">
+                  <p className="font-semibold flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Estimated Duration: {Math.ceil(estimatedHours)} hour{Math.ceil(estimatedHours) !== 1 ? 's' : ''}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    We&apos;ll book {Math.ceil(estimatedHours)} consecutive time slot{Math.ceil(estimatedHours) !== 1 ? 's' : ''} for your service
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Only show service selection for consultation bookings */}
-            {bookingType !== "service" && (
+            {/* Only show service selection for consultation bookings without services */}
+            {bookingType !== "service" && selectedServices.length === 0 && (
               <div className="space-y-2">
                 <Label htmlFor="service">Select Service</Label>
                 <Select value={service} onValueChange={setService}>

@@ -191,7 +191,7 @@ export function EstimateCalculator({
 }: {
   onClose: () => void;
   onBookService: (services: Service[], estimatedHours: number) => void;
-  onScheduleConsultation: () => void;
+  onScheduleConsultation: (services: Service[], estimatedHours: number) => void;
   initialService?: string;
 }) {
   const [services, setServices] = useState<Service[]>(() => {
@@ -712,7 +712,11 @@ export function EstimateCalculator({
             Book Service Now
           </Button>
           <Button
-            onClick={onScheduleConsultation}
+            onClick={() => {
+              const validServices = services.filter((s): s is Service & { name: Exclude<ServiceType, ""> } => s.name !== "");
+              const estimatedHours = calculateTotalEstimatedHours(validServices);
+              onScheduleConsultation(validServices, estimatedHours);
+            }}
             variant="outline"
             className="flex-1"
           >
