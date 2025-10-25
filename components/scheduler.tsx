@@ -27,6 +27,7 @@ interface SelectedService {
 
 interface SchedulerProps {
   onClose: () => void;
+  onBack?: () => void; // Allow users to go back to service selection
   initialService?: string;
   selectedService?: string;
   onScheduleConsultation?: () => void;
@@ -46,6 +47,7 @@ interface AvailabilityData {
 
 export function Scheduler({
   onClose,
+  onBack,
   initialService,
   selectedService,
   onScheduleConsultation,
@@ -256,6 +258,9 @@ export function Scheduler({
       setBookingData(data.appointment);
       setSubmitSuccess(true);
 
+      // Refresh availability after booking to show updated slots
+      await fetchAvailability();
+
       // Call the callback if provided
       if (onScheduleConsultation) {
         onScheduleConsultation();
@@ -295,9 +300,16 @@ export function Scheduler({
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10">
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">
-              {bookingType === "service" ? "Book Your Service" : "Schedule a Consultation"}
-            </h2>
+            <div className="flex items-center gap-2">
+              {onBack && !submitSuccess && (
+                <Button variant="ghost" size="sm" onClick={onBack}>
+                  ← Back
+                </Button>
+              )}
+              <h2 className="text-2xl font-bold">
+                {bookingType === "service" ? "Book Your Service" : "Schedule a Consultation"}
+              </h2>
+            </div>
             <Button variant="ghost" size="icon" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
@@ -371,7 +383,7 @@ export function Scheduler({
                     </p>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-green-200 dark:border-green-700">
+                <div className="pt-4 border-t border-green-200 dark:border-green-700 space-y-3">
                   <Button
                     onClick={() => {
                       const params = new URLSearchParams({
@@ -389,9 +401,25 @@ export function Scheduler({
                     <CalendarDays className="w-4 h-4 mr-2" />
                     Add to Calendar
                   </Button>
-                  <p className="text-xs text-center text-green-700 dark:text-green-300 mt-2">
+                  <p className="text-xs text-center text-green-700 dark:text-green-300">
                     Download .ics file for Google Calendar, Outlook, Apple Calendar, etc.
                   </p>
+                  <Button
+                    onClick={() => {
+                      setSubmitSuccess(false);
+                      setBookingData(null);
+                      setSelectedDate(undefined);
+                      setSelectedTime(null);
+                      setName("");
+                      setEmail("");
+                      setPhone("");
+                      setMessage("");
+                    }}
+                    variant="default"
+                    className="w-full bg-nature-500 hover:bg-nature-600 text-white"
+                  >
+                    Book Another Appointment
+                  </Button>
                 </div>
               </div>
             )}

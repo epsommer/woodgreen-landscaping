@@ -86,6 +86,14 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
       {showScheduler && (
         <Scheduler
           onClose={() => setShowScheduler(false)}
+          onBack={
+            bookingType === "service"
+              ? () => {
+                  setShowScheduler(false);
+                  setShowEstimateCalculator(true);
+                }
+              : undefined
+          }
           initialService={initialService}
           bookingType={bookingType}
           selectedServices={selectedServices}
