@@ -134,3 +134,30 @@ body {
 .z-mobile-menu {
   z-index: var(--z-mobile-menu);
 }
+
+/* Print Styles for Estimates */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-estimate,
+  .print-estimate * {
+    visibility: visible;
+  }
+  .print-estimate {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 40px;
+  }
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

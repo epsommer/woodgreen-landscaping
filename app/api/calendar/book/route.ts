@@ -68,11 +68,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract and sanitize validated data
-    const { service, datetime, message } = validation.data;
+    const { service, datetime, message, consultationType, bookingType } = validation.data;
     const name = sanitizeInput(validation.data.name);
     const email = sanitizeEmail(validation.data.email);
     const phone = sanitizePhone(validation.data.phone);
     const sanitizedMessage = message ? sanitizeInput(message) : undefined;
+
+    // Extract and sanitize address fields if provided
+    const address = validation.data.address ? sanitizeInput(validation.data.address) : undefined;
+    const city = validation.data.city ? sanitizeInput(validation.data.city) : undefined;
+    const province = validation.data.province ? sanitizeInput(validation.data.province) : undefined;
+    const postalCode = validation.data.postalCode ? sanitizeInput(validation.data.postalCode) : undefined;
 
     // Parse and validate datetime
     const appointmentStart = new Date(datetime);
@@ -102,11 +108,22 @@ export async function POST(request: NextRequest) {
 
     // Prepare event details
     const eventTitle = `${service} - ${name}`;
+
+    // Build address string if provided
+    const fullAddress = address && city && province && postalCode
+      ? `${address}, ${city}, ${province} ${postalCode}`
+      : undefined;
+
+    // Build consultation type label
+    const consultationTypeLabel = consultationType === "video" ? "Video Call" : "In-Person";
+
     const eventDescription = `
 Service: ${service}
+${bookingType === "consultation" ? `Type: ${consultationTypeLabel}` : ""}
 Client: ${name}
 Email: ${email}
 Phone: ${phone}
+${fullAddress ? `\nAddress:\n${fullAddress}` : ""}
 ${sanitizedMessage ? `\nAdditional Information:\n${sanitizedMessage}` : ""}
     `.trim();
 
@@ -167,9 +184,10 @@ ${sanitizedMessage ? `\nAdditional Information:\n${sanitizedMessage}` : ""}
           subject: `New Consultation Booking - ${service}`,
           from_name: "Woodgreen Landscaping Website",
           message: `
-New consultation booking received:
+New ${bookingType === "consultation" ? "consultation" : "service"} booking received:
 
 Service: ${service}
+${bookingType === "consultation" ? `Consultation Type: ${consultationTypeLabel}` : ""}
 Date & Time: ${format(appointmentStart, "MMMM d, yyyy 'at' h:mm a")}
 Duration: ${appointmentDuration} minutes
 
@@ -177,6 +195,7 @@ Client Information:
 Name: ${name}
 Email: ${email}
 Phone: ${phone}
+${fullAddress ? `Address: ${fullAddress}` : ""}
 
 ${sanitizedMessage ? `Additional Information:\n${sanitizedMessage}` : ""}
 
@@ -203,18 +222,22 @@ Hi ${name},
 
 Thank you for booking with Woodgreen Landscaping!
 
-Your appointment has been confirmed:
+Your ${bookingType === "consultation" ? "consultation" : "service appointment"} has been confirmed:
 
 Service: ${service}
+${bookingType === "consultation" ? `Type: ${consultationTypeLabel}` : ""}
 Date & Time: ${format(appointmentStart, "MMMM d, yyyy 'at' h:mm a")}
 Duration: ${appointmentDuration} minutes
+${fullAddress ? `\nLocation: ${fullAddress}` : ""}
+${consultationType === "video" ? "\nA video call link will be sent to you closer to the appointment time. Please ensure you have a device with a camera and stable internet connection." : ""}
 
-We look forward to serving you. If you need to reschedule or have any questions, please contact us.
+We look forward to serving you. If you need to reschedule or have any questions, please contact us at (647) 327-8401 or info@woodgreenlandscaping.com.
 
 You can add this appointment to your calendar using the link provided on the confirmation screen.
 
 Best regards,
 Woodgreen Landscaping
+Toronto, ON
           `.trim(),
         }),
       });

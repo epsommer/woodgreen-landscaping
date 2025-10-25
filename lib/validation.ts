@@ -73,6 +73,48 @@ export const bookingSchema = z.object({
     .max(1000, "Message must not exceed 1000 characters")
     .optional()
     .or(z.literal("")),
+  // Address fields (required for service bookings, optional for video consultations)
+  address: z
+    .string()
+    .min(5, "Street address must be at least 5 characters")
+    .max(200, "Street address must not exceed 200 characters")
+    .optional()
+    .or(z.literal("")),
+  city: z
+    .string()
+    .min(2, "City must be at least 2 characters")
+    .max(100, "City must not exceed 100 characters")
+    .regex(
+      /^[a-zA-Z\s'\-\.]+$/,
+      "City can only contain letters, spaces, hyphens, apostrophes, and periods",
+    )
+    .optional()
+    .or(z.literal("")),
+  province: z
+    .string()
+    .min(2, "Province must be at least 2 characters")
+    .max(50, "Province must not exceed 50 characters")
+    .optional()
+    .or(z.literal("")),
+  postalCode: z
+    .string()
+    .regex(
+      /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,
+      "Please provide a valid Canadian postal code (e.g., M5H 2N2)",
+    )
+    .optional()
+    .or(z.literal("")),
+  // Consultation type (in-person or video call)
+  consultationType: z
+    .enum(["in-person", "video"], {
+      message: "Please select a valid consultation type",
+    })
+    .optional(),
+  bookingType: z
+    .enum(["service", "consultation"], {
+      message: "Please select a valid booking type",
+    })
+    .optional(),
 });
 
 /**

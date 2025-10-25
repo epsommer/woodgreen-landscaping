@@ -281,28 +281,160 @@ export function EstimateCalculator({
 
   const handleDownload = () => {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-    doc.setFontSize(20);
-    doc.text("Estimate", 105, 15, { align: "center" });
+    // Brand colors
+    const brandGreen = [34, 197, 94]; // #22c55e
+    const darkGreen = [4, 45, 36]; // #042d24
+    const lightGray = [243, 244, 246];
+    const darkGray = [75, 85, 99];
 
+    // Header background
+    doc.setFillColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.rect(0, 0, pageWidth, 45, 'F');
+
+    // Company name
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text('WOODGREEN', pageWidth / 2, 20, { align: 'center' });
+
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text('LANDSCAPING', pageWidth / 2, 30, { align: 'center' });
+
+    // Contact info in header
+    doc.setFontSize(8);
+    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com  •  Toronto, ON', pageWidth / 2, 38, { align: 'center' });
+
+    // Document title
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('SERVICE ESTIMATE', 20, 60);
+
+    // Date and estimate number
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const estimateNumber = `EST-${Date.now().toString().slice(-8)}`;
+    doc.text(`Date: ${currentDate}`, pageWidth - 20, 60, { align: 'right' });
+    doc.text(`Estimate #: ${estimateNumber}`, pageWidth - 20, 66, { align: 'right' });
+
+    // Services section
+    let yPos = 85;
     doc.setFontSize(12);
-    let yPos = 30;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
+    doc.text('SERVICES', 20, yPos);
+
+    // Table header
+    yPos += 8;
+    doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.rect(20, yPos - 5, pageWidth - 40, 8, 'F');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Service Description', 25, yPos);
+    doc.text('Qty', pageWidth - 95, yPos);
+    doc.text('Unit', pageWidth - 70, yPos);
+    doc.text('Amount', pageWidth - 25, yPos, { align: 'right' });
+
+    // Service items
+    yPos += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(60, 60, 60);
+
     services.forEach((service) => {
+      if (yPos > pageHeight - 60) {
+        doc.addPage();
+        yPos = 20;
+      }
+
       const price = calculateServicePrice(service);
-      doc.text(
-        `${service.name}: $${price.toFixed(2)} (${service.quantity} ${
-          service.unit
-        })`,
-        20,
-        yPos,
-      );
-      yPos += 10;
+
+      // Service name
+      let serviceName = service.name;
+      if (service.variant) {
+        serviceName += ` (${service.variant})`;
+      }
+      if (service.debrisCleanup) {
+        serviceName += ' + Debris Cleanup';
+      }
+
+      doc.setFontSize(9);
+      doc.text(serviceName, 25, yPos);
+      doc.text(service.quantity.toString(), pageWidth - 95, yPos);
+      doc.text(service.unit, pageWidth - 70, yPos);
+      doc.text(`$${price.toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+
+      yPos += 7;
     });
 
-    doc.setFontSize(16);
-    doc.text(`Total: $${calculateTotal().toFixed(2)}`, 20, yPos + 10);
+    // Subtotal and total section
+    yPos += 5;
+    doc.setDrawColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.setLineWidth(0.5);
+    doc.line(20, yPos, pageWidth - 20, yPos);
 
-    doc.save("estimate.pdf");
+    yPos += 10;
+    const total = calculateTotal();
+
+    // Total
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
+    doc.text('TOTAL ESTIMATE:', pageWidth - 80, yPos);
+    doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.text(`$${total.toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+
+    // Notes section
+    yPos += 20;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
+    doc.text('IMPORTANT NOTES:', 20, yPos);
+
+    yPos += 6;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    const notes = [
+      '• This estimate is valid for 30 days from the date of issue.',
+      '• Final pricing may vary based on site conditions and accessibility.',
+      '• All services are subject to our standard terms and conditions.',
+      '• Seasonal services are weather-dependent and scheduled accordingly.',
+    ];
+
+    notes.forEach((note) => {
+      doc.text(note, 20, yPos);
+      yPos += 5;
+    });
+
+    // Thank you section
+    yPos += 10;
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.text('Thank you for considering Woodgreen Landscaping!', pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 5;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text('We look forward to bringing your landscape vision to life.', pageWidth / 2, yPos, { align: 'center' });
+
+    // Footer
+    doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+
+    doc.setFontSize(8);
+    doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
+    doc.text('Woodgreen Landscaping  •  Toronto, ON', pageWidth / 2, pageHeight - 12, { align: 'center' });
+    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com', pageWidth / 2, pageHeight - 7, { align: 'center' });
+
+    doc.save(`woodgreen-estimate-${estimateNumber}.pdf`);
   };
 
   // Disable body scroll when modal is open
@@ -314,7 +446,95 @@ export function EstimateCalculator({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div>
+      {/* Print-only branded estimate */}
+      <div className="hidden print:block print-estimate">
+        {/* Header */}
+        <div className="bg-nature-500 text-white p-6 mb-6 -mx-10 -mt-10">
+          <h1 className="text-4xl font-bold text-center mb-1">WOODGREEN</h1>
+          <p className="text-center text-sm mb-2">LANDSCAPING</p>
+          <p className="text-center text-xs">(647) 327-8401 • info@woodgreenlandscaping.com • Toronto, ON</p>
+        </div>
+
+        {/* Document info */}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-[#042d24] mb-2">SERVICE ESTIMATE</h2>
+          </div>
+          <div className="text-right text-sm text-gray-600">
+            <p>Date: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>Estimate #: EST-{Date.now().toString().slice(-8)}</p>
+          </div>
+        </div>
+
+        {/* Services table */}
+        <div className="mb-6">
+          <h3 className="text-lg font-bold text-[#042d24] mb-3">SERVICES</h3>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-sm">
+                <th className="text-left p-2 border-b-2 border-nature-500">Service Description</th>
+                <th className="text-center p-2 border-b-2 border-nature-500">Qty</th>
+                <th className="text-center p-2 border-b-2 border-nature-500">Unit</th>
+                <th className="text-right p-2 border-b-2 border-nature-500">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {services.map((service, index) => {
+                if (!service.name) return null;
+                const price = calculateServicePrice(service);
+                let serviceName = service.name;
+                if (service.variant) serviceName += ` (${service.variant})`;
+                if (service.debrisCleanup) serviceName += ' + Debris Cleanup';
+
+                return (
+                  <tr key={index} className="border-b">
+                    <td className="p-2 text-sm">{serviceName}</td>
+                    <td className="p-2 text-center text-sm">{service.quantity}</td>
+                    <td className="p-2 text-center text-sm">{service.unit}</td>
+                    <td className="p-2 text-right text-sm">${price.toFixed(2)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Total */}
+        <div className="flex justify-end mb-8">
+          <div className="text-right">
+            <div className="flex justify-between gap-8 items-center border-t-2 border-nature-500 pt-3">
+              <span className="text-lg font-bold text-[#042d24]">TOTAL ESTIMATE:</span>
+              <span className="text-2xl font-bold text-nature-500">${calculateTotal().toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="mb-6">
+          <h4 className="text-sm font-bold text-[#042d24] mb-2">IMPORTANT NOTES:</h4>
+          <ul className="text-xs text-gray-600 space-y-1">
+            <li>• This estimate is valid for 30 days from the date of issue.</li>
+            <li>• Final pricing may vary based on site conditions and accessibility.</li>
+            <li>• All services are subject to our standard terms and conditions.</li>
+            <li>• Seasonal services are weather-dependent and scheduled accordingly.</li>
+          </ul>
+        </div>
+
+        {/* Thank you */}
+        <div className="text-center mb-8">
+          <p className="text-base font-bold text-nature-500 mb-1">Thank you for considering Woodgreen Landscaping!</p>
+          <p className="text-sm text-gray-600">We look forward to bringing your landscape vision to life.</p>
+        </div>
+
+        {/* Footer */}
+        <div className="absolute bottom-10 left-0 right-0 bg-gray-100 p-4 text-center text-xs text-gray-600">
+          <p>Woodgreen Landscaping • Toronto, ON</p>
+          <p>(647) 327-8401 • info@woodgreenlandscaping.com</p>
+        </div>
+      </div>
+
+      <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm no-print">
       <div
         className="absolute inset-0"
         onClick={onClose}
@@ -502,6 +722,7 @@ export function EstimateCalculator({
         </div>
       </CardFooter>
     </Card>
+    </div>
     </div>
   );
 }

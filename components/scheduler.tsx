@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, CalendarDays, Clock, Loader2, Phone, AlertCircle } from "lucide-react";
+import { X, CalendarDays, Clock, Loader2, Phone, AlertCircle, MapPin, Video } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -63,6 +63,11 @@ export function Scheduler({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("Ontario");
+  const [postalCode, setPostalCode] = useState("");
+  const [consultationType, setConsultationType] = useState<"in-person" | "video">("in-person");
   const [isOpen, setIsOpen] = useState(true);
   const [service, setService] = useState<string | undefined>(selectedService);
   const [availability, setAvailability] = useState<AvailabilityData>({});
@@ -188,6 +193,13 @@ export function Scheduler({
         throw new Error("Please select both date and time");
       }
 
+      // Validate address fields for service bookings and in-person consultations
+      if (bookingType === "service" || consultationType === "in-person") {
+        if (!address || !city || !province || !postalCode) {
+          throw new Error("Please provide your complete service address");
+        }
+      }
+
       // Find the full datetime for the selected time
       const availableSlots = getAvailableTimeSlotsForDate();
       const selectedSlot = availableSlots.find((slot) => slot.time === selectedTime);
@@ -204,6 +216,11 @@ export function Scheduler({
         email: string;
         phone: string;
         message: string;
+        address?: string;
+        city?: string;
+        province?: string;
+        postalCode?: string;
+        consultationType?: "in-person" | "video";
         serviceDetails?: string;
         duration?: number;
         bookingType?: string;
@@ -217,7 +234,21 @@ export function Scheduler({
         email,
         phone,
         message,
+        bookingType,
       };
+
+      // Add address fields for service bookings or in-person consultations
+      if (bookingType === "service" || consultationType === "in-person") {
+        bookingData.address = address;
+        bookingData.city = city;
+        bookingData.province = province;
+        bookingData.postalCode = postalCode;
+      }
+
+      // Add consultation type for consultation bookings
+      if (bookingType === "consultation") {
+        bookingData.consultationType = consultationType;
+      }
 
       // Add service details and duration for service bookings
       if (bookingType === "service" && estimatedHours > 0) {
@@ -369,6 +400,57 @@ export function Scheduler({
                     <SelectItem value="General Consultation">General Consultation</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            )}
+
+            {/* Consultation Type Selection (only for consultation bookings) */}
+            {bookingType === "consultation" && (
+              <div className="space-y-2">
+                <Label>Consultation Type</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setConsultationType("in-person")}
+                    className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all ${
+                      consultationType === "in-person"
+                        ? "border-nature-500 bg-nature-50 dark:bg-nature-900/20"
+                        : "border-gray-200 dark:border-gray-700 hover:border-nature-300"
+                    }`}
+                  >
+                    <MapPin className={`w-5 h-5 ${consultationType === "in-person" ? "text-nature-600" : "text-gray-500"}`} />
+                    <div className="text-left">
+                      <p className={`font-semibold text-sm ${consultationType === "in-person" ? "text-nature-700 dark:text-nature-400" : ""}`}>
+                        In-Person
+                      </p>
+                      <p className="text-xs text-muted-foreground">Visit your location</p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConsultationType("video")}
+                    className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all ${
+                      consultationType === "video"
+                        ? "border-nature-500 bg-nature-50 dark:bg-nature-900/20"
+                        : "border-gray-200 dark:border-gray-700 hover:border-nature-300"
+                    }`}
+                  >
+                    <Video className={`w-5 h-5 ${consultationType === "video" ? "text-nature-600" : "text-gray-500"}`} />
+                    <div className="text-left">
+                      <p className={`font-semibold text-sm ${consultationType === "video" ? "text-nature-700 dark:text-nature-400" : ""}`}>
+                        Video Call
+                      </p>
+                      <p className="text-xs text-muted-foreground">Online consultation</p>
+                    </div>
+                  </button>
+                </div>
+                {consultationType === "video" && (
+                  <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm">
+                    <Video className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-blue-800 dark:text-blue-200">
+                      We&apos;ll send you a video call link after booking. Make sure you have a mobile device or computer with camera ready.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
             {/* Success Message */}
@@ -581,6 +663,76 @@ export function Scheduler({
                 required
               />
             </div>
+
+            {/* Address Fields - Required for service bookings and in-person consultations */}
+            {(bookingType === "service" || consultationType === "in-person") && (
+              <div className="space-y-4 p-4 border-2 border-nature-200 dark:border-nature-800 rounded-lg bg-nature-50/30 dark:bg-nature-900/10">
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="w-5 h-5 text-nature-600 dark:text-nature-400" />
+                  <h3 className="font-semibold text-nature-900 dark:text-nature-100">
+                    {bookingType === "service" ? "Service Address" : "Visit Address"}
+                  </h3>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Street Address</Label>
+                  <Input
+                    id="address"
+                    placeholder="123 Main Street"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      placeholder="Toronto"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="province">Province</Label>
+                    <Select value={province} onValueChange={setProvince}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select province" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Ontario">Ontario</SelectItem>
+                        <SelectItem value="Quebec">Quebec</SelectItem>
+                        <SelectItem value="British Columbia">British Columbia</SelectItem>
+                        <SelectItem value="Alberta">Alberta</SelectItem>
+                        <SelectItem value="Manitoba">Manitoba</SelectItem>
+                        <SelectItem value="Saskatchewan">Saskatchewan</SelectItem>
+                        <SelectItem value="Nova Scotia">Nova Scotia</SelectItem>
+                        <SelectItem value="New Brunswick">New Brunswick</SelectItem>
+                        <SelectItem value="Prince Edward Island">Prince Edward Island</SelectItem>
+                        <SelectItem value="Newfoundland and Labrador">Newfoundland and Labrador</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="postalCode">Postal Code</Label>
+                  <Input
+                    id="postalCode"
+                    placeholder="M5H 2N2"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value.toUpperCase())}
+                    required
+                    maxLength={7}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="message">Additional Information</Label>
               <Textarea
