@@ -19,6 +19,20 @@ const nextConfig = {
       },
     ]
   },
+  // Transpile troika packages to fix worker module issues
+  transpilePackages: ['troika-three-text', 'troika-worker-utils', 'troika-three-utils'],
+  webpack: (config, { isServer }) => {
+    // Fix for troika-three-text worker module loading issues
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+      };
+    }
+
+    return config;
+  },
 };
 
 export default nextConfig;
