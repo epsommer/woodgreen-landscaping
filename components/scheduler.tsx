@@ -409,7 +409,7 @@ export function Scheduler({
                       setSubmitSuccess(false);
                       setBookingData(null);
                       setSelectedDate(undefined);
-                      setSelectedTime(null);
+                      setSelectedTime(undefined);
                       setName("");
                       setEmail("");
                       setPhone("");

@@ -1,6 +1,6 @@
 "use client";
 
-import { Component, ReactNode, Suspense } from "react";
+import React, { Component, ReactNode, Suspense, ErrorInfo } from "react";
 
 interface Props {
   children: ReactNode;
@@ -22,7 +22,7 @@ class ThreeErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("3D Scene Error:", error, errorInfo);
   }
 

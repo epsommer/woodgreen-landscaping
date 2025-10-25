@@ -11,6 +11,9 @@ import {
   sanitizePhone,
 } from "@/lib/validation";
 
+// Mark this route as dynamic (uses request headers for rate limiting)
+export const dynamic = 'force-dynamic';
+
 /**
  * API Route: POST /api/calendar/book
  * Books a consultation appointment and sends email notifications

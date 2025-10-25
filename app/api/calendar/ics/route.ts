@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Mark this route as dynamic (uses search params)
+export const dynamic = 'force-dynamic';
+
 /**
  * API Route: GET /api/calendar/ics
  * Generates an ICS calendar file for a booking

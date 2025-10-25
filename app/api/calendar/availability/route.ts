@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAvailableSlotsForRange } from "@/lib/calendar/availability";
 import { rateLimit, getResetTimeSeconds } from "@/lib/rate-limit";
 
+// Mark this route as dynamic (uses request headers for rate limiting)
+export const dynamic = 'force-dynamic';
+
 /**
  * API Route: GET /api/calendar/availability
  * Fetches available time slots for scheduling consultations

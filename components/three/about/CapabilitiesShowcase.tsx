@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text } from "@react-three/drei";
 import { CapabilityIcon } from "./CapabilityIcons";
@@ -91,14 +91,14 @@ function CapabilityIsland({
   // Lower card: slide up on select (positioned to touch upper card with bottom at ~0.6)
   const lowerCardTargetY = isSelected ? 1.1 : -0.5;
 
-  const handlePointerDown = (e: any) => {
-    pointerDownPos.current = { x: e.clientX, y: e.clientY };
+  const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
+    pointerDownPos.current = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY };
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
     // Only trigger click if pointer hasn't moved much (not a drag)
-    const dx = e.clientX - pointerDownPos.current.x;
-    const dy = e.clientY - pointerDownPos.current.y;
+    const dx = e.nativeEvent.clientX - pointerDownPos.current.x;
+    const dy = e.nativeEvent.clientY - pointerDownPos.current.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance < 5) {
