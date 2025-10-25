@@ -128,12 +128,21 @@ export async function getAvailableSlots(date: Date): Promise<AvailableSlot[]> {
 
   try {
     [googleBusyTimes, notionBusyTimes] = await Promise.all([
-      getGoogleBusyTimes(startOfDay, endOfDay).catch(() => []),
-      getNotionBusyTimes(startOfDay, endOfDay).catch(() => []),
+      getGoogleBusyTimes(startOfDay, endOfDay).catch((err) => {
+        console.error("Google Calendar integration failed:", err);
+        return [];
+      }),
+      getNotionBusyTimes(startOfDay, endOfDay).catch((err) => {
+        console.error("Notion Calendar integration failed:", err);
+        return [];
+      }),
     ]);
   } catch (error) {
     console.warn("Error fetching busy times, showing all slots as available:", error);
   }
+
+  // Log the number of busy times found
+  console.log(`[Availability] Date: ${date.toISOString().split('T')[0]}, Google busy slots: ${googleBusyTimes.length}, Notion busy slots: ${notionBusyTimes.length}`);
 
   // Combine busy times from both calendars
   const allBusyTimes = [...googleBusyTimes, ...notionBusyTimes];

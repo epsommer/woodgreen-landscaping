@@ -29,13 +29,21 @@ export async function getGoogleBusyTimes(
   endDate: Date,
 ): Promise<Array<{ start: Date; end: Date }>> {
   try {
-    const calendar = getGoogleCalendarClient();
     const calendarId = process.env.GOOGLE_CALENDAR_ID;
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+    const privateKey = process.env.GOOGLE_PRIVATE_KEY;
 
     if (!calendarId) {
-      console.warn("GOOGLE_CALENDAR_ID not configured");
+      console.warn("[Google Calendar] GOOGLE_CALENDAR_ID not configured");
       return [];
     }
+
+    if (!clientEmail || !privateKey) {
+      console.warn("[Google Calendar] GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY not configured");
+      return [];
+    }
+
+    const calendar = getGoogleCalendarClient();
 
     const response = await calendar.freebusy.query({
       requestBody: {
@@ -51,9 +59,13 @@ export async function getGoogleBusyTimes(
         end: new Date(slot.end || ""),
       })) || [];
 
+    console.log(`[Google Calendar] Found ${busyTimes.length} busy slots for ${startDate.toISOString().split('T')[0]}`);
     return busyTimes;
   } catch (error) {
-    console.error("Error fetching Google Calendar busy times:", error);
+    console.error("[Google Calendar] Error fetching busy times:", error instanceof Error ? error.message : error);
+    if (error instanceof Error && 'code' in error) {
+      console.error("[Google Calendar] Error code:", (error as { code?: number }).code);
+    }
     return [];
   }
 }

@@ -33,13 +33,20 @@ export async function getNotionBusyTimes(
   endDate: Date,
 ): Promise<Array<{ start: Date; end: Date }>> {
   try {
-    const notion = getNotionClient();
     const databaseId = process.env.NOTION_DATABASE_ID;
+    const apiKey = process.env.NOTION_API_KEY;
 
     if (!databaseId) {
-      console.warn("NOTION_DATABASE_ID not configured");
+      console.warn("[Notion Calendar] NOTION_DATABASE_ID not configured");
       return [];
     }
+
+    if (!apiKey) {
+      console.warn("[Notion Calendar] NOTION_API_KEY not configured");
+      return [];
+    }
+
+    const notion = getNotionClient();
 
     // Query the Notion database for events in the date range
     // Using dataSources.query (Notion SDK v5.0.0+)
@@ -76,9 +83,13 @@ export async function getNotionBusyTimes(
       return { start, end };
     });
 
+    console.log(`[Notion Calendar] Found ${busyTimes.length} busy slots for ${startDate.toISOString().split('T')[0]}`);
     return busyTimes;
   } catch (error) {
-    console.error("Error fetching Notion busy times:", error);
+    console.error("[Notion Calendar] Error fetching busy times:", error instanceof Error ? error.message : error);
+    if (error instanceof Error && 'code' in error) {
+      console.error("[Notion Calendar] Error code:", (error as { code?: string }).code);
+    }
     return [];
   }
 }
