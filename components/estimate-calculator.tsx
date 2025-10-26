@@ -964,7 +964,7 @@ export function EstimateCalculator({
                   onScheduleConsultation(validServices, estimatedHours);
                 }}
                 variant="outline"
-                className="flex-1 border-2 border-[rgb(206,255,101)] text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
+                className="flex-1 border-2 border-[rgb(206,255,101)] text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
               >
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule Consultation
