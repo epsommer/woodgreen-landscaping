@@ -286,8 +286,8 @@ export function EstimateCalculator({
     const pageHeight = doc.internal.pageSize.getHeight();
 
     // Brand colors
-    const brandGreen = [34, 197, 94]; // #22c55e
-    const darkGreen = [4, 45, 36]; // #042d24
+    const brandGreen = [206, 255, 101]; // rgb(206, 255, 101)
+    const darkGreen = [47, 59, 48]; // rgb(47, 59, 48)
     const lightGray = [243, 244, 246];
     const darkGray = [75, 85, 99];
 
@@ -467,7 +467,7 @@ export function EstimateCalculator({
       {/* Print-only branded estimate */}
       <div className="hidden print:block print-estimate">
         {/* Header */}
-        <div className="bg-nature-500 text-white p-6 mb-6 -mx-10 -mt-10">
+        <div className="bg-[rgb(206,255,101)] text-[rgb(47,59,48)] p-6 mb-6 -mx-10 -mt-10">
           <div className="flex items-center justify-center mb-3">
             <Image
               src="/woodgreen-landscaping-logo-palmette-inverse.svg"
@@ -487,7 +487,7 @@ export function EstimateCalculator({
         {/* Document info */}
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-[#042d24] mb-2">SERVICE ESTIMATE</h2>
+            <h2 className="text-2xl font-bold text-[rgb(47,59,48)] mb-2">SERVICE ESTIMATE</h2>
           </div>
           <div className="text-right text-sm text-gray-600">
             <p>Date: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -497,14 +497,14 @@ export function EstimateCalculator({
 
         {/* Services table */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold text-[#042d24] mb-3">SERVICES</h3>
+          <h3 className="text-lg font-bold text-[rgb(47,59,48)] mb-3">SERVICES</h3>
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100 text-sm">
-                <th className="text-left p-2 border-b-2 border-nature-500">Service Description</th>
-                <th className="text-center p-2 border-b-2 border-nature-500">Qty</th>
-                <th className="text-center p-2 border-b-2 border-nature-500">Unit</th>
-                <th className="text-right p-2 border-b-2 border-nature-500">Amount</th>
+                <th className="text-left p-2 border-b-2 border-[rgb(206,255,101)]">Service Description</th>
+                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">Qty</th>
+                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">Unit</th>
+                <th className="text-right p-2 border-b-2 border-[rgb(206,255,101)]">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -531,16 +531,16 @@ export function EstimateCalculator({
         {/* Total */}
         <div className="flex justify-end mb-8">
           <div className="text-right">
-            <div className="flex justify-between gap-8 items-center border-t-2 border-nature-500 pt-3">
-              <span className="text-lg font-bold text-[#042d24]">TOTAL ESTIMATE:</span>
-              <span className="text-2xl font-bold text-nature-500">${calculateTotal().toFixed(2)}</span>
+            <div className="flex justify-between gap-8 items-center border-t-2 border-[rgb(206,255,101)] pt-3">
+              <span className="text-lg font-bold text-[rgb(47,59,48)]">TOTAL ESTIMATE:</span>
+              <span className="text-2xl font-bold text-[rgb(206,255,101)]">${calculateTotal().toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Notes */}
         <div className="mb-6">
-          <h4 className="text-sm font-bold text-[#042d24] mb-2">IMPORTANT NOTES:</h4>
+          <h4 className="text-sm font-bold text-[rgb(47,59,48)] mb-2">IMPORTANT NOTES:</h4>
           <ul className="text-xs text-gray-600 space-y-1">
             <li>• This estimate is valid for 30 days from the date of issue.</li>
             <li>• Final pricing may vary based on site conditions and accessibility.</li>
@@ -551,7 +551,7 @@ export function EstimateCalculator({
 
         {/* Thank you */}
         <div className="text-center mb-8">
-          <p className="text-base font-bold text-nature-500 mb-1">Thank you for considering Woodgreen Landscaping!</p>
+          <p className="text-base font-bold text-[rgb(206,255,101)] mb-1">Thank you for considering Woodgreen Landscaping!</p>
           <p className="text-sm text-gray-600">We look forward to bringing your landscape vision to life.</p>
         </div>
 
@@ -568,8 +568,8 @@ export function EstimateCalculator({
         onClick={onClose}
         aria-label="Close modal"
       />
-      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto bg-white dark:bg-[#1a2e1a] border-nature-200 dark:border-nature-900 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(30,60,30,0.3)]">
-      <CardHeader className="relative bg-gradient-to-br from-nature-50 to-white dark:from-[#0f1f0f] dark:to-[#1a2e1a] border-b border-nature-200 dark:border-nature-900">
+      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto bg-white dark:bg-[rgb(47,59,48)] border-nature-200 dark:border-nature-900">
+      <CardHeader className="relative bg-gradient-to-br from-nature-50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)] border-b border-nature-200 dark:border-nature-900">
         <div className="flex items-center justify-between gap-4">
           <CardTitle className="text-2xl font-bold text-nature-800 dark:text-nature-100">
             Estimate Calculator
@@ -593,9 +593,9 @@ export function EstimateCalculator({
           </div>
         </div>
       </CardHeader>
-      <CardContent className="bg-gradient-to-b from-white to-nature-50/30 dark:from-[#1a2e1a] dark:to-[#0f1f0f]">
+      <CardContent className="bg-gradient-to-b from-white to-nature-50/30 dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
         {services.map((service, index) => (
-          <div key={index} className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[#152515] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
+          <div key={index} className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[rgb(47,59,48)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <Label htmlFor={`service-${index}`} className="text-nature-700 dark:text-nature-300 font-semibold">Service</Label>
@@ -603,7 +603,7 @@ export function EstimateCalculator({
                   value={service.name}
                   onValueChange={(value) => updateService(index, "name", value)}
                 >
-                  <SelectTrigger id={`service-${index}`} className="border-2 border-nature-500 focus:ring-nature-500 focus:border-nature-600 bg-white dark:bg-[#152515]">
+                  <SelectTrigger id={`service-${index}`} className="border-2 border-[rgb(206,255,101)] focus:ring-[rgb(206,255,101)] focus:border-[rgb(206,255,101)] bg-white dark:bg-[rgb(47,59,48)]">
                     <SelectValue placeholder="Please select a service" />
                   </SelectTrigger>
                   <SelectContent>
@@ -717,12 +717,12 @@ export function EstimateCalculator({
             </div>
           </div>
         ))}
-        <Button onClick={addService} size="sm" className="mt-4 bg-nature-500 hover:bg-nature-600 text-white shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-2px_-2px_5px_rgba(30,60,30,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all">
+        <Button onClick={addService} size="sm" className="mt-4 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-2px_-2px_5px_rgba(30,60,30,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all">
           + Add Service
         </Button>
       </CardContent>
-      <CardFooter className="flex flex-col items-stretch bg-gradient-to-t from-nature-50/50 to-white dark:from-[#0f1f0f] dark:to-[#1a2e1a] border-t border-nature-200 dark:border-nature-900">
-        <div className="text-2xl font-bold mb-4 text-nature-800 dark:text-nature-100 p-4 bg-white dark:bg-[#152515] rounded-lg shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
+      <CardFooter className="flex flex-col items-stretch bg-gradient-to-t from-nature-50/50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)] border-t border-nature-200 dark:border-nature-900">
+        <div className="text-2xl font-bold mb-4 text-nature-800 dark:text-nature-100 p-4 bg-white dark:bg-[rgb(47,59,48)] rounded-lg shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
           Total Estimate: <span className="text-nature-600 dark:text-nature-400">${calculateTotal().toFixed(2)}</span>
         </div>
 
@@ -735,7 +735,7 @@ export function EstimateCalculator({
               onBookService(validServices, estimatedHours);
             }}
             variant="default"
-            className="flex-1 bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold"
+            className="flex-1 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Book Service Now
@@ -747,7 +747,7 @@ export function EstimateCalculator({
               onScheduleConsultation(validServices, estimatedHours);
             }}
             variant="outline"
-            className="flex-1 border-2 border-nature-500 text-nature-700 dark:text-nature-300 hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
+            className="flex-1 border-2 border-[rgb(206,255,101)] text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Schedule Consultation

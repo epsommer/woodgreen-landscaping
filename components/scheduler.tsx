@@ -328,8 +328,8 @@ export function Scheduler({
         onClick={handleClose}
         aria-label="Close modal"
       />
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 bg-white dark:bg-[#1a2e1a] border-nature-200 dark:border-nature-900 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(30,60,30,0.3)]">
-        <CardContent className="p-6 bg-gradient-to-b from-white to-nature-50/30 dark:from-[#1a2e1a] dark:to-[#0f1f0f]">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 bg-white dark:bg-[rgb(47,59,48)] border-nature-200 dark:border-nature-900">
+        <CardContent className="p-6 bg-gradient-to-b from-white to-nature-50/30 dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-nature-200 dark:border-nature-800">
             <div className="flex items-center gap-2">
               {onBack && !submitSuccess && (
@@ -424,7 +424,7 @@ export function Scheduler({
                     onClick={() => setConsultationType("in-person")}
                     className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all ${
                       consultationType === "in-person"
-                        ? "border-nature-500 bg-nature-50 dark:bg-nature-900/20"
+                        ? "border-[rgb(206,255,101)] bg-nature-50 dark:bg-nature-900/20"
                         : "border-gray-200 dark:border-gray-700 hover:border-nature-300"
                     }`}
                   >
@@ -441,7 +441,7 @@ export function Scheduler({
                     onClick={() => setConsultationType("video")}
                     className={`flex items-center justify-center gap-2 p-4 border-2 rounded-lg transition-all ${
                       consultationType === "video"
-                        ? "border-nature-500 bg-nature-50 dark:bg-nature-900/20"
+                        ? "border-[rgb(206,255,101)] bg-nature-50 dark:bg-nature-900/20"
                         : "border-gray-200 dark:border-gray-700 hover:border-nature-300"
                     }`}
                   >
@@ -575,7 +575,7 @@ export function Scheduler({
                             hour12: true
                           });
                           return (
-                            <span className="font-semibold text-nature-600 dark:text-nature-400">
+                            <span className="font-semibold text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)]">
                               {' '}→ {endTimeString}
                               <span className="text-xs ml-1">
                                 ({hoursNeeded} hour{hoursNeeded > 1 ? 's' : ''})
@@ -703,7 +703,7 @@ export function Scheduler({
             </div>
             <Button
               type="submit"
-              className="w-full bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || submitSuccess || !selectedDate || !selectedTime || isWeekend(selectedDate)}
             >
               {isSubmitting ? (
@@ -745,7 +745,7 @@ export function Scheduler({
                       window.location.href = `/api/calendar/ics?${params.toString()}`;
                     }}
                     variant="outline"
-                    className="w-full bg-white dark:bg-[#152515] border-2 border-nature-500 text-nature-700 dark:text-nature-300 hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1)] font-semibold"
+                    className="w-full bg-white dark:bg-[rgb(47,59,48)] border-2 border-[rgb(206,255,101)] text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1)] font-semibold"
                   >
                     <CalendarDays className="w-4 h-4 mr-2" />
                     Add to Calendar
@@ -765,7 +765,7 @@ export function Scheduler({
                       setMessage("");
                     }}
                     variant="default"
-                    className="w-full bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] font-semibold"
+                    className="w-full bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[4px_4px_10px_rgba(0,0,0,0.15)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] font-semibold"
                   >
                     Book Another Appointment
                   </Button>
