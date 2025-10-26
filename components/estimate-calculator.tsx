@@ -452,21 +452,19 @@ export function EstimateCalculator({
       <div className="hidden print:block print-estimate">
         {/* Header */}
         <div className="bg-nature-500 text-white p-6 mb-6 -mx-10 -mt-10">
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-3">
             <Image
               src="/woodgreen-landscaping-logo-palmette-inverse.svg"
               alt="Woodgreen Landscaping Logo"
-              width={100}
-              height={100}
+              width={120}
+              height={120}
               className="h-auto print:block"
               style={{
-                maxWidth: "100px",
+                maxWidth: "120px",
                 height: "auto",
               }}
             />
           </div>
-          <h1 className="text-4xl font-bold text-center mb-1">WOODGREEN</h1>
-          <p className="text-center text-sm mb-2">LANDSCAPING</p>
           <p className="text-center text-xs">(647) 327-8401 • info@woodgreenlandscaping.com • Toronto, ON</p>
         </div>
 
