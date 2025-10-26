@@ -568,24 +568,24 @@ export function EstimateCalculator({
         onClick={onClose}
         aria-label="Close modal"
       />
-      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto">
-      <CardHeader className="relative">
+      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto bg-white dark:bg-[#1a2e1a] border-nature-200 dark:border-nature-900 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(30,60,30,0.3)]">
+      <CardHeader className="relative bg-gradient-to-br from-nature-50 to-white dark:from-[#0f1f0f] dark:to-[#1a2e1a] border-b border-nature-200 dark:border-nature-900">
         <div className="flex items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-bold">
+          <CardTitle className="text-2xl font-bold text-nature-800 dark:text-nature-100">
             Estimate Calculator
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Button onClick={handlePrint} variant="ghost" size="sm">
+            <Button onClick={handlePrint} variant="ghost" size="sm" className="text-nature-600 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-300 hover:bg-nature-100 dark:hover:bg-nature-900/50">
               <Printer className="w-4 h-4" />
             </Button>
-            <Button onClick={handleDownload} variant="ghost" size="sm">
+            <Button onClick={handleDownload} variant="ghost" size="sm" className="text-nature-600 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-300 hover:bg-nature-100 dark:hover:bg-nature-900/50">
               <Download className="w-4 h-4" />
             </Button>
             <Button
               onClick={onClose}
               variant="ghost"
               size="icon"
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-nature-500 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-200 hover:bg-nature-100 dark:hover:bg-nature-900/50"
               aria-label="Close"
             >
               <X className="h-4 w-4" />
@@ -593,9 +593,9 @@ export function EstimateCalculator({
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="bg-gradient-to-b from-white to-nature-50/30 dark:from-[#1a2e1a] dark:to-[#0f1f0f]">
         {services.map((service, index) => (
-          <div key={index} className="mb-6 p-4 border rounded">
+          <div key={index} className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[#152515] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <Label htmlFor={`service-${index}`}>Service</Label>
@@ -716,17 +716,17 @@ export function EstimateCalculator({
             </div>
           </div>
         ))}
-        <Button onClick={addService} size="sm" className="mt-4">
+        <Button onClick={addService} size="sm" className="mt-4 bg-nature-500 hover:bg-nature-600 text-white shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-2px_-2px_5px_rgba(30,60,30,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all">
           + Add Service
         </Button>
       </CardContent>
-      <CardFooter className="flex flex-col items-stretch">
-        <div className="text-xl font-bold mb-4">
-          Total Estimate: ${calculateTotal().toFixed(2)}
+      <CardFooter className="flex flex-col items-stretch bg-gradient-to-t from-nature-50/50 to-white dark:from-[#0f1f0f] dark:to-[#1a2e1a] border-t border-nature-200 dark:border-nature-900">
+        <div className="text-2xl font-bold mb-4 text-nature-800 dark:text-nature-100 p-4 bg-white dark:bg-[#152515] rounded-lg shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
+          Total Estimate: <span className="text-nature-600 dark:text-nature-400">${calculateTotal().toFixed(2)}</span>
         </div>
 
         {/* Primary Actions */}
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={() => {
               const validServices = services.filter((s): s is Service & { name: Exclude<ServiceType, ""> } => s.name !== "");
@@ -734,7 +734,7 @@ export function EstimateCalculator({
               onBookService(validServices, estimatedHours);
             }}
             variant="default"
-            className="flex-1 bg-nature-500 hover:bg-nature-600 text-white"
+            className="flex-1 bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Book Service Now
@@ -746,7 +746,7 @@ export function EstimateCalculator({
               onScheduleConsultation(validServices, estimatedHours);
             }}
             variant="outline"
-            className="flex-1"
+            className="flex-1 border-2 border-nature-500 text-nature-700 dark:text-nature-300 hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Schedule Consultation

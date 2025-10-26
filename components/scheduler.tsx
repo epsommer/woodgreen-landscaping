@@ -328,20 +328,20 @@ export function Scheduler({
         onClick={handleClose}
         aria-label="Close modal"
       />
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-4">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto relative z-10 bg-white dark:bg-[#1a2e1a] border-nature-200 dark:border-nature-900 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(30,60,30,0.3)]">
+        <CardContent className="p-6 bg-gradient-to-b from-white to-nature-50/30 dark:from-[#1a2e1a] dark:to-[#0f1f0f]">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-nature-200 dark:border-nature-800">
             <div className="flex items-center gap-2">
               {onBack && !submitSuccess && (
-                <Button variant="ghost" size="sm" onClick={onBack}>
+                <Button variant="ghost" size="sm" onClick={onBack} className="text-nature-600 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-300 hover:bg-nature-100 dark:hover:bg-nature-900/50">
                   ← Back
                 </Button>
               )}
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-nature-800 dark:text-nature-100">
                 {bookingType === "service" ? "Book Your Service" : "Schedule a Consultation"}
               </h2>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleClose}>
+            <Button variant="ghost" size="icon" onClick={handleClose} className="text-nature-500 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-200 hover:bg-nature-100 dark:hover:bg-nature-900/50">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -464,62 +464,9 @@ export function Scheduler({
                 )}
               </div>
             )}
-            {/* Success Message */}
-            {submitSuccess && bookingData && (
-              <div className="space-y-4 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
-                  <CalendarDays className="w-6 h-6 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-lg">Appointment Booked Successfully!</p>
-                    <p className="text-sm opacity-90 mt-1">
-                      Confirmation email sent to {bookingData.email}
-                    </p>
-                  </div>
-                </div>
-                <div className="pt-4 border-t border-green-200 dark:border-green-700 space-y-3">
-                  <Button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        service: bookingData.service,
-                        datetime: bookingData.datetime,
-                        duration: bookingData.duration.toString(),
-                        name: bookingData.name,
-                        email: bookingData.email,
-                      });
-                      window.location.href = `/api/calendar/ics?${params.toString()}`;
-                    }}
-                    variant="outline"
-                    className="w-full bg-white dark:bg-gray-800"
-                  >
-                    <CalendarDays className="w-4 h-4 mr-2" />
-                    Add to Calendar
-                  </Button>
-                  <p className="text-xs text-center text-green-700 dark:text-green-300">
-                    Download .ics file for Google Calendar, Outlook, Apple Calendar, etc.
-                  </p>
-                  <Button
-                    onClick={() => {
-                      setSubmitSuccess(false);
-                      setBookingData(null);
-                      setSelectedDate(undefined);
-                      setSelectedTime(undefined);
-                      setName("");
-                      setEmail("");
-                      setPhone("");
-                      setMessage("");
-                    }}
-                    variant="default"
-                    className="w-full bg-nature-500 hover:bg-nature-600 text-white"
-                  >
-                    Book Another Appointment
-                  </Button>
-                </div>
-              </div>
-            )}
-
             {/* Error Message */}
-            {submitError && (
-              <div className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
+            {submitError && !submitSuccess && (
+              <div className="flex items-center gap-2 p-4 mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05)]">
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <p className="text-sm font-medium">{submitError}</p>
               </div>
@@ -756,7 +703,7 @@ export function Scheduler({
             </div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || submitSuccess || !selectedDate || !selectedTime || isWeekend(selectedDate)}
             >
               {isSubmitting ? (
@@ -772,6 +719,59 @@ export function Scheduler({
                 "Schedule Consultation"
               )}
             </Button>
+
+            {/* Success Message - Positioned Below Submit Button */}
+            {submitSuccess && bookingData && (
+              <div className="mt-4 space-y-4 p-6 bg-gradient-to-br from-nature-50 to-nature-100 dark:from-nature-900/30 dark:to-nature-800/20 border-2 border-nature-400 dark:border-nature-600 rounded-lg shadow-[4px_4px_12px_rgba(34,197,94,0.2),-2px_-2px_8px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_12px_rgba(0,0,0,0.4),-2px_-2px_8px_rgba(30,60,30,0.3)]">
+                <div className="flex items-center gap-3 text-nature-800 dark:text-nature-100">
+                  <CalendarDays className="w-8 h-8 flex-shrink-0 text-nature-600 dark:text-nature-400" />
+                  <div className="flex-1">
+                    <p className="font-bold text-xl">Appointment Booked Successfully!</p>
+                    <p className="text-sm opacity-90 mt-1">
+                      Confirmation email sent to {bookingData.email}
+                    </p>
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-nature-300 dark:border-nature-700 space-y-3">
+                  <Button
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        service: bookingData.service,
+                        datetime: bookingData.datetime,
+                        duration: bookingData.duration.toString(),
+                        name: bookingData.name,
+                        email: bookingData.email,
+                      });
+                      window.location.href = `/api/calendar/ics?${params.toString()}`;
+                    }}
+                    variant="outline"
+                    className="w-full bg-white dark:bg-[#152515] border-2 border-nature-500 text-nature-700 dark:text-nature-300 hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1)] font-semibold"
+                  >
+                    <CalendarDays className="w-4 h-4 mr-2" />
+                    Add to Calendar
+                  </Button>
+                  <p className="text-xs text-center text-nature-700 dark:text-nature-400 font-medium">
+                    Download .ics file for Google Calendar, Outlook, Apple Calendar, etc.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      setSubmitSuccess(false);
+                      setBookingData(null);
+                      setSelectedDate(undefined);
+                      setSelectedTime(undefined);
+                      setName("");
+                      setEmail("");
+                      setPhone("");
+                      setMessage("");
+                    }}
+                    variant="default"
+                    className="w-full bg-nature-500 hover:bg-nature-600 text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] font-semibold"
+                  >
+                    Book Another Appointment
+                  </Button>
+                </div>
+              </div>
+            )}
           </form>
         </CardContent>
       </Card>
