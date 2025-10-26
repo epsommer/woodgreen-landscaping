@@ -59,58 +59,111 @@ type ServiceDetail = {
 const serviceDetails: Record<ServiceType, ServiceDetail> = {
   "": { unit: "", defaultQty: 1 },
   "Tree Trimming": {
-    unit: "per tree", defaultQty: 1, hasDebrisCleanup: true, variants: {
-      '5ft': { price: 100, originalPrice: 200 },
-      '10ft': { price: 220, originalPrice: 370 },
-      '15ft': { price: 360, originalPrice: 600 },
-      '20ft': { price: 540, originalPrice: 900 },
-      '20+ feet': { price: Infinity, originalPrice: Infinity },
-    }
+    unit: "per tree",
+    defaultQty: 1,
+    hasDebrisCleanup: true,
+    variants: {
+      "5ft": { price: 100, originalPrice: 200 },
+      "10ft": { price: 220, originalPrice: 370 },
+      "15ft": { price: 360, originalPrice: 600 },
+      "20ft": { price: 540, originalPrice: 900 },
+      "20+ feet": { price: Infinity, originalPrice: Infinity },
+    },
   },
   "Tree Removal/Felling": {
-    unit: "per tree", defaultQty: 1, hasDebrisCleanup: true, variants: {
-      'Up to 10ft': { price: 250, originalPrice: 400 },
-      '10ft - 15ft': { price: 450, originalPrice: 700 },
-      '15ft+': { price: Infinity, originalPrice: Infinity },
-    }
+    unit: "per tree",
+    defaultQty: 1,
+    hasDebrisCleanup: true,
+    variants: {
+      "Up to 10ft": { price: 250, originalPrice: 400 },
+      "10ft - 15ft": { price: 450, originalPrice: 700 },
+      "15ft+": { price: Infinity, originalPrice: Infinity },
+    },
   },
   "Hedge/Shrub Trimming": {
-    unit: "linear foot", defaultQty: 50, variants: {
-      'Up to 4ft': { price: 0.75, originalPrice: 1.25 },
-      '4ft - 6ft': { price: 1.00, originalPrice: 1.75 },
-      '6ft - 8ft': { price: 1.50, originalPrice: 2.50 },
-      '8ft - 10ft': { price: 2.25, originalPrice: 3.50 },
-      '10ft - 12ft': { price: 3.25, originalPrice: 4.75 },
-      '12ft - 15ft': { price: 4.50, originalPrice: 6.25 },
-      '15ft - 20ft': { price: 6.00, originalPrice: 8.00 },
-      '20ft+': { price: Infinity, originalPrice: Infinity },
-    }
+    unit: "linear foot",
+    defaultQty: 50,
+    variants: {
+      "Up to 4ft": { price: 0.75, originalPrice: 1.25 },
+      "4ft - 6ft": { price: 1.0, originalPrice: 1.75 },
+      "6ft - 8ft": { price: 1.5, originalPrice: 2.5 },
+      "8ft - 10ft": { price: 2.25, originalPrice: 3.5 },
+      "10ft - 12ft": { price: 3.25, originalPrice: 4.75 },
+      "12ft - 15ft": { price: 4.5, originalPrice: 6.25 },
+      "15ft - 20ft": { price: 6.0, originalPrice: 8.0 },
+      "20ft+": { price: Infinity, originalPrice: Infinity },
+    },
   },
-  "Fall Cleanup": { price: 49, originalPrice: 79, unit: "per hour", defaultQty: 3, },
-  "Gutter Cleaning": { price: 90, originalPrice: 150, unit: "per residence", defaultQty: 1, },
-  "Garden Maintenance": { price: 48, originalPrice: 80, unit: "per hour", defaultQty: 2, },
-  "Landscaping Labour": { price: 57, originalPrice: 95, unit: "per hour", defaultQty: 4, },
-  "Aeration": { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1, },
-  "Dethatching": { price: 60, originalPrice: 100, unit: "per lawn", defaultQty: 1, },
-  "Grass Cutting": { price: 49, originalPrice: 55, unit: "per cut", defaultQty: 1, },
+  "Fall Cleanup": {
+    price: 49,
+    originalPrice: 79,
+    unit: "per hour",
+    defaultQty: 3,
+  },
+  "Gutter Cleaning": {
+    price: 90,
+    originalPrice: 150,
+    unit: "per residence",
+    defaultQty: 1,
+  },
+  "Garden Maintenance": {
+    price: 48,
+    originalPrice: 80,
+    unit: "per hour",
+    defaultQty: 2,
+  },
+  "Landscaping Labour": {
+    price: 57,
+    originalPrice: 95,
+    unit: "per hour",
+    defaultQty: 4,
+  },
+  Aeration: { price: 45, originalPrice: 75, unit: "per lawn", defaultQty: 1 },
+  Dethatching: {
+    price: 60,
+    originalPrice: 100,
+    unit: "per lawn",
+    defaultQty: 1,
+  },
+  "Grass Cutting": {
+    price: 49,
+    originalPrice: 55,
+    unit: "per cut",
+    defaultQty: 1,
+  },
   "Snow Removal": {
-    unit: "per clearing", defaultQty: 1, comingSoon: true, variants: {
-      'Single Driveway': { price: 399, originalPrice: 599 }, // Seasonal rate
-      'Double Driveway': { price: 550, originalPrice: 917 }, // Seasonal rate
-      'Single Extended': { price: 450, originalPrice: 750 }, // Seasonal rate
-      'Double Extended': { price: 700, originalPrice: 1167 }, // Seasonal rate
-      'Driveway + Walkway': { price: 500, originalPrice: 833 }, // Seasonal rate
-    }
+    unit: "per clearing",
+    defaultQty: 1,
+    comingSoon: true,
+    variants: {
+      "Single Driveway": { price: 399, originalPrice: 599 }, // Seasonal rate
+      "Double Driveway": { price: 550, originalPrice: 917 }, // Seasonal rate
+      "Single Extended": { price: 450, originalPrice: 750 }, // Seasonal rate
+      "Double Extended": { price: 700, originalPrice: 1167 }, // Seasonal rate
+      "Driveway + Walkway": { price: 500, originalPrice: 833 }, // Seasonal rate
+    },
   },
   "Salting/De-Icing": {
-    unit: "per season", defaultQty: 1, comingSoon: true, variants: {
-      'Sodium Chloride (Driveway)': { price: 150, originalPrice: 250 },
-      'Sodium Chloride (Driveway + Walkway)': { price: 190, originalPrice: 317 },
-      'Calcium Chloride (Driveway)': { price: 250, originalPrice: 417 },
-      'Calcium Chloride (Driveway + Walkway)': { price: 290, originalPrice: 484 },
-      'Magnesium Chloride (Driveway)': { price: 250, originalPrice: 417 },
-      'Magnesium Chloride (Driveway + Walkway)': { price: 290, originalPrice: 484 },
-    }
+    unit: "per season",
+    defaultQty: 1,
+    comingSoon: true,
+    variants: {
+      "Sodium Chloride (Driveway)": { price: 150, originalPrice: 250 },
+      "Sodium Chloride (Driveway + Walkway)": {
+        price: 190,
+        originalPrice: 317,
+      },
+      "Calcium Chloride (Driveway)": { price: 250, originalPrice: 417 },
+      "Calcium Chloride (Driveway + Walkway)": {
+        price: 290,
+        originalPrice: 484,
+      },
+      "Magnesium Chloride (Driveway)": { price: 250, originalPrice: 417 },
+      "Magnesium Chloride (Driveway + Walkway)": {
+        price: 290,
+        originalPrice: 484,
+      },
+    },
   },
 };
 
@@ -132,25 +185,29 @@ export const calculateEstimatedHours = (service: Service): number => {
     case "Tree Trimming":
       // Estimate based on tree size and quantity
       if (service.variant) {
-        if (service.variant === '5ft') return service.quantity * 0.5;
-        if (service.variant === '10ft') return service.quantity * 1;
-        if (service.variant === '15ft') return service.quantity * 2;
-        if (service.variant === '20ft') return service.quantity * 3;
+        if (service.variant === "5ft") return service.quantity * 0.5;
+        if (service.variant === "10ft") return service.quantity * 1;
+        if (service.variant === "15ft") return service.quantity * 2;
+        if (service.variant === "20ft") return service.quantity * 3;
       }
       return service.quantity * 1.5; // default estimate
 
     case "Tree Removal/Felling":
       if (service.variant) {
-        if (service.variant === 'Up to 10ft') return service.quantity * 2;
-        if (service.variant === '10ft - 15ft') return service.quantity * 4;
+        if (service.variant === "Up to 10ft") return service.quantity * 2;
+        if (service.variant === "10ft - 15ft") return service.quantity * 4;
       }
       return service.quantity * 3; // default estimate
 
     case "Hedge/Shrub Trimming":
       // Estimate based on linear feet (roughly 20-30 feet per hour depending on height)
-      const feetPerHour = service.variant?.includes('10ft') || service.variant?.includes('12ft') ||
-                          service.variant?.includes('15ft') || service.variant?.includes('20ft')
-                          ? 15 : 25;
+      const feetPerHour =
+        service.variant?.includes("10ft") ||
+        service.variant?.includes("12ft") ||
+        service.variant?.includes("15ft") ||
+        service.variant?.includes("20ft")
+          ? 15
+          : 25;
       return Math.max(1, Math.ceil(service.quantity / feetPerHour));
 
     case "Gutter Cleaning":
@@ -198,26 +255,29 @@ export function EstimateCalculator({
   const [services, setServices] = useState<Service[]>(() => {
     if (initialService && serviceDetails[initialService as ServiceType]) {
       const details = serviceDetails[initialService as ServiceType];
-      return [{
-        name: initialService as ServiceType,
-        quantity: details.defaultQty,
-        unit: details.unit,
-        variant: details.variants ? Object.keys(details.variants)[0] : undefined,
-        debrisCleanup: details.hasDebrisCleanup ? true : undefined,
-      }];
+      return [
+        {
+          name: initialService as ServiceType,
+          quantity: details.defaultQty,
+          unit: details.unit,
+          variant: details.variants
+            ? Object.keys(details.variants)[0]
+            : undefined,
+          debrisCleanup: details.hasDebrisCleanup ? true : undefined,
+        },
+      ];
     }
-    return [{
-      name: "",
-      quantity: 1,
-      unit: "",
-    }];
+    return [
+      {
+        name: "",
+        quantity: 1,
+        unit: "",
+      },
+    ];
   });
 
   const addService = () => {
-    setServices([
-      ...services,
-      { name: "", quantity: 1, unit: "" },
-    ]);
+    setServices([...services, { name: "", quantity: 1, unit: "" }]);
   };
 
   const updateService = (
@@ -234,11 +294,18 @@ export function EstimateCalculator({
           [field]: newName,
           unit: serviceDetails[newName].unit,
           quantity: serviceDetails[newName].defaultQty,
-          variant: serviceDetails[newName].variants ? Object.keys(serviceDetails[newName].variants!)[0] : undefined,
-          debrisCleanup: serviceDetails[newName].hasDebrisCleanup ? true : undefined,
+          variant: serviceDetails[newName].variants
+            ? Object.keys(serviceDetails[newName].variants!)[0]
+            : undefined,
+          debrisCleanup: serviceDetails[newName].hasDebrisCleanup
+            ? true
+            : undefined,
         };
       } else {
-        updatedServices[index] = { ...updatedServices[index], [field]: newName };
+        updatedServices[index] = {
+          ...updatedServices[index],
+          [field]: newName,
+        };
       }
     } else {
       updatedServices[index] = { ...updatedServices[index], [field]: value };
@@ -258,13 +325,14 @@ export function EstimateCalculator({
     const details = serviceDetails[service.name];
     let basePrice = 0;
     if (details.variants && service.variant) {
-      basePrice = (details.variants[service.variant]?.price || 0) * service.quantity;
+      basePrice =
+        (details.variants[service.variant]?.price || 0) * service.quantity;
     } else {
       basePrice = (details.price || 0) * service.quantity;
     }
 
     if (service.debrisCleanup) {
-      return basePrice * 1.20; // Add 20% for debris cleanup
+      return basePrice * 1.2; // Add 20% for debris cleanup
     }
     return basePrice;
   };
@@ -293,12 +361,14 @@ export function EstimateCalculator({
 
     // Header background - increased height for logo
     doc.setFillColor(brandGreen[0], brandGreen[1], brandGreen[2]);
-    doc.rect(0, 0, pageWidth, 55, 'F');
+    doc.rect(0, 0, pageWidth, 55, "F");
 
     // Add logo
     try {
       // Load the logo from the public folder
-      const logoResponse = await fetch('/woodgreen-landscaping-logo-palmette-inverse.svg');
+      const logoResponse = await fetch(
+        "/woodgreen-landscaping-logo-palmette-inverse.svg",
+      );
       const logoSvg = await logoResponse.text();
 
       // Convert SVG to base64 data URL for embedding
@@ -309,58 +379,69 @@ export function EstimateCalculator({
       const logoWidth = 30;
       const logoHeight = 30;
       const logoX = (pageWidth - logoWidth) / 2;
-      doc.addImage(logoDataUrl, 'SVG', logoX, 8, logoWidth, logoHeight);
+      doc.addImage(logoDataUrl, "SVG", logoX, 8, logoWidth, logoHeight);
     } catch (error) {
-      console.error('Failed to load logo:', error);
+      console.error("Failed to load logo:", error);
       // Fallback to text if logo fails to load
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(28);
-      doc.setFont('helvetica', 'bold');
-      doc.text('WOODGREEN LANDSCAPING', pageWidth / 2, 25, { align: 'center' });
+      doc.setFont("helvetica", "bold");
+      doc.text("WOODGREEN LANDSCAPING", pageWidth / 2, 25, { align: "center" });
     }
 
     // Contact info in header
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com  •  Toronto, ON', pageWidth / 2, 48, { align: 'center' });
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      "(647) 327-8401  •  info@woodgreenlandscaping.com  •  Toronto, ON",
+      pageWidth / 2,
+      48,
+      { align: "center" },
+    );
 
     // Document title
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.setFontSize(24);
-    doc.setFont('helvetica', 'bold');
-    doc.text('SERVICE ESTIMATE', 20, 70);
+    doc.setFont("helvetica", "bold");
+    doc.text("SERVICE ESTIMATE", 20, 70);
 
     // Date and estimate number
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
-    const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
     const estimateNumber = `EST-${Date.now().toString().slice(-8)}`;
-    doc.text(`Date: ${currentDate}`, pageWidth - 20, 70, { align: 'right' });
-    doc.text(`Estimate #: ${estimateNumber}`, pageWidth - 20, 76, { align: 'right' });
+    doc.text(`Date: ${currentDate}`, pageWidth - 20, 70, { align: "right" });
+    doc.text(`Estimate #: ${estimateNumber}`, pageWidth - 20, 76, {
+      align: "right",
+    });
 
     // Services section
     let yPos = 95;
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
-    doc.text('SERVICES', 20, yPos);
+    doc.text("SERVICES", 20, yPos);
 
     // Table header
     yPos += 8;
     doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
-    doc.rect(20, yPos - 5, pageWidth - 40, 8, 'F');
+    doc.rect(20, yPos - 5, pageWidth - 40, 8, "F");
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Service Description', 25, yPos);
-    doc.text('Qty', pageWidth - 95, yPos);
-    doc.text('Unit', pageWidth - 70, yPos);
-    doc.text('Amount', pageWidth - 25, yPos, { align: 'right' });
+    doc.setFont("helvetica", "bold");
+    doc.text("Service Description", 25, yPos);
+    doc.text("Qty", pageWidth - 95, yPos);
+    doc.text("Unit", pageWidth - 70, yPos);
+    doc.text("Amount", pageWidth - 25, yPos, { align: "right" });
 
     // Service items
     yPos += 10;
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(60, 60, 60);
 
     services.forEach((service) => {
@@ -377,14 +458,16 @@ export function EstimateCalculator({
         serviceName += ` (${service.variant})`;
       }
       if (service.debrisCleanup) {
-        serviceName += ' + Debris Cleanup';
+        serviceName += " + Debris Cleanup";
       }
 
       doc.setFontSize(9);
       doc.text(serviceName, 25, yPos);
       doc.text(service.quantity.toString(), pageWidth - 95, yPos);
       doc.text(service.unit, pageWidth - 70, yPos);
-      doc.text(`$${price.toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+      doc.text(`$${price.toFixed(2)}`, pageWidth - 25, yPos, {
+        align: "right",
+      });
 
       yPos += 7;
     });
@@ -400,28 +483,28 @@ export function EstimateCalculator({
 
     // Total
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
-    doc.text('TOTAL ESTIMATE:', pageWidth - 80, yPos);
+    doc.text("TOTAL ESTIMATE:", pageWidth - 80, yPos);
     doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
-    doc.text(`$${total.toFixed(2)}`, pageWidth - 25, yPos, { align: 'right' });
+    doc.text(`$${total.toFixed(2)}`, pageWidth - 25, yPos, { align: "right" });
 
     // Notes section
     yPos += 20;
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
-    doc.text('IMPORTANT NOTES:', 20, yPos);
+    doc.text("IMPORTANT NOTES:", 20, yPos);
 
     yPos += 6;
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
     const notes = [
-      '• This estimate is valid for 30 days from the date of issue.',
-      '• Final pricing may vary based on site conditions and accessibility.',
-      '• All services are subject to our standard terms and conditions.',
-      '• Seasonal services are weather-dependent and scheduled accordingly.',
+      "• This estimate is valid for 30 days from the date of issue.",
+      "• Final pricing may vary based on site conditions and accessibility.",
+      "• All services are subject to our standard terms and conditions.",
+      "• Seasonal services are weather-dependent and scheduled accordingly.",
     ];
 
     notes.forEach((note) => {
@@ -432,24 +515,44 @@ export function EstimateCalculator({
     // Thank you section
     yPos += 10;
     doc.setFontSize(11);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
-    doc.text('Thank you for considering Woodgreen Landscaping!', pageWidth / 2, yPos, { align: 'center' });
+    doc.text(
+      "Thank you for considering Woodgreen Landscaping!",
+      pageWidth / 2,
+      yPos,
+      { align: "center" },
+    );
 
     yPos += 5;
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
-    doc.text('We look forward to bringing your landscape vision to life.', pageWidth / 2, yPos, { align: 'center' });
+    doc.text(
+      "We look forward to bringing your landscape vision to life.",
+      pageWidth / 2,
+      yPos,
+      { align: "center" },
+    );
 
     // Footer
     doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
-    doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
+    doc.rect(0, pageHeight - 20, pageWidth, 20, "F");
 
     doc.setFontSize(8);
     doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
-    doc.text('Woodgreen Landscaping  •  Toronto, ON', pageWidth / 2, pageHeight - 12, { align: 'center' });
-    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com', pageWidth / 2, pageHeight - 7, { align: 'center' });
+    doc.text(
+      "Woodgreen Landscaping  •  Toronto, ON",
+      pageWidth / 2,
+      pageHeight - 12,
+      { align: "center" },
+    );
+    doc.text(
+      "(647) 327-8401  •  info@woodgreenlandscaping.com",
+      pageWidth / 2,
+      pageHeight - 7,
+      { align: "center" },
+    );
 
     doc.save(`woodgreen-estimate-${estimateNumber}.pdf`);
   };
@@ -481,30 +584,51 @@ export function EstimateCalculator({
               }}
             />
           </div>
-          <p className="text-center text-xs">(647) 327-8401 • info@woodgreenlandscaping.com • Toronto, ON</p>
+          <p className="text-center text-xs">
+            (647) 327-8401 • info@woodgreenlandscaping.com • Toronto, ON
+          </p>
         </div>
 
         {/* Document info */}
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-[rgb(47,59,48)] mb-2">SERVICE ESTIMATE</h2>
+            <h2 className="text-2xl font-bold text-[rgb(47,59,48)] mb-2">
+              SERVICE ESTIMATE
+            </h2>
           </div>
           <div className="text-right text-sm text-gray-600">
-            <p>Date: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p>
+              Date:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
             <p>Estimate #: EST-{Date.now().toString().slice(-8)}</p>
           </div>
         </div>
 
         {/* Services table */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold text-[rgb(47,59,48)] mb-3">SERVICES</h3>
+          <h3 className="text-lg font-bold text-[rgb(47,59,48)] mb-3">
+            SERVICES
+          </h3>
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100 text-sm">
-                <th className="text-left p-2 border-b-2 border-[rgb(206,255,101)]">Service Description</th>
-                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">Qty</th>
-                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">Unit</th>
-                <th className="text-right p-2 border-b-2 border-[rgb(206,255,101)]">Amount</th>
+                <th className="text-left p-2 border-b-2 border-[rgb(206,255,101)]">
+                  Service Description
+                </th>
+                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">
+                  Qty
+                </th>
+                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">
+                  Unit
+                </th>
+                <th className="text-right p-2 border-b-2 border-[rgb(206,255,101)]">
+                  Amount
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -513,14 +637,18 @@ export function EstimateCalculator({
                 const price = calculateServicePrice(service);
                 let serviceName = service.name;
                 if (service.variant) serviceName += ` (${service.variant})`;
-                if (service.debrisCleanup) serviceName += ' + Debris Cleanup';
+                if (service.debrisCleanup) serviceName += " + Debris Cleanup";
 
                 return (
                   <tr key={index} className="border-b">
                     <td className="p-2 text-sm">{serviceName}</td>
-                    <td className="p-2 text-center text-sm">{service.quantity}</td>
+                    <td className="p-2 text-center text-sm">
+                      {service.quantity}
+                    </td>
                     <td className="p-2 text-center text-sm">{service.unit}</td>
-                    <td className="p-2 text-right text-sm">${price.toFixed(2)}</td>
+                    <td className="p-2 text-right text-sm">
+                      ${price.toFixed(2)}
+                    </td>
                   </tr>
                 );
               })}
@@ -532,27 +660,47 @@ export function EstimateCalculator({
         <div className="flex justify-end mb-8">
           <div className="text-right">
             <div className="flex justify-between gap-8 items-center border-t-2 border-[rgb(206,255,101)] pt-3">
-              <span className="text-lg font-bold text-[rgb(47,59,48)]">TOTAL ESTIMATE:</span>
-              <span className="text-2xl font-bold text-[rgb(206,255,101)]">${calculateTotal().toFixed(2)}</span>
+              <span className="text-lg font-bold text-[rgb(47,59,48)]">
+                TOTAL ESTIMATE:
+              </span>
+              <span className="text-2xl font-bold text-[rgb(206,255,101)]">
+                ${calculateTotal().toFixed(2)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Notes */}
         <div className="mb-6">
-          <h4 className="text-sm font-bold text-[rgb(47,59,48)] mb-2">IMPORTANT NOTES:</h4>
+          <h4 className="text-sm font-bold text-[rgb(47,59,48)] mb-2">
+            IMPORTANT NOTES:
+          </h4>
           <ul className="text-xs text-gray-600 space-y-1">
-            <li>• This estimate is valid for 30 days from the date of issue.</li>
-            <li>• Final pricing may vary based on site conditions and accessibility.</li>
-            <li>• All services are subject to our standard terms and conditions.</li>
-            <li>• Seasonal services are weather-dependent and scheduled accordingly.</li>
+            <li>
+              • This estimate is valid for 30 days from the date of issue.
+            </li>
+            <li>
+              • Final pricing may vary based on site conditions and
+              accessibility.
+            </li>
+            <li>
+              • All services are subject to our standard terms and conditions.
+            </li>
+            <li>
+              • Seasonal services are weather-dependent and scheduled
+              accordingly.
+            </li>
           </ul>
         </div>
 
         {/* Thank you */}
         <div className="text-center mb-8">
-          <p className="text-base font-bold text-[rgb(206,255,101)] mb-1">Thank you for considering Woodgreen Landscaping!</p>
-          <p className="text-sm text-gray-600">We look forward to bringing your landscape vision to life.</p>
+          <p className="text-base font-bold text-[rgb(206,255,101)] mb-1">
+            Thank you for considering Woodgreen Landscaping!
+          </p>
+          <p className="text-sm text-gray-600">
+            We look forward to bringing your landscape vision to life.
+          </p>
         </div>
 
         {/* Footer */}
@@ -563,199 +711,268 @@ export function EstimateCalculator({
       </div>
 
       <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm no-print">
-      <div
-        className="absolute inset-0"
-        onClick={onClose}
-        aria-label="Close modal"
-      />
-      <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto bg-white dark:bg-[rgb(47,59,48)] border-nature-200 dark:border-nature-900">
-      <CardHeader className="relative bg-gradient-to-br from-nature-50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)] border-b border-nature-200 dark:border-nature-900">
-        <div className="flex items-center justify-between gap-4">
-          <CardTitle className="text-2xl font-bold text-nature-800 dark:text-nature-100">
-            Estimate Calculator
-          </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button onClick={handlePrint} variant="ghost" size="sm" className="text-nature-600 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-300 hover:bg-nature-100 dark:hover:bg-nature-900/50">
-              <Printer className="w-4 h-4" />
-            </Button>
-            <Button onClick={handleDownload} variant="ghost" size="sm" className="text-nature-600 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-300 hover:bg-nature-100 dark:hover:bg-nature-900/50">
-              <Download className="w-4 h-4" />
-            </Button>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              size="icon"
-              className="text-nature-500 hover:text-nature-700 dark:text-nature-400 dark:hover:text-nature-200 hover:bg-nature-100 dark:hover:bg-nature-900/50"
-              aria-label="Close"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="bg-gradient-to-b from-white to-nature-50/30 dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
-        {services.map((service, index) => (
-          <div key={index} className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[rgb(47,59,48)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <Label htmlFor={`service-${index}`} className="text-nature-700 dark:text-nature-300 font-semibold">Service</Label>
-                <Select
-                  value={service.name}
-                  onValueChange={(value) => updateService(index, "name", value)}
+        <div
+          className="absolute inset-0"
+          onClick={onClose}
+          aria-label="Close modal"
+        />
+        <Card className="w-full max-w-2xl relative z-10 max-h-[90vh] overflow-y-auto bg-white dark:bg-[rgb(47,59,48)] border-nature-200 dark:border-nature-900">
+          <CardHeader className="relative bg-gradient-to-br from-nature-50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
+            <div className="flex items-center justify-between gap-4">
+              <CardTitle className="text-2xl font-bold text-nature-800 dark:text-nature-100">
+                Estimate Calculator
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handlePrint}
+                  variant="ghost"
+                  size="sm"
+                  className="text-[rgb(47,59,48)] hover:text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)] dark:hover:text-[rgb(206,255,101)] hover:bg-nature-100 dark:hover:bg-nature-900/50"
                 >
-                  <SelectTrigger id={`service-${index}`} className="border-2 border-[rgb(206,255,101)] focus:ring-[rgb(206,255,101)] focus:border-[rgb(206,255,101)] bg-white dark:bg-[rgb(47,59,48)]">
-                    <SelectValue placeholder="Please select a service" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.keys(serviceDetails).filter(key => key !== "").map(serviceName => {
-                      const details = serviceDetails[serviceName as ServiceType];
-                      return (
-                      <SelectItem key={serviceName} value={serviceName} disabled={details.consultationOnly || details.comingSoon}>
-                        {details.consultationOnly ? (
-                          <span className="line-through text-gray-500">{`${serviceName} (Consultation required)`}</span>
-                        ) : details.comingSoon ? (
-                          <span className="text-gray-500">{`${serviceName} (Coming Soon)`}</span>
-                        ) : (
-                          serviceName
-                        )}
-                      </SelectItem>
-                      )
-                    })}
-                  </SelectContent>
-                </Select>
+                  <Printer className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={handleDownload}
+                  variant="ghost"
+                  size="sm"
+                  className="text-[rgb(47,59,48)] hover:text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)] dark:hover:text-[rgb(206,255,101)] hover:bg-nature-100 dark:hover:bg-nature-900/50"
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={onClose}
+                  variant="ghost"
+                  size="icon"
+                  className="text-[rgb(47,59,48)] hover:text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)] dark:hover:text-[rgb(206,255,101)] hover:bg-nature-100 dark:hover:bg-nature-900/50"
+                  aria-label="Close"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-              {service.name && serviceDetails[service.name]?.variants && (
-                <div>
-                  <Label htmlFor={`variant-${index}`}>Options</Label>
-                  <Select
-                    value={service.variant}
-                    onValueChange={(value) =>
-                      updateService(index, "variant", value)
-                    }
-                  >
-                    <SelectTrigger id={`variant-${index}`} className="border-gray-300 dark:border-gray-600">
-                      <SelectValue placeholder="Select an option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.keys(serviceDetails[service.name].variants!).map(variant => (
-                        <SelectItem key={variant} value={variant} disabled={variant.includes('+')}>
-                          {variant.includes('+') ? `${variant} (Consultation required)` : variant}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              {service.name && (
-                <div>
-                  <Label
-                    htmlFor={`quantity-${index}`}
-                  >{`Quantity (${service.unit})`}</Label>
-                  <Input
-                    id={`quantity-${index}`}
-                    type="number"
-                    value={service.quantity}
-                    onChange={(e) => {
-                      const quantity = parseInt(e.target.value, 10) || 0;
-                      updateService(index, "quantity", quantity);
-                    }}
-                    className="border-gray-300 dark:border-gray-600"
-                  />
-                </div>
-              )}
-              {service.name && serviceDetails[service.name]?.hasDebrisCleanup && (
-                <div className="flex items-center pt-6 space-x-2">
-                  <Input
-                    type="checkbox"
-                    id={`debris-${index}`}
-                    checked={!!service.debrisCleanup}
-                    onChange={(e) =>
-                      updateService(index, "debrisCleanup", e.target.checked)
-                    }
-                    className="h-4 w-4"
-                  />
-                  <Label htmlFor={`debris-${index}`} className="text-sm font-medium">Debris Cleanup (+20%)</Label>
-                </div>
-              )}
             </div>
-            <div className="flex justify-between items-center">
-              <div className="text-lg font-semibold">
-                Price: ${calculateServicePrice(service).toFixed(2)}
-                {(() => {
-                  if (!service.name || !serviceDetails[service.name]) {
-                    return null;
-                  }
-
-                  const details = serviceDetails[service.name];
-                  let originalPrice = 0;
-                  if (details.variants && service.variant) {
-                    originalPrice = details.variants[service.variant]?.originalPrice || 0;
-                  } else if (details.originalPrice) {
-                    originalPrice = details.originalPrice;
-                  }
-
-                  if (originalPrice > 0 && isFinite(originalPrice)) {
-                    return (
-                      <span className="text-sm text-gray-500 line-through ml-2">
-                        ${(originalPrice * service.quantity).toFixed(2)}
-                      </span>
-                    );
-                  }
-                  return null;
-                })()}
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => removeService(index)}
-                className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
-                aria-label={`Remove ${service.name}`}
+          </CardHeader>
+          <CardContent className="bg-gradient-to-b from-white to-nature-50/30 dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[rgb(47,59,48)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]"
               >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Remove
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label
+                      htmlFor={`service-${index}`}
+                      className="text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)] font-semibold"
+                    >
+                      Service
+                    </Label>
+                    <Select
+                      value={service.name}
+                      onValueChange={(value) =>
+                        updateService(index, "name", value)
+                      }
+                    >
+                      <SelectTrigger
+                        id={`service-${index}`}
+                        className="border-2 border-[rgb(206,255,101)] focus:ring-[rgb(206,255,101)] focus:border-[rgb(206,255,101)] bg-white dark:bg-[rgb(47,59,48)]"
+                      >
+                        <SelectValue placeholder="Please select a service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.keys(serviceDetails)
+                          .filter((key) => key !== "")
+                          .map((serviceName) => {
+                            const details =
+                              serviceDetails[serviceName as ServiceType];
+                            return (
+                              <SelectItem
+                                key={serviceName}
+                                value={serviceName}
+                                disabled={
+                                  details.consultationOnly || details.comingSoon
+                                }
+                              >
+                                {details.consultationOnly ? (
+                                  <span className="line-through text-gray-500">{`${serviceName} (Consultation required)`}</span>
+                                ) : details.comingSoon ? (
+                                  <span className="text-gray-500">{`${serviceName} (Coming Soon)`}</span>
+                                ) : (
+                                  serviceName
+                                )}
+                              </SelectItem>
+                            );
+                          })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {service.name && serviceDetails[service.name]?.variants && (
+                    <div>
+                      <Label htmlFor={`variant-${index}`}>Options</Label>
+                      <Select
+                        value={service.variant}
+                        onValueChange={(value) =>
+                          updateService(index, "variant", value)
+                        }
+                      >
+                        <SelectTrigger
+                          id={`variant-${index}`}
+                          className="border-gray-300 dark:border-gray-600"
+                        >
+                          <SelectValue placeholder="Select an option" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.keys(
+                            serviceDetails[service.name].variants!,
+                          ).map((variant) => (
+                            <SelectItem
+                              key={variant}
+                              value={variant}
+                              disabled={variant.includes("+")}
+                            >
+                              {variant.includes("+")
+                                ? `${variant} (Consultation required)`
+                                : variant}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  {service.name && (
+                    <div>
+                      <Label
+                        htmlFor={`quantity-${index}`}
+                      >{`Quantity (${service.unit})`}</Label>
+                      <Input
+                        id={`quantity-${index}`}
+                        type="number"
+                        value={service.quantity}
+                        onChange={(e) => {
+                          const quantity = parseInt(e.target.value, 10) || 0;
+                          updateService(index, "quantity", quantity);
+                        }}
+                        className="border-gray-300 dark:border-gray-600"
+                      />
+                    </div>
+                  )}
+                  {service.name &&
+                    serviceDetails[service.name]?.hasDebrisCleanup && (
+                      <div className="flex items-center pt-6 space-x-2">
+                        <Input
+                          type="checkbox"
+                          id={`debris-${index}`}
+                          checked={!!service.debrisCleanup}
+                          onChange={(e) =>
+                            updateService(
+                              index,
+                              "debrisCleanup",
+                              e.target.checked,
+                            )
+                          }
+                          className="h-4 w-4"
+                        />
+                        <Label
+                          htmlFor={`debris-${index}`}
+                          className="text-sm font-medium"
+                        >
+                          Debris Cleanup (+20%)
+                        </Label>
+                      </div>
+                    )}
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="text-lg font-semibold">
+                    Price: ${calculateServicePrice(service).toFixed(2)}
+                    {(() => {
+                      if (!service.name || !serviceDetails[service.name]) {
+                        return null;
+                      }
+
+                      const details = serviceDetails[service.name];
+                      let originalPrice = 0;
+                      if (details.variants && service.variant) {
+                        originalPrice =
+                          details.variants[service.variant]?.originalPrice || 0;
+                      } else if (details.originalPrice) {
+                        originalPrice = details.originalPrice;
+                      }
+
+                      if (originalPrice > 0 && isFinite(originalPrice)) {
+                        return (
+                          <span className="text-sm text-gray-500 line-through ml-2">
+                            ${(originalPrice * service.quantity).toFixed(2)}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeService(index)}
+                    className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                    aria-label={`Remove ${service.name}`}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              onClick={addService}
+              size="sm"
+              className="mt-4 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-2px_-2px_5px_rgba(30,60,30,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all"
+            >
+              + Add Service
+            </Button>
+          </CardContent>
+          <CardFooter className="flex flex-col items-stretch bg-gradient-to-t from-nature-50/50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)]">
+            <div className="text-2xl font-bold mb-4 text-nature-800 dark:text-nature-100 p-4 bg-white dark:bg-[rgb(47,59,48)] rounded-lg shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
+              Total Estimate:{" "}
+              <span className="text-[rgb(47,59,48)] dark:text-[rgb(206,255,101)]">
+                ${calculateTotal().toFixed(2)}
+              </span>
+            </div>
+
+            {/* Primary Actions */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={() => {
+                  const validServices = services.filter(
+                    (s): s is Service & { name: Exclude<ServiceType, ""> } =>
+                      s.name !== "",
+                  );
+                  const estimatedHours =
+                    calculateTotalEstimatedHours(validServices);
+                  onBookService(validServices, estimatedHours);
+                }}
+                variant="default"
+                className="flex-1 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Book Service Now
+              </Button>
+              <Button
+                onClick={() => {
+                  const validServices = services.filter(
+                    (s): s is Service & { name: Exclude<ServiceType, ""> } =>
+                      s.name !== "",
+                  );
+                  const estimatedHours =
+                    calculateTotalEstimatedHours(validServices);
+                  onScheduleConsultation(validServices, estimatedHours);
+                }}
+                variant="outline"
+                className="flex-1 border-2 border-[rgb(206,255,101)] text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Schedule Consultation
               </Button>
             </div>
-          </div>
-        ))}
-        <Button onClick={addService} size="sm" className="mt-4 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-2px_-2px_5px_rgba(30,60,30,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all">
-          + Add Service
-        </Button>
-      </CardContent>
-      <CardFooter className="flex flex-col items-stretch bg-gradient-to-t from-nature-50/50 to-white dark:from-[rgb(47,59,48)] dark:to-[rgb(47,59,48)] border-t border-nature-200 dark:border-nature-900">
-        <div className="text-2xl font-bold mb-4 text-nature-800 dark:text-nature-100 p-4 bg-white dark:bg-[rgb(47,59,48)] rounded-lg shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
-          Total Estimate: <span className="text-nature-600 dark:text-nature-400">${calculateTotal().toFixed(2)}</span>
-        </div>
-
-        {/* Primary Actions */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Button
-            onClick={() => {
-              const validServices = services.filter((s): s is Service & { name: Exclude<ServiceType, ""> } => s.name !== "");
-              const estimatedHours = calculateTotalEstimatedHours(validServices);
-              onBookService(validServices, estimatedHours);
-            }}
-            variant="default"
-            className="flex-1 bg-[rgb(206,255,101)] hover:bg-[rgb(186,235,81)] text-[rgb(47,59,48)] shadow-[4px_4px_10px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_10px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[2px_2px_8px_rgba(0,0,0,0.2)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.2)] transition-all font-semibold"
-          >
-            <Calendar className="w-4 h-4 mr-2" />
-            Book Service Now
-          </Button>
-          <Button
-            onClick={() => {
-              const validServices = services.filter((s): s is Service & { name: Exclude<ServiceType, ""> } => s.name !== "");
-              const estimatedHours = calculateTotalEstimatedHours(validServices);
-              onScheduleConsultation(validServices, estimatedHours);
-            }}
-            variant="outline"
-            className="flex-1 border-2 border-[rgb(206,255,101)] text-[rgb(206,255,101)] dark:text-[rgb(206,255,101)] hover:bg-nature-50 dark:hover:bg-nature-900/30 shadow-[2px_2px_6px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_6px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(30,60,30,0.2)] hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.1)] transition-all font-semibold"
-          >
-            <Calendar className="w-4 h-4 mr-2" />
-            Schedule Consultation
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
-    </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
