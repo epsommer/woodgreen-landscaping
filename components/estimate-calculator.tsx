@@ -598,12 +598,12 @@ export function EstimateCalculator({
           <div key={index} className="mb-6 p-4 border border-nature-200 dark:border-nature-800 rounded-lg bg-white dark:bg-[#152515] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.7)] dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(30,60,30,0.2)]">
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <Label htmlFor={`service-${index}`}>Service</Label>
+                <Label htmlFor={`service-${index}`} className="text-nature-700 dark:text-nature-300 font-semibold">Service</Label>
                 <Select
                   value={service.name}
                   onValueChange={(value) => updateService(index, "name", value)}
                 >
-                  <SelectTrigger id={`service-${index}`}>
+                  <SelectTrigger id={`service-${index}`} className="border-2 border-nature-500 focus:ring-nature-500 focus:border-nature-600 bg-white dark:bg-[#152515]">
                     <SelectValue placeholder="Please select a service" />
                   </SelectTrigger>
                   <SelectContent>
@@ -633,7 +633,7 @@ export function EstimateCalculator({
                       updateService(index, "variant", value)
                     }
                   >
-                    <SelectTrigger id={`variant-${index}`}>
+                    <SelectTrigger id={`variant-${index}`} className="border-gray-300 dark:border-gray-600">
                       <SelectValue placeholder="Select an option" />
                     </SelectTrigger>
                     <SelectContent>
@@ -659,6 +659,7 @@ export function EstimateCalculator({
                       const quantity = parseInt(e.target.value, 10) || 0;
                       updateService(index, "quantity", quantity);
                     }}
+                    className="border-gray-300 dark:border-gray-600"
                   />
                 </div>
               )}
