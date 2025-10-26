@@ -354,18 +354,25 @@ export function Scheduler({
               </h3>
               <ul className="space-y-1 text-sm">
                 {selectedServices.map((svc, idx) => (
-                  <li key={idx} className="flex justify-between">
+                  <li key={idx} className={bookingType === "service" ? "flex justify-between" : ""}>
                     <span>
                       {svc.name}
                       {svc.variant && ` (${svc.variant})`}
                       {svc.debrisCleanup && " + Debris Cleanup"}
                     </span>
-                    <span className="text-muted-foreground">
-                      {svc.quantity} {svc.unit}
-                    </span>
+                    {bookingType === "service" && (
+                      <span className="text-muted-foreground">
+                        {svc.quantity} {svc.unit}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
+              {bookingType === "consultation" && (
+                <p className="text-xs text-muted-foreground mt-3">
+                  We&apos;ll discuss these services during your consultation to provide accurate pricing and recommendations.
+                </p>
+              )}
               {bookingType === "service" && estimatedHours > 0 && (
                 <div className="mt-3 pt-3 border-t border-nature-200 dark:border-nature-700">
                   <p className="font-semibold flex items-center gap-2">
