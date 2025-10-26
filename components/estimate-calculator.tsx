@@ -280,7 +280,7 @@ export function EstimateCalculator({
     window.print();
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -291,29 +291,45 @@ export function EstimateCalculator({
     const lightGray = [243, 244, 246];
     const darkGray = [75, 85, 99];
 
-    // Header background
+    // Header background - increased height for logo
     doc.setFillColor(brandGreen[0], brandGreen[1], brandGreen[2]);
-    doc.rect(0, 0, pageWidth, 45, 'F');
+    doc.rect(0, 0, pageWidth, 55, 'F');
 
-    // Company name
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(28);
-    doc.setFont('helvetica', 'bold');
-    doc.text('WOODGREEN', pageWidth / 2, 20, { align: 'center' });
+    // Add logo
+    try {
+      // Load the logo from the public folder
+      const logoResponse = await fetch('/woodgreen-landscaping-logo-palmette-inverse.svg');
+      const logoSvg = await logoResponse.text();
 
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text('LANDSCAPING', pageWidth / 2, 30, { align: 'center' });
+      // Convert SVG to base64 data URL for embedding
+      const logoBase64 = btoa(unescape(encodeURIComponent(logoSvg)));
+      const logoDataUrl = `data:image/svg+xml;base64,${logoBase64}`;
+
+      // Add logo to PDF (centered, 30mm width)
+      const logoWidth = 30;
+      const logoHeight = 30;
+      const logoX = (pageWidth - logoWidth) / 2;
+      doc.addImage(logoDataUrl, 'SVG', logoX, 8, logoWidth, logoHeight);
+    } catch (error) {
+      console.error('Failed to load logo:', error);
+      // Fallback to text if logo fails to load
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(28);
+      doc.setFont('helvetica', 'bold');
+      doc.text('WOODGREEN LANDSCAPING', pageWidth / 2, 25, { align: 'center' });
+    }
 
     // Contact info in header
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(8);
-    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com  •  Toronto, ON', pageWidth / 2, 38, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.text('(647) 327-8401  •  info@woodgreenlandscaping.com  •  Toronto, ON', pageWidth / 2, 48, { align: 'center' });
 
     // Document title
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('SERVICE ESTIMATE', 20, 60);
+    doc.text('SERVICE ESTIMATE', 20, 70);
 
     // Date and estimate number
     doc.setFontSize(10);
@@ -321,11 +337,11 @@ export function EstimateCalculator({
     doc.setTextColor(darkGray[0], darkGray[1], darkGray[2]);
     const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const estimateNumber = `EST-${Date.now().toString().slice(-8)}`;
-    doc.text(`Date: ${currentDate}`, pageWidth - 20, 60, { align: 'right' });
-    doc.text(`Estimate #: ${estimateNumber}`, pageWidth - 20, 66, { align: 'right' });
+    doc.text(`Date: ${currentDate}`, pageWidth - 20, 70, { align: 'right' });
+    doc.text(`Estimate #: ${estimateNumber}`, pageWidth - 20, 76, { align: 'right' });
 
     // Services section
-    let yPos = 85;
+    let yPos = 95;
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);

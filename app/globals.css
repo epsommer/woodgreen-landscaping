@@ -150,6 +150,7 @@ body {
     top: 0;
     width: 100%;
     padding: 40px;
+    background-color: white !important;
   }
   .no-print {
     display: none !important;
@@ -159,5 +160,12 @@ body {
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  /* Override dark mode styles for print */
+  body,
+  html {
+    background-color: white !important;
+    color: black !important;
   }
 }
