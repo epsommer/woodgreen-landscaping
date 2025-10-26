@@ -354,13 +354,13 @@ export function EstimateCalculator({
     const pageHeight = doc.internal.pageSize.getHeight();
 
     // Brand colors
-    const brandGreen = [206, 255, 101]; // rgb(206, 255, 101)
-    const darkGreen = [47, 59, 48]; // rgb(47, 59, 48)
+    const darkGreen = [47, 59, 48]; // rgb(47, 59, 48) - header background
+    const lightText = [255, 255, 255]; // white text for header
     const lightGray = [243, 244, 246];
     const darkGray = [75, 85, 99];
 
     // Header background - increased height for logo
-    doc.setFillColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.setFillColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.rect(0, 0, pageWidth, 55, "F");
 
     // Add logo
@@ -570,7 +570,7 @@ export function EstimateCalculator({
       {/* Print-only branded estimate */}
       <div className="hidden print:block print-estimate">
         {/* Header */}
-        <div className="bg-[rgb(206,255,101)] text-[rgb(47,59,48)] p-6 mb-6 -mx-10 -mt-10">
+        <div className="bg-[rgb(47,59,48)] text-white p-6 mb-6 -mx-10 -mt-10">
           <div className="flex items-center justify-center mb-3">
             <Image
               src="/woodgreen-landscaping-logo-palmette-inverse.svg"
