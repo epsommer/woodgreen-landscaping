@@ -33,8 +33,8 @@ const TestimonialSubmitPage = () => {
     setIsSubmitting(true)
 
     try {
-      // Submit to CRM API (cross-domain)
-      const response = await fetch('https://evangelosommer.com/api/testimonials/submit', {
+      // Submit to local API route (which proxies to CRM API to avoid CORS)
+      const response = await fetch('/api/testimonials/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
