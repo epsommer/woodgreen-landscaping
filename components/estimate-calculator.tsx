@@ -475,7 +475,7 @@ export function EstimateCalculator({
 
     // Subtotal and total section
     yPos += 5;
-    doc.setDrawColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.setDrawColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.setLineWidth(0.5);
     doc.line(20, yPos, pageWidth - 20, yPos);
 
@@ -487,7 +487,7 @@ export function EstimateCalculator({
     doc.setFont("helvetica", "bold");
     doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.text("TOTAL ESTIMATE:", pageWidth - 80, yPos);
-    doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.text(`$${total.toFixed(2)}`, pageWidth - 25, yPos, { align: "right" });
 
     // Notes section
@@ -517,7 +517,7 @@ export function EstimateCalculator({
     yPos += 10;
     doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(brandGreen[0], brandGreen[1], brandGreen[2]);
+    doc.setTextColor(darkGreen[0], darkGreen[1], darkGreen[2]);
     doc.text(
       "Thank you for considering Woodgreen Landscaping!",
       pageWidth / 2,
@@ -618,16 +618,16 @@ export function EstimateCalculator({
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100 text-sm">
-                <th className="text-left p-2 border-b-2 border-[rgb(206,255,101)]">
+                <th className="text-left p-2 border-b-2 border-[rgb(47,59,48)]">
                   Service Description
                 </th>
-                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">
+                <th className="text-center p-2 border-b-2 border-[rgb(47,59,48)]">
                   Qty
                 </th>
-                <th className="text-center p-2 border-b-2 border-[rgb(206,255,101)]">
+                <th className="text-center p-2 border-b-2 border-[rgb(47,59,48)]">
                   Unit
                 </th>
-                <th className="text-right p-2 border-b-2 border-[rgb(206,255,101)]">
+                <th className="text-right p-2 border-b-2 border-[rgb(47,59,48)]">
                   Amount
                 </th>
               </tr>
@@ -660,11 +660,11 @@ export function EstimateCalculator({
         {/* Total */}
         <div className="flex justify-end mb-8">
           <div className="text-right">
-            <div className="flex justify-between gap-8 items-center border-t-2 border-[rgb(206,255,101)] pt-3">
+            <div className="flex justify-between gap-8 items-center border-t-2 border-[rgb(47,59,48)] pt-3">
               <span className="text-lg font-bold text-[rgb(47,59,48)]">
                 TOTAL ESTIMATE:
               </span>
-              <span className="text-2xl font-bold text-[rgb(206,255,101)]">
+              <span className="text-2xl font-bold text-[rgb(47,59,48)]">
                 ${calculateTotal().toFixed(2)}
               </span>
             </div>
@@ -696,7 +696,7 @@ export function EstimateCalculator({
 
         {/* Thank you */}
         <div className="text-center mb-8">
-          <p className="text-base font-bold text-[rgb(206,255,101)] mb-1">
+          <p className="text-base font-bold text-[rgb(47,59,48)] mb-1">
             Thank you for considering Woodgreen Landscaping!
           </p>
           <p className="text-sm text-gray-600">
