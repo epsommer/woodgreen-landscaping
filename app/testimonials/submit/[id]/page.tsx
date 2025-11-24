@@ -107,18 +107,9 @@ const TestimonialSubmitPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl border border-gray-200">
-        {/* Header with Woodgreen branding */}
+      <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl border border-gray-200 relative">
+        {/* Header */}
         <div className="bg-emerald-600 p-8 rounded-t-lg">
-          <div className="flex items-center justify-center mb-4">
-            <Image
-              src="/woodgreen-landscaping-logo.svg"
-              alt="Woodgreen Landscaping"
-              width={200}
-              height={60}
-              className="brightness-0 invert"
-            />
-          </div>
           <h1 className="text-2xl font-bold text-white uppercase tracking-wide text-center">
             Share Your Experience
           </h1>
@@ -211,10 +202,20 @@ const TestimonialSubmitPage = () => {
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-8 py-4 rounded-b-lg border-t border-gray-200">
+        <div className="bg-gray-50 px-8 py-4 rounded-b-lg border-t border-gray-200 relative">
           <p className="text-center text-sm text-gray-600">
             Thank you for choosing <strong className="text-emerald-600">Woodgreen Landscaping</strong>
           </p>
+          {/* Discrete logo in bottom right */}
+          <div className="absolute bottom-2 right-4">
+            <Image
+              src="/woodgreen-landscaping-logo-palmette.svg"
+              alt="Woodgreen Landscaping"
+              width={40}
+              height={40}
+              className="opacity-30"
+            />
+          </div>
         </div>
       </div>
     </div>
