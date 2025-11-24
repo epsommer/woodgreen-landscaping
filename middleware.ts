@@ -42,7 +42,7 @@ export function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline' https://use.typekit.net https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' data: https: https://use.typekit.net blob:",
-      "connect-src 'self' https://api.web3forms.com https://va.vercel-scripts.com https://fonts.gstatic.com https://cdn.jsdelivr.net",
+      "connect-src 'self' https://api.web3forms.com https://va.vercel-scripts.com https://fonts.gstatic.com https://cdn.jsdelivr.net https://evangelosommer.com",
       "worker-src 'self' blob:",
       "frame-ancestors 'none'",
       "base-uri 'self'",
