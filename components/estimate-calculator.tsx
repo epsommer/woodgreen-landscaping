@@ -694,7 +694,7 @@ export function EstimateCalculator({
         </div>
 
         {/* Thank you */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-24">
           <p className="text-base font-bold text-[rgb(47,59,48)] mb-1">
             Thank you for considering Woodgreen Landscaping!
           </p>
