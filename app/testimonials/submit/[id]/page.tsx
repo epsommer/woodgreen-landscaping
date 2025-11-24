@@ -207,12 +207,12 @@ const TestimonialSubmitPage = () => {
             Thank you for choosing <strong className="text-emerald-600">Woodgreen Landscaping</strong>
           </p>
           {/* Discrete logo in bottom right */}
-          <div className="absolute bottom-2 right-4">
+          <div className="absolute top-1/2 -translate-y-1/2 right-4">
             <Image
               src="/woodgreen-landscaping-logo-palmette.svg"
               alt="Woodgreen Landscaping"
-              width={40}
-              height={40}
+              width={60}
+              height={60}
               className="opacity-30"
             />
           </div>
