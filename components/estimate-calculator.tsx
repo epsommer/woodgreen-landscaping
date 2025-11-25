@@ -365,21 +365,24 @@ export function EstimateCalculator({
 
     // Add logo
     try {
-      // Load the logo from the public folder
+      // Load the logo PNG (optimized for PDF)
       const logoResponse = await fetch(
-        "/woodgreen-landscaping-logo-palmette-inverse.svg",
+        "/woodgreen-landscaping-palmette-inverse.png",
       );
-      const logoSvg = await logoResponse.text();
+      const logoBlob = await logoResponse.blob();
 
-      // Convert SVG to base64 data URL for embedding
-      const logoBase64 = btoa(unescape(encodeURIComponent(logoSvg)));
-      const logoDataUrl = `data:image/svg+xml;base64,${logoBase64}`;
+      // Convert blob to base64 data URL
+      const logoDataUrl = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(logoBlob);
+      });
 
-      // Add logo to PDF (centered, 30mm width)
-      const logoWidth = 30;
-      const logoHeight = 30;
+      // Add logo to PDF (centered, 2:1 aspect ratio)
+      const logoWidth = 50;
+      const logoHeight = 25;
       const logoX = (pageWidth - logoWidth) / 2;
-      doc.addImage(logoDataUrl, "SVG", logoX, 8, logoWidth, logoHeight);
+      doc.addImage(logoDataUrl, "PNG", logoX, 15, logoWidth, logoHeight);
     } catch (error) {
       console.error("Failed to load logo:", error);
       // Fallback to text if logo fails to load

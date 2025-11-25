@@ -391,9 +391,9 @@ export function Home() {
               {whyChooseUs.map((reason, index) => (
                 <div key={index} className="contents md:block">
                   <Card
-                    className={`bg-[#F0F4F0] dark:bg-[#4A5D4C] border-2 text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
+                    className={`bg-[#CEFF65] dark:bg-[#4A5D4C] border-2 text-center transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
                       expandedReason === index
-                        ? "border-[#CEFF65] shadow-xl"
+                        ? "border-[#2F3B30] shadow-xl"
                         : "border-transparent"
                     }`}
                     onClick={() =>
@@ -415,8 +415,8 @@ export function Home() {
                         size="sm"
                         className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
                           expandedReason === index
-                            ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
-                            : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
+                            ? "bg-[#2F3B30] text-white font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
+                            : "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
                         }`}
                       >
                         {expandedReason === index ? (
@@ -525,9 +525,9 @@ export function Home() {
               {featuredServices.map((service, index) => (
                 <React.Fragment key={index}>
                   <Card
-                    className={`bg-[#F0F4F0] dark:bg-[#4A5D4C] border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
+                    className={`bg-[#CEFF65] dark:bg-[#4A5D4C] border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer group overflow-hidden ${
                       expandedService === index
-                        ? "border-[#CEFF65] shadow-xl"
+                        ? "border-[#2F3B30] shadow-xl"
                         : "border-transparent"
                     }`}
                     onClick={() =>
@@ -549,8 +549,8 @@ export function Home() {
                           size="sm"
                           className={`transition-all duration-200 ease-in-out border-0 focus:outline-none ${
                             expandedService === index
-                              ? "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
-                              : "bg-[#2F3B30] text-white font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
+                              ? "bg-[#2F3B30] text-white font-semibold shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] hover:shadow-[inset_2px_2px_3px_rgba(186,190,204,0.5),inset_-2px_-2px_3px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#2F3B30]"
+                              : "bg-[#CEFF65] text-[#2F3B30] font-semibold shadow-[-2px_-2px_5px_rgba(255,255,255,0.8),2px_2px_5px_rgba(186,190,204,0.4)] hover:shadow-[-1px_-1px_3px_rgba(255,255,255,0.8),1px_1px_3px_rgba(186,190,204,0.4)] active:shadow-[inset_1px_1px_2px_rgba(186,190,204,0.5),inset_-1px_-1px_2px_rgba(255,255,255,0.8)] dark:shadow-none dark:bg-[#CEFF65]"
                           }`}
                         >
                           {expandedService === index ? (

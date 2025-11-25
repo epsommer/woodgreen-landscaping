@@ -535,15 +535,15 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="backdrop-blur-md bg-black/30 rounded-2xl p-6 md:p-8 border border-white/20"
+          className="backdrop-blur-md bg-white/90 dark:bg-black/30 rounded-2xl p-6 md:p-8 border border-white/30 dark:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.1)] dark:shadow-none"
         >
           {/* Mobile-optimized heading - larger, bolder */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-5 bg-gradient-to-r from-nature-400 to-nature-600 bg-clip-text text-transparent text-center leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-5 text-[#2F3B30] dark:text-white text-center leading-tight [text-shadow:2px_2px_4px_rgba(255,255,255,0.8)] dark:[text-shadow:none]">
             Transform Your Outdoor Space
           </h1>
 
           {/* Mobile-optimized subtext - increased readability */}
-          <p className="text-base md:text-lg lg:text-xl text-white/90 mb-6 md:mb-7 text-center leading-relaxed">
+          <p className="text-base md:text-lg lg:text-xl text-[#4A5D4C] dark:text-white/90 mb-6 md:mb-7 text-center leading-relaxed">
             Professional landscaping & snow removal services for the Greater Toronto Area
           </p>
 
@@ -553,7 +553,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <Button
               size="lg"
               onClick={onGetStarted}
-              className="w-full sm:flex-1 bg-nature-500 hover:bg-nature-600 text-white px-6 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl min-h-[56px] md:min-h-[60px]"
+              className="w-full sm:flex-1 bg-[#CEFF65] hover:bg-[#B8E850] text-[#2F3B30] px-6 py-6 md:py-7 text-base md:text-lg font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-[-4px_-4px_10px_rgba(255,255,255,0.8),4px_4px_10px_rgba(186,190,204,0.4)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,0.8),2px_2px_6px_rgba(186,190,204,0.4)] active:shadow-[inset_2px_2px_5px_rgba(186,190,204,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:shadow-[0_4px_20px_rgba(206,255,101,0.4)] dark:hover:shadow-[0_2px_12px_rgba(206,255,101,0.3)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3)] min-h-[56px] md:min-h-[60px]"
             >
               Get Free Quote
             </Button>
@@ -562,7 +562,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
             <Button
               size="lg"
               asChild
-              className="w-full sm:flex-1 bg-white/90 hover:bg-white text-nature-700 px-6 py-6 md:py-7 text-base md:text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl min-h-[56px] md:min-h-[60px]"
+              className="w-full sm:flex-1 bg-[#2F3B30] hover:bg-[#3A4A3A] text-white dark:bg-white/90 dark:hover:bg-white dark:text-[#2F3B30] px-6 py-6 md:py-7 text-base md:text-lg font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-[-4px_-4px_10px_rgba(255,255,255,0.8),4px_4px_10px_rgba(186,190,204,0.4)] hover:shadow-[-2px_-2px_6px_rgba(255,255,255,0.8),2px_2px_6px_rgba(186,190,204,0.4)] active:shadow-[inset_2px_2px_5px_rgba(186,190,204,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:shadow-[0_4px_20px_rgba(255,255,255,0.3)] dark:hover:shadow-[0_2px_12px_rgba(255,255,255,0.2)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3)] min-h-[56px] md:min-h-[60px]"
             >
               <a href="tel:+16473278401" className="flex items-center justify-center gap-2">
                 <span className="text-xl">📞</span>
@@ -572,7 +572,7 @@ export function HeroSection({ onGetStarted }: HeroSectionProps) {
           </div>
 
           {/* Trust indicator - subtle on mobile */}
-          <p className="text-xs md:text-sm text-white/60 text-center mt-4 md:mt-5">
+          <p className="text-xs md:text-sm text-[#4A5D4C]/70 dark:text-white/60 text-center mt-4 md:mt-5">
             Serving the Greater Toronto Area Since 2023
           </p>
         </motion.div>
